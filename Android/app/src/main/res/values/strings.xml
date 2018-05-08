@@ -6,4 +6,18 @@
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
+    <!-- Strings related to login -->
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Entrar</string>
+    <string name="error_invalid_email">Endereço inválido</string>
+    <string name="error_invalid_password">Palavra-passe deve conter entre 8 e 20 caracteres</string>
+    <string name="error_incorrect_password">Credenciais incorretas</string>
+    <string name="error_field_required">Campo obrigatório</string>
+    <string name="permission_rationale">"Acabamento automático do email requer permissão para
+        aceder aos contactos."</string>
+    <string name="logo">Logo</string>
+    <string name="login">Entrar</string>
+    <string name="noAccountYet">Não tem conta? Crie uma.</string>
 </resources>

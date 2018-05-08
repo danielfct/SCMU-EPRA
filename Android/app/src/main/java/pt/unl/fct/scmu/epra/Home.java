@@ -1,4 +1,4 @@
-package com.example.android.scmu_epra;
+package pt.unl.fct.scmu.epra;
 
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 public class Home extends Fragment {
-
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
