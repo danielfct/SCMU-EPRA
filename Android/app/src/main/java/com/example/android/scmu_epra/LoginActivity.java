@@ -1,4 +1,4 @@
-package pt.unl.fct.scmu.epra;
+package com.example.android.scmu_epra;
 
 import android.annotation.TargetApi;
 import android.app.LoaderManager;
@@ -19,9 +19,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.content.Intent;
 import android.text.TextUtils;
 import android.util.Patterns;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;

@@ -1,4 +1,4 @@
-package pt.unl.fct.scmu.epra;
+package com.example.android.scmu_epra;
 
 import android.annotation.TargetApi;
 import android.app.LoaderManager;

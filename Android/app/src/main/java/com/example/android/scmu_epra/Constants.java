@@ -1,4 +1,4 @@
-package pt.unl.fct.scmu.epra;
+package com.example.android.scmu_epra;
 
 public interface Constants {
 

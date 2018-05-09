@@ -22,8 +22,8 @@
                 android:id="@+id/alarmStateTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/home"
-                android:textSize="40dp"
+                android:text="@string/burglary_management"
+                android:textSize="35dp"
                 tools:layout_editor_absoluteX="123dp"
                 tools:layout_editor_absoluteY="48dp" />
 
