@@ -1,160 +1,348 @@
 package pt.unl.fct.scmu.epra;
 
+import android.annotation.TargetApi;
+import android.app.LoaderManager;
 import android.app.ProgressDialog;
+import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.Loader;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.ContactsContract;
+import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class SignupActivity extends AppCompatActivity {
+import static android.Manifest.permission.READ_CONTACTS;
 
-    private static final String TAG = "SignupActivity";
+public class SignupActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    @BindView(R.id.input_name) EditText _nameText;
-    @BindView(R.id.input_address) EditText _addressText;
-    @BindView(R.id.input_email) EditText _emailText;
-    @BindView(R.id.input_mobile) EditText _mobileText;
-    @BindView(R.id.input_password) EditText _passwordText;
-    @BindView(R.id.input_reEnterPassword) EditText _reEnterPasswordText;
-    @BindView(R.id.btn_signup) Button _signupButton;
-    @BindView(R.id.link_login) TextView _loginLink;
-    
+    @BindView(R.id.input_name)
+    EditText mNameView;
+    @BindView(R.id.input_address)
+    EditText mAddressView;
+    @BindView(R.id.input_mobile)
+    EditText mMobileView;
+    @BindView(R.id.input_email)
+    AutoCompleteTextView mEmailView;
+    @BindView(R.id.input_password)
+    EditText mPasswordView;
+    @BindView(R.id.input_reEnterPassword)
+    EditText mReEnterPasswordView;
+    @BindView(R.id.btn_signup)
+    Button mSignupButton;
+    @BindView(R.id.link_login)
+    TextView mLoginLink;
+
+    /**
+     * Keep track of the signup task to ensure we can cancel it if requested.
+     */
+    private UserSignupTask mSignupTask = null;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
         ButterKnife.bind(this);
 
-        _signupButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        populateAutoComplete();
+
+        mReEnterPasswordView.setOnEditorActionListener((view, id, keyEvent) -> {
+            if (id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL) {
                 signup();
+                return true;
             }
+            return false;
         });
 
-        _loginLink.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Finish the registration screen and return to the Login activity
-                Intent intent = new Intent(getApplicationContext(),LoginActivity.class);
-                startActivity(intent);
-                finish();
-                overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
-            }
-        });
+        mSignupButton.setOnClickListener(view -> signup());
+        mLoginLink.setOnClickListener((view) -> login());
     }
 
-    public void signup() {
-        Log.d(TAG, "Signup");
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.push_right_out, R.anim.push_right_in);
+    }
 
-        if (!validate()) {
-            onSignupFailed();
+    private void populateAutoComplete() {
+        if (!mayRequestContacts()) {
             return;
         }
 
-        _signupButton.setEnabled(false);
+        getLoaderManager().initLoader(0, null, this);
+    }
 
-        final ProgressDialog progressDialog = new ProgressDialog(SignupActivity.this,
-                R.style.AppTheme_Dark_Dialog);
-        progressDialog.setIndeterminate(true);
-        progressDialog.setMessage("Creating Account...");
-        progressDialog.show();
+    private boolean mayRequestContacts() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            return true;
+        }
+        if (checkSelfPermission(READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
+            return true;
+        }
+        if (shouldShowRequestPermissionRationale(READ_CONTACTS)) {
+            Snackbar.make(mEmailView, R.string.permission_rationale, Snackbar.LENGTH_INDEFINITE)
+                    .setAction(android.R.string.ok, new View.OnClickListener() {
+                        @Override
+                        @TargetApi(Build.VERSION_CODES.M)
+                        public void onClick(View v) {
+                            requestPermissions(new String[]{READ_CONTACTS}, Constants.REQUEST_READ_CONTACTS);
+                        }
+                    });
+        } else {
+            requestPermissions(new String[]{READ_CONTACTS}, Constants.REQUEST_READ_CONTACTS);
+        }
+        return false;
+    }
 
-        String name = _nameText.getText().toString();
-        String address = _addressText.getText().toString();
-        String email = _emailText.getText().toString();
-        String mobile = _mobileText.getText().toString();
-        String password = _passwordText.getText().toString();
-        String reEnterPassword = _reEnterPasswordText.getText().toString();
+    /**
+     * Callback received when a permissions request has been completed.
+     */
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        if (requestCode == Constants.REQUEST_READ_CONTACTS) {
+            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                populateAutoComplete();
+            }
+        }
+    }
 
-        // TODO: Implement your own signup logic here.
+    private void login() {
+        // Finish the registration screen and return to the Login activity
+        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+        startActivity(intent);
+        finish();
+        overridePendingTransition(R.anim.push_right_out, R.anim.push_right_in);
+    }
 
-        new android.os.Handler().postDelayed(
-                new Runnable() {
-                    public void run() {
-                        // On complete call either onSignupSuccess or onSignupFailed
-                        // depending on success
-                        onSignupSuccess();
-                        // onSignupFailed();
-                        progressDialog.dismiss();
-                    }
-                }, 3000);
+    private void signup() {
+        if (mSignupTask != null) {
+            return;
+        }
+
+        // Reset errors.
+        mNameView.setError(null);
+        mAddressView.setError(null);
+        mMobileView.setError(null);
+        mEmailView.setError(null);
+        mPasswordView.setError(null);
+        mReEnterPasswordView.setError(null);
+
+        boolean cancel = false;
+        View focusView = null;
+
+        // Store values at the time of the signup attempt.
+        String name = mNameView.getText().toString();
+        String address = mAddressView.getText().toString();
+        String mobile = mMobileView.getText().toString();
+        String email = mEmailView.getText().toString();
+        String password = mPasswordView.getText().toString();
+        String rePassword = mReEnterPasswordView.getText().toString();
+
+        // Check for a valid mobile
+        if (!TextUtils.isEmpty(mobile) && !isMobileValid(mobile)) {
+            mMobileView.setError(getString(R.string.error_invalid_mobile));
+            focusView = mMobileView;
+            cancel = true;
+        }
+        // Check for a valid email
+        if (TextUtils.isEmpty(email)) {
+            mEmailView.setError(getString(R.string.error_field_required));
+            focusView = mEmailView;
+            cancel = true;
+        } else if (!isEmailValid(email)) {
+            mEmailView.setError(getString(R.string.error_invalid_email));
+            focusView = mEmailView;
+            cancel = true;
+        }
+        // Check for a valid password
+        if (TextUtils.isEmpty(password)) {
+            mPasswordView.setError(getString(R.string.error_field_required));
+            focusView = mPasswordView;
+            cancel = true;
+        } else if (!isPasswordValid(password)) {
+            mPasswordView.setError(getString(R.string.error_invalid_password));
+            focusView = mPasswordView;
+            cancel = true;
+        } else if (TextUtils.isEmpty(rePassword)) {
+            mReEnterPasswordView.setError(getString(R.string.error_field_required));
+            focusView = mReEnterPasswordView;
+            cancel = true;
+        } else if (!password.equals(rePassword)) {
+            mReEnterPasswordView.setError(getString(R.string.error_nonmatching_password));
+            focusView = mReEnterPasswordView;
+            cancel = true;
+        }
+
+        if (cancel) {
+            // There was an error; don't attempt signup and focus the first
+            // form field with an error.
+            focusView.requestFocus();
+        } else {
+            // Show a progress spinner, and kick off a background task to
+            // perform the user signup attempt.
+            mSignupTask = new UserSignupTask(name, address, Integer.parseInt(mobile), email, password);
+            mSignupTask.execute((Void) null);
+        }
+    }
+
+    private boolean isMobileValid(String mobile) {
+        return Patterns.PHONE.matcher(mobile).matches();
+    }
+
+    private boolean isEmailValid(String email) {
+        return Patterns.EMAIL_ADDRESS.matcher(email).matches();
+    }
+
+    private boolean isPasswordValid(String password) {
+        return 8 <= password.length() && password.length() <= 20;
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+        return new CursorLoader(this,
+                // Retrieve data rows for the device user's 'profile' contact.
+                Uri.withAppendedPath(ContactsContract.Profile.CONTENT_URI,
+                        ContactsContract.Contacts.Data.CONTENT_DIRECTORY),
+                ProfileQuery.PROJECTION,
+                // Select only email addresses.
+                ContactsContract.Contacts.Data.MIMETYPE +
+                        " = ?", new String[]{ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE},
+                // Show primary email addresses first. Note that there won't be
+                // a primary email address if the user hasn't specified one.
+                ContactsContract.Contacts.Data.IS_PRIMARY + " DESC");
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
+        List<String> emails = new ArrayList<>();
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            emails.add(cursor.getString(ProfileQuery.ADDRESS));
+            cursor.moveToNext();
+        }
+
+        addEmailsToAutoComplete(emails);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> cursorLoader) {
+
+    }
+
+    private void addEmailsToAutoComplete(List<String> emailAddressCollection) {
+        //Create adapter to tell the AutoCompleteTextView what to show in its dropdown list.
+        ArrayAdapter<String> adapter =
+                new ArrayAdapter<>(this,
+                        android.R.layout.simple_dropdown_item_1line, emailAddressCollection);
+
+        mEmailView.setAdapter(adapter);
     }
 
 
+    private interface ProfileQuery {
+        String[] PROJECTION = {
+                ContactsContract.CommonDataKinds.Email.ADDRESS,
+                ContactsContract.CommonDataKinds.Email.IS_PRIMARY,
+        };
+
+        int ADDRESS = 0;
+        int IS_PRIMARY = 1;
+    }
+
+    /**
+     * Represents an asynchronous registration task used to register
+     * the user.
+     */
+    public class UserSignupTask extends AsyncTask<Void, Void, Boolean> {
+
+        private final String mName;
+        private final String mAddress;
+        private final int mMobile;
+        private final String mEmail;
+        private final String mPassword;
+        private final ProgressDialog progressDialog;
+
+        UserSignupTask(String name, String address, int mobile, String email, String password) {
+            mName = name;
+            mAddress = address;
+            mMobile = mobile;
+            mEmail = email;
+            mPassword = password;
+            progressDialog = new ProgressDialog(SignupActivity.this, R.style.AppTheme_Dark_Dialog);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog.setIndeterminate(true);
+            progressDialog.setMessage("Authenticating...");
+            progressDialog.show();
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            // TODO: attempt signup user against a network service.
+            try {
+                // Simulate network access.
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                return false;
+            }
+
+            return true;
+        }
+
+        @Override
+        protected void onPostExecute(final Boolean success) {
+            mSignupTask = null;
+            progressDialog.dismiss();
+
+            if (success) {
+                onSignupSuccess();
+            } else {
+                onSignupFailed();
+            }
+        }
+
+        @Override
+        protected void onCancelled() {
+            mSignupTask = null;
+            progressDialog.dismiss();
+        }
+    }
+
     public void onSignupSuccess() {
-        _signupButton.setEnabled(true);
-        setResult(RESULT_OK, null);
+        mSignupButton.setEnabled(true);
+        setResult(RESULT_OK, null); //TODO
         finish();
     }
 
     public void onSignupFailed() {
-        Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
-
-        _signupButton.setEnabled(true);
+        Toast.makeText(getBaseContext(), getString(R.string.signup_failed), Toast.LENGTH_LONG).show();
     }
 
-    public boolean validate() {
-        boolean valid = true;
-
-        String name = _nameText.getText().toString();
-        String address = _addressText.getText().toString();
-        String email = _emailText.getText().toString();
-        String mobile = _mobileText.getText().toString();
-        String password = _passwordText.getText().toString();
-        String reEnterPassword = _reEnterPasswordText.getText().toString();
-
-        if (name.isEmpty() || name.length() < 3) {
-            _nameText.setError("at least 3 characters");
-            valid = false;
-        } else {
-            _nameText.setError(null);
-        }
-
-        if (address.isEmpty()) {
-            _addressText.setError("Enter Valid Address");
-            valid = false;
-        } else {
-            _addressText.setError(null);
-        }
-
-
-        if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            _emailText.setError("enter a valid email address");
-            valid = false;
-        } else {
-            _emailText.setError(null);
-        }
-
-        if (mobile.isEmpty() || mobile.length()!=10) {
-            _mobileText.setError("Enter Valid Mobile Number");
-            valid = false;
-        } else {
-            _mobileText.setError(null);
-        }
-
-        if (password.isEmpty() || password.length() < 4 || password.length() > 10) {
-            _passwordText.setError("between 4 and 10 alphanumeric characters");
-            valid = false;
-        } else {
-            _passwordText.setError(null);
-        }
-
-        if (reEnterPassword.isEmpty() || reEnterPassword.length() < 4 || reEnterPassword.length() > 10 || !(reEnterPassword.equals(password))) {
-            _reEnterPasswordText.setError("Password Do not match");
-            valid = false;
-        } else {
-            _reEnterPasswordText.setError(null);
-        }
-
-        return valid;
-    }
 }

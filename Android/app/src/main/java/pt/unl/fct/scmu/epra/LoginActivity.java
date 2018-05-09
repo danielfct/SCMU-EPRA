@@ -53,7 +53,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
-    private UserLoginTask mAuthTask = null;
+    private UserLoginTask mLoginTask = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -65,13 +65,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
 
         mPasswordView.setOnEditorActionListener((view, id, keyEvent) -> {
             if (id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL) {
-                attemptLogin();
+                login();
                 return true;
             }
             return false;
         });
 
-        mLoginButton.setOnClickListener((view) -> attemptLogin());
+        mLoginButton.setOnClickListener((view) -> login());
         mSignupLink.setOnClickListener((view) -> signup());
     }
 
@@ -121,7 +121,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
     private void signup() {
         Intent intent = new Intent(getApplicationContext(), SignupActivity.class);
         startActivityForResult(intent, Constants.REQUEST_SIGNUP);
-        finish();
         overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
     }
 
@@ -130,8 +129,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
      * If there are form errors (invalid email, missing fields, etc.), the
      * errors are presented and no actual login attempt is made.
      */
-    private void attemptLogin() {
-        if (mAuthTask != null) {
+    private void login() {
+        if (mLoginTask != null) {
             return;
         }
 
@@ -146,13 +145,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
         boolean cancel = false;
         View focusView = null;
 
-        // Check for a valid password, if the user entered one.
+        // Check for a valid password.
         if (TextUtils.isEmpty(password)) {
             mPasswordView.setError(getString(R.string.error_field_required));
-            focusView = mPasswordView;
-            cancel = true;
-        } else if (!isPasswordValid(password)) {
-            mPasswordView.setError(getString(R.string.error_invalid_password));
             focusView = mPasswordView;
             cancel = true;
         }
@@ -175,17 +170,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
-            mAuthTask = new UserLoginTask(email, password);
-            mAuthTask.execute((Void) null);
+            mLoginTask = new UserLoginTask(email, password);
+            mLoginTask.execute((Void) null);
         }
     }
 
     private boolean isEmailValid(String email) {
         return Patterns.EMAIL_ADDRESS.matcher(email).matches();
-    }
-
-    private boolean isPasswordValid(String password) {
-        return 8 <= password.length() && password.length() <= 20;
     }
 
     @Override
@@ -270,7 +261,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-
             progressDialog.setIndeterminate(true);
             progressDialog.setMessage("Authenticating...");
             progressDialog.show();
@@ -294,66 +284,35 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
                 }
             }*/
 
-            // TODO: register the new account here.
             return true;
         }
 
         @Override
         protected void onPostExecute(final Boolean success) {
-            mAuthTask = null;
+            mLoginTask = null;
             progressDialog.dismiss();
 
             if (success) {
-                finish(); // TODO start main
+                onLoginSuccess();
             } else {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
+                onLoginFailed();
             }
         }
 
         @Override
         protected void onCancelled() {
-            mAuthTask = null;
+            mLoginTask = null;
             progressDialog.dismiss();
         }
     }
 
-    @Override
-    public void onBackPressed() {
-        // Disable going back to the MainActivity
-        moveTaskToBack(true);
-    }
-
-    public void onLoginSuccess() {
+    private void onLoginSuccess() {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }
 
-    public void onLoginFailed() {
-        Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
-        mLoginButton.setEnabled(true);
-    }
-
-    public boolean validate() {
-        boolean valid = true;
-
-        String email = mEmailView.getText().toString();
-        String password = mPasswordView.getText().toString();
-
-        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) { // TODO check empty email
-            mEmailView.setError("enter a valid email address");
-            valid = false;
-        } else {
-            mEmailView.setError(null);
-        }
-
-        if (password.isEmpty() || password.length() < 8 || password.length() > 20) {
-            mPasswordView.setError("between 8 and 20 alphanumeric characters");
-            valid = false;
-        } else {
-            mPasswordView.setError(null);
-        }
-
-        return valid;
+    private void onLoginFailed() {
+        mPasswordView.setError(getString(R.string.error_incorrect_password));
+        mPasswordView.requestFocus();
     }
 }

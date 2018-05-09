@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">scmu-epra</string>
+    <string name="app_name">EPRA</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Android Studio</string>
@@ -20,4 +20,16 @@
     <string name="logo">Logo</string>
     <string name="login">Entrar</string>
     <string name="noAccountYet">Não tem conta? Crie uma.</string>
+    <string name="name">Nome</string>
+    <string name="address">Morada</string>
+    <string name="phone_nr">Nº telefone/telemóvel</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="reenter_password">Confirmar password</string>
+    <string name="create_account">Criar conta</string>
+    <string name="alreadyMember">Já tem conta? Faça login.</string>
+    <string name="error_nonmatching_password">Confirmação da password incorreta</string>
+    <string name="signup_failed">Erro ao criar conta.</string>
+    <string name="error_invalid_mobile">Número inválido</string>
+    <string name="action_sign_up_short">Registar</string>
 </resources>
