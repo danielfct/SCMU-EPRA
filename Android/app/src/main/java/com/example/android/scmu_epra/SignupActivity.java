@@ -15,10 +15,8 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -29,6 +27,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -103,7 +102,7 @@ public class SignupActivity extends AppCompatActivity implements LoaderManager.L
             return true;
         }
         if (shouldShowRequestPermissionRationale(READ_CONTACTS)) {
-            Snackbar.make(mEmailView, R.string.permission_rationale, Snackbar.LENGTH_INDEFINITE)
+            Snackbar.make(mEmailView, R.string.permission_email, Snackbar.LENGTH_INDEFINITE)
                     .setAction(android.R.string.ok, new View.OnClickListener() {
                         @Override
                         @TargetApi(Build.VERSION_CODES.M)
@@ -204,7 +203,8 @@ public class SignupActivity extends AppCompatActivity implements LoaderManager.L
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user signup attempt.
-            mSignupTask = new UserSignupTask(name, address, Integer.parseInt(mobile), email, password);
+            mSignupTask = new UserSignupTask(this,
+                    name, address, Integer.parseInt(mobile), email, password);
             mSignupTask.execute((Void) null);
         }
     }
@@ -277,8 +277,9 @@ public class SignupActivity extends AppCompatActivity implements LoaderManager.L
      * Represents an asynchronous registration task used to register
      * the user.
      */
-    public class UserSignupTask extends AsyncTask<Void, Void, Boolean> {
+    public static class UserSignupTask extends AsyncTask<Void, Void, Boolean> {
 
+        private final WeakReference<SignupActivity> activityReference;
         private final String mName;
         private final String mAddress;
         private final int mMobile;
@@ -286,13 +287,14 @@ public class SignupActivity extends AppCompatActivity implements LoaderManager.L
         private final String mPassword;
         private final ProgressDialog progressDialog;
 
-        UserSignupTask(String name, String address, int mobile, String email, String password) {
+        UserSignupTask(SignupActivity context, String name, String address, int mobile, String email, String password) {
+            this.activityReference = new WeakReference<>(context);
             mName = name;
             mAddress = address;
             mMobile = mobile;
             mEmail = email;
             mPassword = password;
-            progressDialog = new ProgressDialog(SignupActivity.this, R.style.AppTheme_Dark_Dialog);
+            progressDialog = new ProgressDialog(context, R.style.AppTheme_Dark_Dialog);
         }
 
         @Override
@@ -318,20 +320,32 @@ public class SignupActivity extends AppCompatActivity implements LoaderManager.L
 
         @Override
         protected void onPostExecute(final Boolean success) {
-            mSignupTask = null;
+            SignupActivity activity = getActivity();
+            if (activity == null)
+                return;
+            activity.mSignupTask = null;
             progressDialog.dismiss();
 
             if (success) {
-                onSignupSuccess();
+                activity.onSignupSuccess();
             } else {
-                onSignupFailed();
+                activity.onSignupFailed();
             }
         }
 
         @Override
         protected void onCancelled() {
-            mSignupTask = null;
+            SignupActivity activity = getActivity();
+            if (activity == null)
+                return;
+            activity.mSignupTask = null;
             progressDialog.dismiss();
+        }
+
+        private SignupActivity getActivity() {
+            // get a reference to the activity if it is still there
+            SignupActivity activity = activityReference.get();
+            return activity == null || activity.isFinishing() ? null : activity;
         }
     }
 

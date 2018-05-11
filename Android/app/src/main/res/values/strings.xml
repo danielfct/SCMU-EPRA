@@ -96,9 +96,10 @@
     <string name="action_sign_in_short">Entrar</string>
     <string name="error_invalid_email">Endereço inválido</string>
     <string name="error_invalid_password">Palavra-passe deve conter entre 8 e 20 caracteres</string>
-    <string name="error_incorrect_password">Credenciais incorretas</string>
+    <string name="error_incorrect_email">Email incorreto</string>
+    <string name="error_incorrect_password">Palavra-passe incorreta</string>
     <string name="error_field_required">Campo obrigatório</string>
-    <string name="permission_rationale">"Acabamento automático do email requer permissão para
+    <string name="permission_email">"Acabamento automático do email requer permissão para
         aceder aos contactos."</string>
     <string name="logo">Logo</string>
     <string name="login">Entrar</string>
@@ -115,6 +116,9 @@
     <string name="signup_failed">Erro ao criar conta.</string>
     <string name="error_invalid_mobile">Número inválido</string>
     <string name="action_sign_up_short">Registar</string>
+    <string name="login_timeout">Não foi possivel efetuar a ligação ao servidor</string>
+    <string name="login_failed">O login falhou</string>
+    <string name="permission_internet">Efetuar login requer permissão para acesso à internet.</string>
 
 
 </resources>

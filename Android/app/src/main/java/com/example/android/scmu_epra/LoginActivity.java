@@ -18,7 +18,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.text.TextUtils;
-import android.util.Patterns;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
@@ -28,13 +28,22 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static android.Manifest.permission.INTERNET;
 import static android.Manifest.permission.READ_CONTACTS;
+
+// TODO
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+
 
 public class LoginActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -89,7 +98,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
             return true;
         }
         if (shouldShowRequestPermissionRationale(READ_CONTACTS)) {
-            Snackbar.make(mEmailView, R.string.permission_rationale, Snackbar.LENGTH_INDEFINITE)
+            Snackbar.make(mEmailView, R.string.permission_email, Snackbar.LENGTH_INDEFINITE)
                     .setAction(android.R.string.ok, new View.OnClickListener() {
                         @Override
                         @TargetApi(Build.VERSION_CODES.M)
@@ -103,6 +112,28 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
         return false;
     }
 
+    private boolean mayPerformNetworking() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            return true;
+        }
+        if (checkSelfPermission(INTERNET) == PackageManager.PERMISSION_GRANTED) {
+            return true;
+        }
+        if (shouldShowRequestPermissionRationale(INTERNET)) {
+            Snackbar.make(mLoginButton, R.string.permission_internet, Snackbar.LENGTH_INDEFINITE)
+                    .setAction(android.R.string.ok, new View.OnClickListener() {
+                        @Override
+                        @TargetApi(Build.VERSION_CODES.M)
+                        public void onClick(View v) {
+                            requestPermissions(new String[]{INTERNET}, Constants.REQUEST_INTERNET_CONNECTION);
+                        }
+                    });
+        } else {
+            requestPermissions(new String[]{INTERNET}, Constants.REQUEST_INTERNET_CONNECTION);
+        }
+        return false;
+    }
+
     /**
      * Callback received when a permissions request has been completed.
      */
@@ -112,6 +143,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
         if (requestCode == Constants.REQUEST_READ_CONTACTS) {
             if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 populateAutoComplete();
+            }
+        }
+        else if (requestCode == Constants.REQUEST_INTERNET_CONNECTION) {
+            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                login();
             }
         }
     }
@@ -129,6 +165,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
      */
     private void login() {
         if (mLoginTask != null) {
+            return;
+        }
+
+        if (!mayPerformNetworking()) {
             return;
         }
 
@@ -155,10 +195,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
             mEmailView.setError(getString(R.string.error_field_required));
             focusView = mEmailView;
             cancel = true;
-        } else if (!isEmailValid(email)) {
-            mEmailView.setError(getString(R.string.error_invalid_email));
-            focusView = mEmailView;
-            cancel = true;
         }
 
         if (cancel) {
@@ -168,13 +204,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
-            mLoginTask = new UserLoginTask(email, password);
+            mLoginTask = new UserLoginTask(this, email, password);
             mLoginTask.execute((Void) null);
         }
-    }
-
-    private boolean isEmailValid(String email) {
-        return Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 
     @Override
@@ -194,7 +226,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
                 // Retrieve data rows for the device user's 'profile' contact.
                 Uri.withAppendedPath(ContactsContract.Profile.CONTENT_URI,
                         ContactsContract.Contacts.Data.CONTENT_DIRECTORY),
-                        LoginActivity.ProfileQuery.PROJECTION,
+                LoginActivity.ProfileQuery.PROJECTION,
                 // Select only email addresses.
                 ContactsContract.Contacts.Data.MIMETYPE +
                         " = ?", new String[]{ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE},
@@ -244,16 +276,18 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
      */
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
+    public static class UserLoginTask extends AsyncTask<Void, Void, Integer> {
 
+        private final WeakReference<LoginActivity> activityReference;
         private final String mEmail;
         private final String mPassword;
         private final ProgressDialog progressDialog;
 
-        UserLoginTask(String email, String password) {
-            mEmail = email;
-            mPassword = password;
-            progressDialog = new ProgressDialog(LoginActivity.this, R.style.AppTheme_Dark_Dialog);
+        UserLoginTask(LoginActivity context, String email, String password) {
+            this.activityReference = new WeakReference<>(context);
+            this.mEmail = email;
+            this.mPassword = password;
+            this.progressDialog = new ProgressDialog(context, R.style.AppTheme_Dark_Dialog);
         }
 
         @Override
@@ -265,42 +299,60 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
         }
 
         @Override
-        protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
+        protected Integer doInBackground(Void... params) {
+            LoginActivity activity = getActivity();
+            if (activity == null)
+                return Constants.Login.LOGIN_FAILURE_ACTIVITY_INVALID;
             try {
-                // Simulate network access.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                return false;
+                String pwd = Utils.digest("SHA-256", mPassword);
+                OkHttpClient client = new OkHttpClient();
+                Request request = new Request
+                        .Builder()
+                        .url("http://10.22.107.216/epra/auth.php?email=" + mEmail + "&pwd=" + pwd)
+                        .build();
+                Response response = client.newCall(request).execute();
+                String reply = response.body().string().trim();
+                if (reply.equalsIgnoreCase("Email not found"))
+                    return Constants.Login.LOGIN_FAILURE_INCORRECT_EMAIL;
+                else if (reply.equalsIgnoreCase("Incorrect password"))
+                    return Constants.Login.LOGIN_FAILURE_INCORRECT_PASSWORD;
+                else if (reply.equalsIgnoreCase("Authenticated"))
+                    return Constants.Login.LOGIN_SUCCESS;
+                else
+                    return Constants.Login.LOGIN_FAILURE_UNKNOWN;
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-
-            /*for (String credential : DUMMY_CREDENTIALS) {
-                String[] pieces = credential.split(":");
-                if (pieces[0].equals(mEmail)) {
-                    // Account exists, return true if the password matches.
-                    return pieces[1].equals(mPassword);
-                }
-            }*/
-
-            return true;
+            return Constants.Login.LOGIN_FAILURE_EXECUTION_FAILED;
         }
 
         @Override
-        protected void onPostExecute(final Boolean success) {
-            mLoginTask = null;
+        protected void onPostExecute(final Integer failureCode) {
+            LoginActivity activity = getActivity();
+            if (activity == null)
+                return;
+            activity.mLoginTask = null;
             progressDialog.dismiss();
-
-            if (success) {
-                onLoginSuccess();
+            if (failureCode < 0) {
+                activity.onLoginSuccess();
             } else {
-                onLoginFailed();
+                activity.onLoginFailed(failureCode);
             }
         }
 
         @Override
         protected void onCancelled() {
-            mLoginTask = null;
+            LoginActivity activity = getActivity();
+            if (activity == null)
+                return;
+            activity.mLoginTask = null;
             progressDialog.dismiss();
+        }
+
+        private LoginActivity getActivity() {
+            // get a reference to the activity if it is still there
+            LoginActivity activity = activityReference.get();
+            return activity == null || activity.isFinishing() ? null : activity;
         }
     }
 
@@ -309,8 +361,21 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
         startActivity(intent);
     }
 
-    private void onLoginFailed() {
-        mPasswordView.setError(getString(R.string.error_incorrect_password));
-        mPasswordView.requestFocus();
+    private void onLoginFailed(int failureCode) {
+        Log.d("login code", String.valueOf(failureCode));
+        if (failureCode == Constants.Login.LOGIN_FAILURE_INCORRECT_EMAIL) {
+            mEmailView.setError(getString(R.string.error_incorrect_email));
+            mEmailView.requestFocus();
+        }
+        else if (failureCode == Constants.Login.LOGIN_FAILURE_INCORRECT_PASSWORD) {
+            mPasswordView.setError(getString(R.string.error_incorrect_password));
+            mPasswordView.requestFocus();
+        }
+        else if (failureCode == Constants.Login.LOGIN_FAILURE_TIMEOUT) {
+            Toast.makeText(getBaseContext(), getString(R.string.login_timeout), Toast.LENGTH_LONG).show();
+        }
+        else {
+            Toast.makeText(getBaseContext(), getString(R.string.login_failed), Toast.LENGTH_LONG).show();
+        }
     }
 }
