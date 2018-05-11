@@ -1,0 +1,30 @@
+// definir uma password
+mysqladmin -uroot password PASSWORD
+
+// mudar password
+mysqladmin -uroot -p password PASSWORD
+
+// aceder ao mysql
+mysql -uroot -pPASSWORD
+
+// criar utilizador
+create user 'scmu'@'localhost' identified by 'epra';
+grant all privileges on epra_db.* to 'scmu'@'localhost';
+flush privileges;
+
+// definir username e password do phpMyAdmin
+C:\xampp\phpMyAdmin\config.inc.php
+$cfg['Servers'][$i]['user'] = 'scmu';
+$cfg['Servers'][$i]['password'] = 'epra';
+
+// criar base de dados
+create database epra_db;
+commit;
+
+// aceder ao phpMyAdmin
+http://localhost/phpmyadmin
+
+// exportar a db
+C:/xampp/mysql/bin/mysqldump -u root -p epra_db > C:\Users\ASUS\Desktop\Projeto_SCMU\Servidor\epra_db.sql
+// importar a db
+C:/xampp/mysql/bin/mysql –u root -pepra epra_db < C:\Users\ASUS\Desktop\Projeto_SCMU\Servidor\epra_db.sql
