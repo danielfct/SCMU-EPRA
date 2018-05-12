@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
+import android.preference.SwitchPreference;
 import android.support.v7.app.ActionBar;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
@@ -179,9 +180,31 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             // to their values. When their values change, their summaries are
             // updated to reflect the new value, per the Android Design
             // guidelines.
-            bindPreferenceSummaryToValue(findPreference("example_text"));
-            bindPreferenceSummaryToValue(findPreference("example_list"));
+            bindPreferenceSummaryToValue(findPreference("list_interval"));
+            bindPreferenceSummaryToValue(findPreference("list_period"));
+
+
+            SeekBarPreference seekBarIntensity = (SeekBarPreference) findPreference("seek_bar");
+            ListPreference listIntervals = (ListPreference) findPreference("list_interval");
+            SwitchPreference switchLimitedSound = (SwitchPreference) findPreference("switch_period");
+            ListPreference listPeriods = (ListPreference) findPreference("list_period");
+
+            switchLimitedSound.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    if (switchLimitedSound.isChecked()) {
+                        listPeriods.setEnabled(true);
+                    }
+                    else {
+                        listPeriods.setEnabled(false);
+                    }
+                    return false;
+                }
+            });
+
         }
+
+
 
         @Override
         public boolean onOptionsItemSelected(MenuItem item) {

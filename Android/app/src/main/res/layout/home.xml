@@ -32,6 +32,6 @@
     </LinearLayout>
 
     <!-- include bottom sheet -->
-    <include layout="@layout/bottom_sheet" />
+    <include layout="@layout/activity_list" />
 
 </android.support.design.widget.CoordinatorLayout>

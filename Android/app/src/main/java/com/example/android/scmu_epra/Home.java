@@ -8,7 +8,11 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Home extends Fragment {
 
@@ -29,6 +33,25 @@ public class Home extends Fragment {
                 return true;
             }
         });
+
+
+        ArrayList<Item> list = new ArrayList<Item>();
+
+        Item a = new Item("Alberto");
+        Item c = new Item("Maria");
+        Item f = new Item("Xavier");
+        Item q = new Item("Teresa");
+        Item e = new Item("Marco");
+
+        list.add(a);
+        list.add(c);
+        list.add(f);
+        list.add(q);
+        list.add(e);
+
+        ListAdapter listAdapter = new ListAdapter(getContext(), 0, list);
+        ListView listView = (ListView) getView().findViewById(R.id.list_view);
+        listView.setAdapter(listAdapter);
     }
 
     @Nullable

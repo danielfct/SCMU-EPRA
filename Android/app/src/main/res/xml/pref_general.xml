@@ -4,7 +4,8 @@
 
     <com.example.android.scmu_epra.SeekBarPreference
         android:defaultValue="45"
-        android:title="Set Sound Intensity"
+        android:key="seek_bar"
+        android:title="@string/seek_sound_title"
         android:summary="Intensity of the alarm sound produced by the system"
         android:selectable="true">
     </com.example.android.scmu_epra.SeekBarPreference>
@@ -14,18 +15,17 @@
         android:defaultValue="-1"
         android:entries="@array/pref_set_interval_list_titles"
         android:entryValues="@array/pref_set_interval_list_values"
-        android:key="example_list"
+        android:key="list_interval"
         android:negativeButtonText="@null"
         android:positiveButtonText="@null"
-        android:title="Set interval between sounds" />
+        android:title="@string/list_interval_title" />
 
 
     <SwitchPreference
-        android:onClick=""
         android:defaultValue="false"
         android:key="switch_period"
         android:summary="The alarm sound will be played for a limited period of time"
-        android:title="Ring alarm for a limited period" />
+        android:title="@string/switch_ring_title" />
 
 
     <ListPreference
@@ -35,7 +35,7 @@
         android:key="list_period"
         android:negativeButtonText="@null"
         android:positiveButtonText="@null"
-        android:title="Set alarm ring period" />
+        android:title="@string/list_period_title" />
 
 
 

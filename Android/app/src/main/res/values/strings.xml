@@ -23,7 +23,6 @@
     <string name="pref_default_display_name">John Smith</string>
 
 
-
     <string name="pref_title_set_interval">Set the interval between sounds</string>
     <string-array name="pref_set_interval_list_titles">
         <item>0.5s</item>
@@ -116,6 +115,10 @@
     <string name="logo">Logo</string>
     <string name="login">Entrar</string>
     <string name="noAccountYet">Não tem conta? Crie uma.</string>
+    <string name="list_interval_title">Set interval between sounds</string>
+    <string name="seek_sound_title">Set Sound Intensity</string>
+    <string name="switch_ring_title">Ring alarm for a limited period</string>
+    <string name="list_period_title">Set alarm ring period</string>
 
 
 </resources>
