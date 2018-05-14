@@ -32,4 +32,3 @@
     mysqli_close($con);
   
  ?>
-

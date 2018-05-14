@@ -1,7 +1,6 @@
 create table if not exists utilizador
 (
 		nome      varchar(255) not null,
-		morada    varchar(255),
 		telemovel varchar(20) not null unique,
 		email     varchar(255) primary key,
 		password  varchar(255) not null,
