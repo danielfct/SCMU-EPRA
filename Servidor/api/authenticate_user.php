@@ -7,11 +7,11 @@
     }
     
     // Getting inputs from url
-    $email = filter_input(INPUT_GET, "email");
-    $pwd = filter_input(INPUT_GET, "pwd");
+    $email = filter_input(INPUT_GET, "email", FILTER_SANITIZE_STRING);
+    $pwd = filter_input(INPUT_GET, "pwd", FILTER_SANITIZE_STRING);
     
     // Query the database
-    $sql = "Select * from utilizador where email like \"".$email."\"";
+    $sql = "Select * from utilizador where email like '$email'";
     if (!$result = mysqli_query($con, $sql))
     {
         echo "Query failed: " . mysqli_error($con);

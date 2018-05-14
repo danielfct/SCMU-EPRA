@@ -33,8 +33,6 @@ class User {
 
         // execute query
         $stmt->execute();
-
-        return $stmt;
     }
 
     // create user
@@ -47,9 +45,7 @@ class User {
                     nome=:nome, 
                     telemovel=:telemovel, 
                     email=:email, 
-                    password=:password, 
-                    admin=:admin, 
-                    privilegios:=privilegios";
+                    password=:password";
 
         // prepare query
         $stmt = $this->conn->prepare($query);
@@ -59,19 +55,15 @@ class User {
         $this->telemovel=htmlspecialchars(strip_tags($this->telemovel));
         $this->email=htmlspecialchars(strip_tags($this->email));
         $this->password=htmlspecialchars(strip_tags($this->password));
-        $this->admin=htmlspecialchars(strip_tags($this->admin));
-        $this->privilegios=htmlspecialchars(strip_tags($this->privilegios));
         
         // bind values
         $stmt->bindParam(":nome", $this->nome);
         $stmt->bindParam(":telemovel", $this->telemovel);
         $stmt->bindParam(":email", $this->email);
         $stmt->bindParam(":password", $this->password);
-        $stmt->bindParam(":admin", $this->admin);
-        $stmt->bindParam(":privilegios", $this->privilegios);
 
         // execute query
-        return $stmt->execute();
+        $stmt->execute();
     }
     
 }

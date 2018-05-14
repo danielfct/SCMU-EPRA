@@ -23,16 +23,14 @@
     $user->telemovel = $data->telemovel;
     $user->email = $data->email;
     $user->password = $data->password;
-    $user->admin = $data->admin;
-    $user->privilegios = $data->privilegios;
 
     // create the user
     echo '{';
-    if ($user->create()) {
+    try {
+        $user->create();
         echo '"message": "User register successfully!"';
-    }
-    else {
-        echo '"message": "Unable to register user."';
+    } catch(PDOException $exception) {
+        echo '"message": "Unable to register user", "error": "' .  $exception->getMessage() . '"';
     }
     echo '}';
 ?>

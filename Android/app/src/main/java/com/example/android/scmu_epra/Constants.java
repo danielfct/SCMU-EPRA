@@ -15,4 +15,10 @@ public interface Constants {
         int LOGIN_FAILURE_UNKNOWN = 4;
         int LOGIN_FAILURE_EXECUTION_FAILED = 5;
     }
+
+    interface Signup {
+        int SIGNUP_SUCCESS = -1;
+        int SIGNUP_FAILURE_ACTIVITY_INVALID = 0;
+        int SIGNUP_FAILURE_EXECUTION_FAILED = 1;
+    }
 }

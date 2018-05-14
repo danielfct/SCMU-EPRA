@@ -17,6 +17,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -27,12 +28,25 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONObject;
+
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.ref.WeakReference;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
@@ -40,8 +54,6 @@ public class SignupActivity extends AppCompatActivity implements LoaderManager.L
 
     @BindView(R.id.input_name)
     EditText mNameView;
-    @BindView(R.id.input_address)
-    EditText mAddressView;
     @BindView(R.id.input_mobile)
     EditText mMobileView;
     @BindView(R.id.input_email)
@@ -144,7 +156,6 @@ public class SignupActivity extends AppCompatActivity implements LoaderManager.L
 
         // Reset errors.
         mNameView.setError(null);
-        mAddressView.setError(null);
         mMobileView.setError(null);
         mEmailView.setError(null);
         mPasswordView.setError(null);
@@ -155,7 +166,6 @@ public class SignupActivity extends AppCompatActivity implements LoaderManager.L
 
         // Store values at the time of the signup attempt.
         String name = mNameView.getText().toString();
-        String address = mAddressView.getText().toString();
         String mobile = mMobileView.getText().toString();
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
@@ -204,7 +214,7 @@ public class SignupActivity extends AppCompatActivity implements LoaderManager.L
             // Show a progress spinner, and kick off a background task to
             // perform the user signup attempt.
             mSignupTask = new UserSignupTask(this,
-                    name, address, Integer.parseInt(mobile), email, password);
+                    name, Integer.parseInt(mobile), email, password);
             mSignupTask.execute((Void) null);
         }
     }
@@ -277,20 +287,18 @@ public class SignupActivity extends AppCompatActivity implements LoaderManager.L
      * Represents an asynchronous registration task used to register
      * the user.
      */
-    public static class UserSignupTask extends AsyncTask<Void, Void, Boolean> {
+    public static class UserSignupTask extends AsyncTask<Void, Void, Integer> {
 
         private final WeakReference<SignupActivity> activityReference;
         private final String mName;
-        private final String mAddress;
         private final int mMobile;
         private final String mEmail;
         private final String mPassword;
         private final ProgressDialog progressDialog;
 
-        UserSignupTask(SignupActivity context, String name, String address, int mobile, String email, String password) {
+        UserSignupTask(SignupActivity context, String name, int mobile, String email, String password) {
             this.activityReference = new WeakReference<>(context);
             mName = name;
-            mAddress = address;
             mMobile = mobile;
             mEmail = email;
             mPassword = password;
@@ -306,30 +314,76 @@ public class SignupActivity extends AppCompatActivity implements LoaderManager.L
         }
 
         @Override
-        protected Boolean doInBackground(Void... params) {
-            // TODO: attempt signup user against a network service.
+        protected Integer doInBackground(Void... params) {
+            SignupActivity activity = getActivity();
+            if (activity == null)
+                return Constants.Signup.SIGNUP_FAILURE_ACTIVITY_INVALID;
             try {
-                // Simulate network access.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                return false;
-            }
+                URL url = new URL("http://10.22.120.229/epra/api/register_user.php");
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("POST");
+                conn.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
+                conn.setRequestProperty("Accept","application/json");
+                conn.setDoOutput(true);
+                conn.setDoInput(true);
 
-            return true;
+                JSONObject jsonParam = new JSONObject();
+                jsonParam.put("nome", mName);
+                jsonParam.put("telemovel", mMobile);
+                jsonParam.put("email", mEmail);
+                jsonParam.put("password", Utils.digest("SHA-256", mPassword));
+
+                Log.i("JSON", jsonParam.toString());
+                DataOutputStream os = new DataOutputStream(conn.getOutputStream());
+                os.writeBytes(jsonParam.toString());
+
+                os.flush();
+                os.close();
+
+                Log.i("STATUS", String.valueOf(conn.getResponseCode()));
+                Log.i("MSG" , conn.getResponseMessage());
+                Log.i("MESSAGE" , readStream(conn));
+
+                conn.disconnect();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return Constants.Signup.SIGNUP_FAILURE_EXECUTION_FAILED;
         }
 
+        private String readStream(HttpURLConnection conn) {
+            String result = null;
+            StringBuffer sb = new StringBuffer();
+
+            try (InputStream is = new BufferedInputStream(conn.getInputStream())) {
+                BufferedReader br = new BufferedReader(new InputStreamReader(is));
+                String inputLine = "";
+                while ((inputLine = br.readLine()) != null) {
+                    sb.append(inputLine);
+                }
+                result = sb.toString();
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            return result;
+        }
+
+
         @Override
-        protected void onPostExecute(final Boolean success) {
+        protected void onPostExecute(final Integer failureCode) {
             SignupActivity activity = getActivity();
             if (activity == null)
                 return;
             activity.mSignupTask = null;
             progressDialog.dismiss();
 
-            if (success) {
+            if (failureCode < 0) {
                 activity.onSignupSuccess();
             } else {
-                activity.onSignupFailed();
+                activity.onSignupFailed(failureCode);
             }
         }
 
@@ -351,11 +405,11 @@ public class SignupActivity extends AppCompatActivity implements LoaderManager.L
 
     public void onSignupSuccess() {
         mSignupButton.setEnabled(true);
-        setResult(RESULT_OK, null); //TODO
+        setResult(RESULT_OK, null); //TODO conta
         finish();
     }
 
-    public void onSignupFailed() {
+    public void onSignupFailed(int failureCode) {
         Toast.makeText(getBaseContext(), getString(R.string.signup_failed), Toast.LENGTH_LONG).show();
     }
 

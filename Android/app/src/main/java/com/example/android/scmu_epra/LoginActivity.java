@@ -308,7 +308,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
                 OkHttpClient client = new OkHttpClient();
                 Request request = new Request
                         .Builder()
-                        .url("http://10.22.107.216/epra/auth.php?email=" + mEmail + "&pwd=" + pwd)
+                        .url("http://192.168.56.1/epra/auth.php?email=" + mEmail + "&pwd=" + pwd)
                         .build();
                 Response response = client.newCall(request).execute();
                 String reply = response.body().string().trim();
