@@ -59,6 +59,8 @@ CREATE TABLE IF NOT EXISTS tracking
 	areaAtual INT(11) NOT NULL,
 	areaEntrada INT(11) NOT NULL,
 	pessoasNotificadas INT(11) NOT NULL,
+	FOREIGN KEY (areaAtual) REFERENCES areas(id),
+	FOREIGN KEY (areaEntrada) REFERENCES areas(id),
 	PRIMARY KEY(id)
 );
 
@@ -67,6 +69,7 @@ CREATE TABLE IF NOT EXISTS historicoTracking
 	area INT(11) NOT NULL,
 	duracao INT(11) NOT NULL,
 	trackingId INT(11) NOT NULL,
+	FOREIGN KEY (area) REFERENCES areas(id),
 	FOREIGN KEY (trackingId) REFERENCES tracking(id)
 );
 
