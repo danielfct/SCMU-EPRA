@@ -7,6 +7,8 @@ estadoAtual: 0 = alarme desligado; 1 = ligado
 ativoDesde: data e hora em que foi ligado
 dataAtual: data e hora atuais do sistema (para usar no cálculo do tempo de atividade do ecrã principal)
 intensidade, intervalo e tempoDeToque - para mostrar nas settings do alarme
+
+ou devolve {"message": "..."} se não existir alarme na tabela
 --------------------
 localhost/api/post_alarminfo.php
 
@@ -38,4 +40,6 @@ localhost/api/get_history.php
 
 Devolve array de objetos do tipo:
 [{"id":"1","evento":"eventoExemplo","datahora":"2018-05-15 12:55:38"}]
+
+ou devolve {"message": "..."} se não existir histórico
 ---------------------------
