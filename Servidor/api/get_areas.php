@@ -14,7 +14,7 @@ $db = $database->getConnection();
 // initialize object
 $area = new Area($db);
 
-$stmt = $area->read();
+$stmt = $area->read(isset($_GET['id']) ? $_GET['id'] : NULL);
 $num = $stmt->rowCount();
 
 // check if more than 0 record found
@@ -38,6 +38,11 @@ if($num>0){
             "alarmeLigado" => $alarmeLigado,
             "sensor" => $sensor,
         );
+
+        if ($num == 1) {
+          echo json_encode($area_item);
+          return;
+        }
 
         array_push($area_arr, $area_item);
     }

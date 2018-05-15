@@ -17,10 +17,14 @@ class Area {
     }
 
     // read simulators
-    function read(){
+    function read($id){
 
         // select all query
-        $query = "SELECT * FROM areas";
+        if ($id == NULL) {
+          $query = "SELECT * FROM areas";
+        } else {
+          $query = "SELECT * FROM areas WHERE id=$id";
+        }
 
         // prepare query statement
         $stmt = $this->conn->prepare($query);
