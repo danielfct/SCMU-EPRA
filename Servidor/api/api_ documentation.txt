@@ -1,0 +1,41 @@
+----------
+localhost/api/get_alarminfo.php
+
+Devolve objeto do tipo:
+ {"estadoAtual":"1","ativoDesde":"2018-05-15 13:54:25","dataAtual":"2018-05-15 12:56:54","intensidade":"3000","intervalo":"2","tempoDeToque":"3"}
+estadoAtual: 0 = alarme desligado; 1 = ligado
+ativoDesde: data e hora em que foi ligado
+dataAtual: data e hora atuais do sistema (para usar no cálculo do tempo de atividade do ecrã principal)
+intensidade, intervalo e tempoDeToque - para mostrar nas settings do alarme
+--------------------
+localhost/api/post_alarminfo.php
+
+Pode receber dois tipos de objetos:
+a) para alterar o estado do sistema (on/off), 0 = off; 1 = on
+{
+"estadoAtual": "0"
+}
+b) para alterar as configs do alarme
+{
+"intensidade": "1000",
+"intervalo": "5",
+"tempoDeToque": "10"
+}
+
+NOTA: NÃO ENVIAR ESTES DOIS TIPOS AOS MESMO TEMPO, SE NÃO SÓ AS CONFIGS VÃO SER ATUALIZADAS!
+NOTA2: obrigar a que tempoDeToque e intensidade sejam sempre > 0
+
+Devolve objeto do tipo: {"message": "Alarm settings were updated.", "success": "1"}
+
+----------------
+localhost/api/post_history.php
+
+Recebe objeto do tipo : {"evento":"Alarme disparado."}
+Devolve objeto do tipo: {"message":"msg", "success","s"}, com msg= History saved successfully ou Unable to save history, e s = 0 ou 1 (0 = erro; 1 = sucesso).
+
+----------------------------
+localhost/api/get_history.php
+
+Devolve array de objetos do tipo:
+[{"id":"1","evento":"eventoExemplo","datahora":"2018-05-15 12:55:38"}]
+---------------------------

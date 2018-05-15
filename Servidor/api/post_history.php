@@ -26,14 +26,14 @@ $history->evento = $data->evento;
 // create the product
 if($history->create()){
     echo '{';
-        echo '"message": "History saved successfully!"';
+        echo '"message": "History saved successfully!", "success": "1"';
     echo '}';
 }
 
 // if unable to create the history, tell the user
 else{
     echo '{';
-        echo '"message": "Unable to save history."';
+        echo '"message": "Unable to save history.", "success": "0"';
     echo '}';
 }
 ?>

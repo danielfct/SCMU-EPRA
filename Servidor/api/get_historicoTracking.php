@@ -1,20 +1,27 @@
 <?php
 // required headers
 header("Access-Control-Allow-Origin: *");
-header("Content-Type: application/json; charset=UTF-8");
+header("Access-Control-Allow-Headers: access");
+header("Access-Control-Allow-Methods: GET");
+header("Access-Control-Allow-Credentials: true");
+header('Content-Type: application/json');
+
 
 // include database and object files
 include_once './config/database.php';
-include_once './objects/history.php';
+include_once './objects/historyTracking.php';
 
 // instantiate database and product object
 $database = new Database();
 $db = $database->getConnection();
 
 // initialize object
-$history = new History($db);
+$history = new HistoryTracking($db);
 
-// query history
+// set ID property of product to be edited
+$history->trackingId = isset($_GET['trackingId']) ? $_GET['trackingId'] : die();
+
+// query products
 $stmt = $history->read();
 $num = $stmt->rowCount();
 
@@ -34,9 +41,9 @@ if($num>0){
         extract($row);
 
         $history_item=array(
-            "id" => $id,
-            "evento" => $evento,
-            "datahora" => $datahora,
+            "area" => $area,
+            "duracao" => $duracao,
+            "trackingId" => $trackingId,
         );
 
         array_push($history_arr, $history_item);
@@ -47,7 +54,7 @@ if($num>0){
 
 else{
     echo json_encode(
-        array("message" => "No history found.")
+        array("message" => "No history tracking found.")
     );
 }
 ?>
