@@ -19,19 +19,20 @@ $area = new Area($db);
 // get posted data
 $data = json_decode(file_get_contents("php://input"));
 
+$area->id = $data->id;
 $area->nome = $data->nome;
 $area->alarmeLigado = $data->alarmeLigado;
 $area->sensor = $data->sensor;
 
-if($area->create()){
+if($area->update()){
     echo '{';
-        echo '"message": "Area saved successfully!", "success": "1"';
+        echo '"message": "Area updated successfully!", "success": "1"';
     echo '}';
 }
 
 else{
     echo '{';
-        echo '"message": "Unable to save area.", "success": "0"';
+        echo '"message": "Unable to update area.", "success": "0"';
     echo '}';
 }
 ?>

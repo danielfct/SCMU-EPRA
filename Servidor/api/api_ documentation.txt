@@ -5,10 +5,10 @@ Devolve objeto do tipo:
  {"estadoAtual":"1","ativoDesde":"2018-05-15 13:54:25","dataAtual":"2018-05-15 12:56:54","intensidade":"3000","intervalo":"2","tempoDeToque":"3"}
 estadoAtual: 0 = alarme desligado; 1 = ligado
 ativoDesde: data e hora em que foi ligado
-dataAtual: data e hora atuais do sistema (para usar no cálculo do tempo de atividade do ecrã principal)
+dataAtual: data e hora atuais do sistema (para usar no calculo do tempo de atividade do ecra principal)
 intensidade, intervalo e tempoDeToque - para mostrar nas settings do alarme
 
-ou devolve {"message": "..."} se não existir alarme na tabela
+ou devolve {"message": "..."} se nao existir alarme na tabela
 --------------------
 localhost/api/post_alarminfo.php
 
@@ -24,7 +24,7 @@ b) para alterar as configs do alarme
 "tempoDeToque": "10"
 }
 
-NOTA: NÃO ENVIAR ESTES DOIS TIPOS AOS MESMO TEMPO, SE NÃO SÓ AS CONFIGS VÃO SER ATUALIZADAS!
+NOTA: NAO ENVIAR ESTES DOIS TIPOS AOS MESMO TEMPO, SE NAO SAO AS CONFIGS VAO SER ATUALIZADAS!
 NOTA2: obrigar a que tempoDeToque e intensidade sejam sempre > 0
 
 Devolve objeto do tipo: {"message": "Alarm settings were updated.", "success": "1"}
@@ -41,5 +41,42 @@ localhost/api/get_history.php
 Devolve array de objetos do tipo:
 [{"id":"1","evento":"eventoExemplo","datahora":"2018-05-15 12:55:38"}]
 
-ou devolve {"message": "..."} se não existir histórico
+ou devolve {"message": "..."} se nao existir historico
 ---------------------------
+localhost/api/get_areas.php
+
+Devolve um array de objetos do tipo:
+[{"id":"1","nome":"areaTeste","alarmeLigado":"0","sensor":"led1"}]
+
+ou devolve {"message": "..."} se nao existirem areaTeste
+
+localhost/api/get_areas.php?id=IdDaArea
+
+Devolve um objeto do tipo:
+{"id":"1","nome":"areaTeste","alarmeLigado":"0","sensor":"led1"}
+
+ou devolve {"message":"No areas found."} se nao existerem areas
+
+----------------------------------
+localhost/api/post_areas.php (Criar nova area)
+
+Recebe um objeto do tipo:
+{"nome": "nomeArea","alarmeLigado": "0","sensor": "led1"}
+Devolve um objeto do tipo:
+{ "message": "Area saved successfully!", "success": "1"}
+ou { "message": "Unable to save area.", "success": "0"} se existir erro
+
+NOTA: o nome do sensor tem que existir na tabela de sensores
+Nota2: O nome da area a criar tem que ser unico na tabela
+-------------------------------
+localhost/api/update_areas.php
+
+Recebe um objeto do tipo:
+{"id": "1","nome": "nomeArea","alarmeLigado": "0","sensor": "led1"}
+sendo id o id da area a atualizar e nome, alarmeLigado e sensor as colunas a mudar
+
+Devolve um objeto do tipo:
+{"message": "Area updated successfully!","success": "1"} ou
+{"message": "Unable to update area.","success": "0"} se houver erro
+
+Nota: O nome da area a atualizar tem que ser unico na tabela

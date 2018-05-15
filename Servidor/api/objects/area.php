@@ -42,9 +42,46 @@ class Area {
         $query = "INSERT INTO
                     " . $this->table_name . "
                 SET
-                    id=:id, nome:nome, alarmeLigado:alarmeLigado, sensor:sensor";
+                    nome=:nome, alarmeLigado=:alarmeLigado, sensor=:sensor";
 
         // prepare query
+        $stmt = $this->conn->prepare($query);
+
+        // sanitize
+        $this->nome=htmlspecialchars(strip_tags($this->nome));
+        $this->alarmeLigado=htmlspecialchars(strip_tags($this->alarmeLigado));
+        $this->sensor=htmlspecialchars(strip_tags($this->sensor));
+
+        // bind values
+        $stmt->bindParam(":nome", $this->nome);
+        $stmt->bindParam(":alarmeLigado", $this->alarmeLigado);
+        $stmt->bindParam(":sensor", $this->sensor);
+
+        // execute query
+        try {
+          if($stmt->execute()){
+              return true;
+          }
+        } catch(PDOException $e) {
+        }
+
+        return false;
+
+    }
+
+    // update area
+    function update(){
+
+      $query = "UPDATE
+                  " . $this->table_name . "
+              SET
+                  nome = :nome,
+                  alarmeLigado = :alarmeLigado,
+                  sensor = :sensor
+              WHERE
+                  id = :id";
+
+        // prepare query statement
         $stmt = $this->conn->prepare($query);
 
         // sanitize
@@ -53,18 +90,20 @@ class Area {
         $this->alarmeLigado=htmlspecialchars(strip_tags($this->alarmeLigado));
         $this->sensor=htmlspecialchars(strip_tags($this->sensor));
 
-        // bind values
-        $stmt->bindParam(":id", $this->id);
-        $stmt->bindParam(":nome", $this->nome);
-        $stmt->bindParam(":alarmeLigado", $this->alarmeLigado);
-        $stmt->bindParam(":sensor", $this->sensor);
+        // bind new values
+        $stmt->bindParam(':id', $this->id);
+        $stmt->bindParam(':nome', $this->nome);
+        $stmt->bindParam(':alarmeLigado', $this->alarmeLigado);
+        $stmt->bindParam(':sensor', $this->sensor);
 
-        // execute query
-        if($stmt->execute()){
-            return true;
+        // execute the query
+        try {
+          if($stmt->execute()){
+              return true;
+          }
+        } catch(PDOException $e) {
         }
 
         return false;
-
     }
 }
