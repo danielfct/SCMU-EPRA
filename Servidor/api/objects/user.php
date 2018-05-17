@@ -95,4 +95,73 @@ class User {
         return false;
 
     }
+
+    function addComma($res) {
+      if(strlen($res) > 0) {
+        $res .= ", ";
+      }
+      return $res;
+    }
+
+    function buildQueryAttributes() {
+      $res = "";
+      if($this->privilegios) {
+        $res .= "privilegios = :privilegios";
+      }
+      if($this->nome) {
+        $res = $this->addComma($res);
+        $res .= "nome = :nome";
+      }
+      if($this->telemovel) {
+        $res = $this->addComma($res);
+        $res .= "telemovel = :telemovel";
+      }
+      return $res;
+    }
+
+    function update(){
+
+      $query = "UPDATE
+                  " . $this->table_name . "
+              SET " . $this->buildQueryAttributes() ." WHERE email = :email";
+
+        // prepare query statement
+        $stmt = $this->conn->prepare($query);
+
+        // sanitize
+        $this->email=htmlspecialchars(strip_tags($this->email));
+        if($this->privilegios) {
+          $this->privilegios=htmlspecialchars(strip_tags($this->privilegios));
+        }
+        if($this->nome) {
+          $this->nome=htmlspecialchars(strip_tags($this->nome));
+        }
+        if($this->telemovel) {
+          $this->telemovel=htmlspecialchars(strip_tags($this->telemovel));
+        }
+
+        // bind new values
+        $stmt->bindParam(':email', $this->email);
+        if($this->privilegios) {
+          $stmt->bindParam(':privilegios', $this->privilegios);
+        }
+        if($this->nome) {
+          $stmt->bindParam(':nome', $this->nome);
+        }
+        if($this->telemovel) {
+          $stmt->bindParam(':telemovel', $this->telemovel);
+        }
+
+        // execute the query
+
+          try {
+            if($stmt->execute()){
+                return true;
+            }
+          } catch(PDOException $e){
+          }
+
+
+        return false;
+    }
 }

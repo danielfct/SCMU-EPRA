@@ -128,3 +128,47 @@ Recebe objeto do tipo:
 Retorna obj:
 {"message": "User was deleted.","success": "1"}
 -------------------------------
+localhost/api/update_user.php
+
+Recebe objeto do tipo:
+{"email": "email@email.com","privilegios": "1,7,9","nome": "defeffefedef","telemovel": "93de343fe38"}
+NOTA: privilegios, nome e telemovel são opcionais, mas pelo menos um deles tem que estar no objeto enviado
+NOTA2: telemovel tem que ser unico
+Retorna obj:
+{"message": "User was updated.","success": "1"}
+------------------------------------
+localhost/api/post_tracking.php
+
+Recebe objeto do tipo:
+{
+	"areaAtual": "1",
+	"areaEntrada": "2",
+	"pessoasNotificadas": "0"
+}
+NOTA: pessoasNotificadas e opcional
+
+Retorna obj:
+{"message": "Tracking created!","success": "1"}
+ou Retorna obj:
+{"message": "Unable to create tracking.","success": "0"}
+---------------------------------------------
+localhost/api/post_historyTracking.php (cria historico de movimento associado a uma intrusao / a um tracking)
+
+Recebe objeto do tipo:
+{
+	"area": "1",
+	"duracao": "7",
+	"trackingId": "1"
+}
+
+Retorna obj:
+{"message": "HistoryTracking created!","success": "1"}
+ou Retorna obj:
+{"message": "Unable to create historyTracking.","success": "0"}
+----------------------------------------
+localhost/api/get_historyTracking.php?id=x (x e o id de um tracking)
+
+Retorna lista de objs do tipo:
+[{"id":"1","areaAtual":"1","areaEntrada":"1","pessoasNotificadas":"0","area":"1","duracao":"7","trackingId":"1"}]
+ou {"message": "Missing parameter id.", "success": "0"}
+ou {"message":"No tracking found."}

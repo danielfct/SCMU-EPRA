@@ -39,31 +39,34 @@ class HistoryTracking {
     // create product
     function create(){
 
-        // query to insert record
-        $query = "INSERT INTO
-                    " . $this->table_name . "
-                SET
-                    area=:area, trackingId:trackingId, duracao:duracao";
+      // query to insert record
+      $query = "INSERT INTO
+                  " . $this->table_name . "
+              SET
+                  area=:area, duracao=:duracao, trackingId=:trackingId";
 
-        // prepare query
-        $stmt = $this->conn->prepare($query);
+      // prepare query
+      $stmt = $this->conn->prepare($query);
 
-        // sanitize
-        $this->area=htmlspecialchars(strip_tags($this->area));
-        $this->trackingId=htmlspecialchars(strip_tags($this->trackingId));
-        $this->duracao=htmlspecialchars(strip_tags($this->duracao));
+      // sanitize
+      $this->area=htmlspecialchars(strip_tags($this->area));
+      $this->duracao=htmlspecialchars(strip_tags($this->duracao));
+      $this->trackingId=htmlspecialchars(strip_tags($this->trackingId));
 
-        // bind values
-        $stmt->bindParam(":area", $this->area);
-        $stmt->bindParam(":trackingId", $this->trackingId);
-        $stmt->bindParam(":duracao", $this->duracao);
+      // bind values
+      $stmt->bindParam(":area", $this->area);
+      $stmt->bindParam(":duracao", $this->duracao);
+      $stmt->bindParam(":trackingId", $this->trackingId);
 
-        // execute query
+      // execute query
+      try {
         if($stmt->execute()){
             return true;
         }
+      } catch(PDOException $e) {
+      }
 
-        return false;
+      return false;
 
     }
 }
