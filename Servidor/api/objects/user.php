@@ -20,19 +20,23 @@ class User {
     }
 
     // read users
-    function read() {
+    function read($search) {
         // select all query
-        $query = "SELECT * FROM " . $this->table_name;
-        
-        if ($this->email) {
-            $query = $query . " WHERE email LIKE " . $this->email;
+        if ($search) {
+          $query = "SELECT * FROM " . $this->table_name . " WHERE nome LIKE '%$search%'";
+        } else if ($this->email) {
+          $query = "SELECT * FROM utilizador WHERE email='$email' LIMIT 1";
+        } else {
+          $query = "SELECT * FROM " . $this->table_name;
         }
-      
+
         // prepare query statement
         $stmt = $this->conn->prepare($query);
 
         // execute query
         $stmt->execute();
+
+        return $stmt;
     }
 
     // create user
@@ -42,9 +46,9 @@ class User {
         $query = "INSERT INTO "
                   . $this->table_name . "
                   SET
-                    nome=:nome, 
-                    telemovel=:telemovel, 
-                    email=:email, 
+                    nome=:nome,
+                    telemovel=:telemovel,
+                    email=:email,
                     password=:password";
 
         // prepare query
@@ -55,7 +59,7 @@ class User {
         $this->telemovel=htmlspecialchars(strip_tags($this->telemovel));
         $this->email=htmlspecialchars(strip_tags($this->email));
         $this->password=htmlspecialchars(strip_tags($this->password));
-        
+
         // bind values
         $stmt->bindParam(":nome", $this->nome);
         $stmt->bindParam(":telemovel", $this->telemovel);
@@ -65,5 +69,30 @@ class User {
         // execute query
         $stmt->execute();
     }
-    
+
+    function delete(){
+
+        // delete query
+        $query = "DELETE FROM " . $this->table_name . " WHERE email = ?";
+
+        // prepare query
+        $stmt = $this->conn->prepare($query);
+
+        // sanitize
+        $this->email=htmlspecialchars(strip_tags($this->email));
+
+        // bind id of record to delete
+        $stmt->bindParam(1, $this->email);
+
+        try {
+          // execute query
+          if($stmt->execute()){
+              return true;
+          }
+        } catch(PDOException $e) {
+        }
+
+        return false;
+
+    }
 }

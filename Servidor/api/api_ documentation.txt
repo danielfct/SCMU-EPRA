@@ -80,3 +80,51 @@ Devolve um objeto do tipo:
 {"message": "Unable to update area.","success": "0"} se houver erro
 
 Nota: O nome da area a atualizar tem que ser unico na tabela
+-------------------------------------
+localhost/api/get_simulators.php
+
+Devolve uma lista de objetos do tipo:
+[{"id":"1","nome":"nomeS","estadoAtual":"0","areaId":"1"}]
+ou devolve {"message":"No simulators found."} se nao existerem simuladores
+
+localhost/api/get_simulators.php?search=x (procura por simuladores que contenham x no nome)
+Devolve uma lista igual a de cima ou a mensagem de q nao existem.
+-------------------------------------
+localhost/api/post_simulators.php (cria simuladores)
+
+Recebe objeto do tipo:
+{"nome": "simName","estadoAtual": "1","atuador": "led1","areaId": "6"}
+Nota: o atuador e areaId tem que existir, caso contrario da erro
+NOTA2: O nome do simulador tem que ser unico
+devolve {"message": "Unable to create simulator.","success": "0"} ou
+{"message": "Simulator created!","success": "1"}
+
+------------------------
+localhost/api/update_simulators.php
+
+Recebe objeto do tipo:
+{"id": "1","nome": "simi23dff","estadoAtual": "0","atuador": "led12","areaId": "1"}
+devolve {"message": "Unable to update simulator.","success": "0"} ou
+{"message": "Simulator updated!","success": "1"}
+-------------------------------------
+
+localhost/api/delete_simulators.php
+
+Recebe objeto do tipo: {"id": "1"}
+Devolve mensagem {"message": "Simulator was deleted.","success": "1"}
+
+-----------------------------
+  localhost/api/get_contacts.php
+  ou localhost/api/get_contacts.php?search=x (Onde x e o nome da pessoa a ser pesquisada)
+
+Devolve lista de objs to tipo:
+[{"nome":"admL","telemovel":"966666666","email":"adm@adm.com","password":"admPWD","admin":"1","privilegios":"1,7,9"}]
+
+-----------------------------
+localhost/api/delete_contacts.php
+
+Recebe objeto do tipo:
+{"email": "jn@ff.com"}
+Retorna obj:
+{"message": "User was deleted.","success": "1"}
+-------------------------------
