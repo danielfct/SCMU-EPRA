@@ -1,4 +1,4 @@
-package com.example.android.scmu_epra;
+package com.example.android.scmu_epra.burglary_management;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -8,6 +8,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.example.android.scmu_epra.R;
 
 //TODO: para modificar. É cópia da Home
 public class BurglaryManag extends Fragment {
