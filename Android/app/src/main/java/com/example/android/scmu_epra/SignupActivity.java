@@ -14,17 +14,20 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TextInputEditText;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatButton;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,7 +36,6 @@ import org.json.JSONObject;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.ref.WeakReference;
@@ -44,28 +46,39 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
 public class SignupActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
+    @BindView(R.id.close_button)
+    FloatingActionButton mCloseButton;
+    @BindView(R.id.name_layout)
+    TextInputLayout mNameLayout;
     @BindView(R.id.input_name)
-    EditText mNameView;
+    TextInputEditText mNameView;
+    @BindView(R.id.mobile_nr_layout)
+    TextInputLayout mMobileLayout;
     @BindView(R.id.input_mobile)
-    EditText mMobileView;
+    TextInputEditText mMobileView;
+    @BindView(R.id.email_layout)
+    TextInputLayout mEmailLayout;
     @BindView(R.id.input_email)
     AutoCompleteTextView mEmailView;
+    @BindView(R.id.password_layout)
+    TextInputLayout passwordLayout;
     @BindView(R.id.input_password)
-    EditText mPasswordView;
-    @BindView(R.id.input_reEnterPassword)
-    EditText mReEnterPasswordView;
-    @BindView(R.id.btn_signup)
-    Button mSignupButton;
-    @BindView(R.id.link_login)
+    TextInputEditText mPasswordView;
+    @BindView(R.id.re_enter_password_layout)
+    TextInputLayout mReEnterPasswordLayout;
+    @BindView(R.id.input_re_enter_password)
+    TextInputEditText mReEnterPasswordView;
+    @BindView(R.id.signup_button)
+    AppCompatButton mSignupButton;
+    @BindView(R.id.login_link)
     TextView mLoginLink;
+
+    private AlphaAnimation linkClick = new AlphaAnimation(1F, 0.5F);
 
     /**
      * Keep track of the signup task to ensure we can cancel it if requested.
@@ -88,8 +101,9 @@ public class SignupActivity extends AppCompatActivity implements LoaderManager.L
             return false;
         });
 
+        mCloseButton.setOnClickListener(view -> login());
         mSignupButton.setOnClickListener(view -> signup());
-        mLoginLink.setOnClickListener((view) -> login());
+        mLoginLink.setOnClickListener(view -> {view.startAnimation(linkClick); login();});
     }
 
     @Override
@@ -154,12 +168,12 @@ public class SignupActivity extends AppCompatActivity implements LoaderManager.L
             return;
         }
 
-        // Reset errors.
-        mNameView.setError(null);
-        mMobileView.setError(null);
-        mEmailView.setError(null);
-        mPasswordView.setError(null);
-        mReEnterPasswordView.setError(null);
+        // Reset errors
+        mNameLayout.setError(null);
+        mMobileLayout.setError(null);
+        mEmailLayout.setError(null);
+        passwordLayout.setError(null);
+        mReEnterPasswordLayout.setError(null);
 
         boolean cancel = false;
         View focusView = null;
@@ -173,48 +187,41 @@ public class SignupActivity extends AppCompatActivity implements LoaderManager.L
 
         // Check for a valid mobile
         if (!TextUtils.isEmpty(mobile) && !isMobileValid(mobile)) {
-            mMobileView.setError(getString(R.string.error_invalid_mobile));
-            focusView = mMobileView;
+            mMobileLayout.setError(getString(R.string.error_invalid_mobile));
+            focusView = mMobileLayout;
             cancel = true;
         }
-        // Check for a valid email
+
         if (TextUtils.isEmpty(email)) {
-            mEmailView.setError(getString(R.string.error_field_required));
-            focusView = mEmailView;
+            mEmailLayout.setError(getString(R.string.error_field_required));
+            focusView = mEmailLayout;
             cancel = true;
         } else if (!isEmailValid(email)) {
-            mEmailView.setError(getString(R.string.error_invalid_email));
-            focusView = mEmailView;
+            mEmailLayout.setError(getString(R.string.error_invalid_email));
+            focusView = mEmailLayout;
             cancel = true;
-        }
-        // Check for a valid password
-        if (TextUtils.isEmpty(password)) {
-            mPasswordView.setError(getString(R.string.error_field_required));
-            focusView = mPasswordView;
+        } else if (TextUtils.isEmpty(password)) {
+            passwordLayout.setError(getString(R.string.error_field_required));
+            focusView = passwordLayout;
             cancel = true;
         } else if (!isPasswordValid(password)) {
-            mPasswordView.setError(getString(R.string.error_invalid_password));
-            focusView = mPasswordView;
+            passwordLayout.setError(getString(R.string.error_invalid_password));
+            focusView = passwordLayout;
             cancel = true;
         } else if (TextUtils.isEmpty(rePassword)) {
-            mReEnterPasswordView.setError(getString(R.string.error_field_required));
-            focusView = mReEnterPasswordView;
+            mReEnterPasswordLayout.setError(getString(R.string.error_field_required));
+            focusView = mReEnterPasswordLayout;
             cancel = true;
         } else if (!password.equals(rePassword)) {
-            mReEnterPasswordView.setError(getString(R.string.error_nonmatching_password));
-            focusView = mReEnterPasswordView;
+            mReEnterPasswordLayout.setError(getString(R.string.error_nonmatching_password));
+            focusView = mReEnterPasswordLayout;
             cancel = true;
         }
 
         if (cancel) {
-            // There was an error; don't attempt signup and focus the first
-            // form field with an error.
             focusView.requestFocus();
         } else {
-            // Show a progress spinner, and kick off a background task to
-            // perform the user signup attempt.
-            mSignupTask = new UserSignupTask(this,
-                    name, Integer.parseInt(mobile), email, password);
+            mSignupTask = new UserSignupTask(this, name, Integer.parseInt(mobile), email, password);
             mSignupTask.execute((Void) null);
         }
     }

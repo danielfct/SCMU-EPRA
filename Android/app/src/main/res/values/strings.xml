@@ -93,32 +93,32 @@
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
     <string name="action_sign_in">Sign in or register</string>
-    <string name="action_sign_in_short">Entrar</string>
-    <string name="error_invalid_email">Endereço inválido</string>
-    <string name="error_invalid_password">Palavra-passe deve conter entre 8 e 20 caracteres</string>
-    <string name="error_incorrect_email">Email incorreto</string>
-    <string name="error_incorrect_password">Palavra-passe incorreta</string>
-    <string name="error_field_required">Campo obrigatório</string>
-    <string name="permission_email">"Acabamento automático do email requer permissão para
-        aceder aos contactos."</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="error_invalid_email">Invalid email address</string>
+    <string name="error_invalid_password">Password must contain between 8 and 20 characters</string>
+    <string name="error_incorrect_email">Incorrect email</string>
+    <string name="error_incorrect_password">Incorrect password</string>
+    <string name="error_field_required">Required field</string>
+    <string name="permission_email">"Address email autocomplete requires permission to access contacts."</string>
     <string name="logo">Logo</string>
-    <string name="login">Entrar</string>
-    <string name="noAccountYet">Não tem conta? Crie uma.</string>
-    <string name="name">Nome</string>
-    <string name="address">Morada</string>
-    <string name="phone_nr">Nº telefone/telemóvel</string>
+    <string name="login">Login</string>
+    <string name="noAccountYet">No account yet? Register here.</string>
+    <string name="name">Name</string>
+    <string name="address">Address</string>
+    <string name="phone_nr">Phone number</string>
     <string name="email">Email</string>
     <string name="password">Password</string>
-    <string name="reenter_password">Confirmar password</string>
-    <string name="create_account">Criar conta</string>
-    <string name="alreadyMember">Já tem conta? Faça login.</string>
-    <string name="error_nonmatching_password">Confirmação da password incorreta</string>
-    <string name="signup_failed">Erro ao criar conta.</string>
-    <string name="error_invalid_mobile">Número inválido</string>
-    <string name="action_sign_up_short">Registar</string>
-    <string name="login_timeout">Não foi possivel efetuar a ligação ao servidor</string>
-    <string name="login_failed">O login falhou</string>
-    <string name="permission_internet">Efetuar login requer permissão para acesso à internet.</string>
+    <string name="reenter_password">Confirm password</string>
+    <string name="alreadyMember">Have an account? Login here.</string>
+    <string name="error_nonmatching_password">Passwords do not match</string>
+    <string name="signup_failed">Failed to register account.</string>
+    <string name="error_invalid_mobile">Invalid phone number.</string>
+    <string name="action_sign_up_short">Register</string>
+    <string name="login_timeout">Unable to connect to authentication server.</string>
+    <string name="login_failed">Unable to login.</string>
+    <string name="permission_internet">Login requires permission to access internet.</string>
+    <string name="register_account">Register account</string>
+    <string name="register">Register</string>
 
 
 </resources>

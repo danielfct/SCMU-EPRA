@@ -13,13 +13,18 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TextInputEditText;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.support.v7.widget.AppCompatButton;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -47,15 +52,23 @@ import okhttp3.Response;
 
 public class LoginActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
-
+    @BindView(R.id.email_layout)
+    TextInputLayout mEmailLayout;
     @BindView(R.id.email)
     AutoCompleteTextView mEmailView;
+    @BindView(R.id.password_layout)
+    TextInputLayout mPasswordLayout;
     @BindView(R.id.password)
-    EditText mPasswordView;
-    @BindView(R.id.btn_login)
-    Button mLoginButton;
-    @BindView(R.id.link_signup)
+    TextInputEditText mPasswordView;
+    @BindView(R.id.login_button)
+    AppCompatButton mLoginButton;
+    @BindView(R.id.signup_link)
     TextView mSignupLink;
+    @BindView(R.id.signup_button)
+    FloatingActionButton mSignupButton;
+
+
+    private AlphaAnimation linkClick = new AlphaAnimation(1F, 0.5F);
 
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
@@ -78,8 +91,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
             return false;
         });
 
-        mLoginButton.setOnClickListener((view) -> login());
-        mSignupLink.setOnClickListener((view) -> signup());
+        mLoginButton.setOnClickListener(view -> login());
+        mSignupLink.setOnClickListener(view -> { view.startAnimation(linkClick); signup(); });
+        mSignupButton.setOnClickListener(view -> signup());
     }
 
     private void populateAutoComplete() {
@@ -172,9 +186,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
             return;
         }
 
-        // Reset errors.
-        mEmailView.setError(null);
-        mPasswordView.setError(null);
+        // Reset errors
+        mEmailLayout.setError(null);
+        mPasswordLayout.setError(null);
 
         // Store values at the time of the login attempt.
         String email = mEmailView.getText().toString();
@@ -183,17 +197,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
         boolean cancel = false;
         View focusView = null;
 
-        // Check for a valid password.
-        if (TextUtils.isEmpty(password)) {
-            mPasswordView.setError(getString(R.string.error_field_required));
-            focusView = mPasswordView;
-            cancel = true;
-        }
-
-        // Check for a valid email address.
         if (TextUtils.isEmpty(email)) {
-            mEmailView.setError(getString(R.string.error_field_required));
-            focusView = mEmailView;
+            mEmailLayout.setError(getString(R.string.error_field_required));
+            focusView = mEmailLayout;
+            cancel = true;
+        } else if (TextUtils.isEmpty(password)) {
+            mPasswordLayout.setError(getString(R.string.error_field_required));
+            focusView = mPasswordLayout;
             cancel = true;
         }
 
@@ -304,6 +314,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
             if (activity == null)
                 return Constants.Login.LOGIN_FAILURE_ACTIVITY_INVALID;
             try {
+                // TODO change to httpurlconnection
                 String pwd = Utils.digest("SHA-256", mPassword);
                 OkHttpClient client = new OkHttpClient();
                 Request request = new Request
