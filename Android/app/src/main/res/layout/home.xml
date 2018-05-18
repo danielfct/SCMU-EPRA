@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<android.support.design.widget.CoordinatorLayout
+    android:id="@+id/baseLayout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -12,27 +14,47 @@
         android:weightSum="2">
 
         <LinearLayout
+            android:id="@+id/backgroundOfButton"
             android:gravity="center"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:orientation="horizontal">
+            android:orientation="vertical"
+            xmlns:custom="http://schemas.android.com/apk/res-auto">
 
-            <TextView
-                android:id="@+id/alarmStateTV"
+
+            <belka.us.androidtoggleswitch.widgets.ToggleSwitch
+                android:id="@+id/toggleOnOff"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/home"
-                android:textSize="40dp"
-                tools:layout_editor_absoluteX="123dp"
-                tools:layout_editor_absoluteY="48dp" />
+                android:paddingBottom="20dp"
+                android:textSize="20dp"
+                custom:toggleWidth="90dp"
+                custom:textToggleLeft="OFF"
+                custom:textToggleRight="ON" />
+
+            <Button
+                android:id="@+id/show_history"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Show History"
+                android:textColor="@color/colorPrimaryDark"
+                android:backgroundTint="@color/white"
+                />
+
+
 
         </LinearLayout>
 
-
-
-
-
     </LinearLayout>
 
-</RelativeLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="12dp"
+        app:layout_anchor="@id/bottom_sheet"
+        android:background="@drawable/shadow"/>
+
+    <!-- include bottom sheet -->
+    <include layout="@layout/activity_list" />
+
+</android.support.design.widget.CoordinatorLayout>

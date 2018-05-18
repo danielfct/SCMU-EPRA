@@ -1,4 +1,4 @@
-package com.example.android.scmu_epra;
+package com.example.android.scmu_epra.devices;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -9,8 +9,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.android.scmu_epra.R;
+
 //TODO: para modificar. É cópia da Home
-public class History extends Fragment {
+public class Devices extends Fragment {
 
     private TextView stateTxV;
     private boolean alarmIsOn;
@@ -19,7 +21,7 @@ public class History extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        getActivity().setTitle("History");
+        getActivity().setTitle("Devices");
 
         stateTxV = getView().findViewById(R.id.alarmStateTV);
         stateTxV.setOnTouchListener(new View.OnTouchListener() {
@@ -34,7 +36,7 @@ public class History extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        return getLayoutInflater().inflate(R.layout.history, container, false);
+        return getLayoutInflater().inflate(R.layout.devices, container, false);
     }
 
     @Override
