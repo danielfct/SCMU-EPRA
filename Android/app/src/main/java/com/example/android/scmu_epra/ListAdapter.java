@@ -8,8 +8,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
@@ -19,6 +21,8 @@ import org.w3c.dom.Text;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+
+import butterknife.OnClick;
 
 public class ListAdapter extends ArrayAdapter<Item> {
 

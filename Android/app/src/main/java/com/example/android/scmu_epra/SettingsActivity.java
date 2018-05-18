@@ -1,6 +1,7 @@
 package com.example.android.scmu_epra;
 
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
@@ -29,14 +30,10 @@ public class SettingsActivity extends AppCompatActivity {
 
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
 
-        Boolean seekPref = sharedPref.getBoolean(SettingsActivity.KEY_SEEKBAR_SETTINGS, false);
-        Boolean listInt = sharedPref.getBoolean(SettingsActivity.KEY_LISTINTERVAL_SETTINGS, false);
+        Integer seekPref = sharedPref.getInt(SettingsActivity.KEY_SEEKBAR_SETTINGS, 0);
+        String listInt = sharedPref.getString(SettingsActivity.KEY_LISTINTERVAL_SETTINGS, "-1");
         Boolean switchPer = sharedPref.getBoolean(SettingsActivity.KEY_SWITCHPERIOD_SETTINGS, false);
-        Boolean listPer = sharedPref.getBoolean(SettingsActivity.KEY_LISTPERIOD_SETTINGS, false);
-
-
-        //TODO: Continuar sharedpreferences
-
+        String listPer = sharedPref.getString(SettingsActivity.KEY_LISTPERIOD_SETTINGS, "-1");
 
     }
 

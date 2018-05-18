@@ -1,23 +1,50 @@
 package com.example.android.scmu_epra;
 
+import android.content.res.Resources;
+import android.graphics.Color;
+import android.graphics.Rect;
+import android.support.design.widget.BottomSheetBehavior;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import belka.us.androidtoggleswitch.widgets.BaseToggleSwitch;
+import belka.us.androidtoggleswitch.widgets.ToggleSwitch;
+
 public class Home extends Fragment {
 
-    private TextView stateTxV;
+    private Button btnShowHistory;
+    private ToggleSwitch toggleOnOff;
     private boolean alarmIsOn;
+    private LinearLayout bottomListView;
+    private CoordinatorLayout baseLayout;
+
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        alarmIsOn = false;
+
+    }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -25,33 +52,87 @@ public class Home extends Fragment {
 
         getActivity().setTitle("Home");
 
-        stateTxV = getView().findViewById(R.id.alarmStateTV);
-        stateTxV.setOnTouchListener(new View.OnTouchListener() {
+
+        btnShowHistory = getView().findViewById(R.id.show_history);
+        btnShowHistory.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                switchAlarmState();
-                return true;
+            public void onClick(View view) {
+                Fragment f = new History();
+                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                ft.replace(R.id.screen_area, f);
+                ft.commit();
             }
         });
+
+
+        toggleOnOff = getView().findViewById(R.id.toggleOnOff);
+        toggleOnOff.setOnToggleSwitchChangeListener(new ToggleSwitch.OnToggleSwitchChangeListener(){
+
+            @Override
+            public void onToggleSwitchChangeListener(int position, boolean isChecked) {
+                if (position == 0) {
+                    //TODO: turn alarm off
+                }
+                else {
+                    //TODO: turn alarm on
+                }
+            }
+        });
+
+        bottomListView = getView().findViewById(R.id.bottom_sheet);
+        BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(bottomListView);
+        baseLayout = getView().findViewById(R.id.baseLayout);
+
+
+        Rect rect = new Rect();
+        getView().getWindowVisibleDisplayFrame(rect);
+        bottomSheetBehavior.setPeekHeight((rect.bottom - rect.top) / 2);
 
 
         ArrayList<Item> list = new ArrayList<Item>();
 
         Item a = new Item("Alberto");
-        Item c = new Item("Maria");
-        Item f = new Item("Xavier");
-        Item q = new Item("Teresa");
+        Item b = new Item("Maria");
+        Item c = new Item("Xavier");
+        Item d = new Item("Teresa");
         Item e = new Item("Marco");
+        Item f = new Item("Coiso");
+        Item g = new Item("Filipe");
+        Item h = new Item("Matumbo");
+        Item i = new Item("Pessoa");
+        Item j = new Item("Paco");
 
         list.add(a);
+        list.add(b);
         list.add(c);
-        list.add(f);
-        list.add(q);
+        list.add(d);
         list.add(e);
+        list.add(f);
+        list.add(g);
+        list.add(i);
+        list.add(h);
+
 
         ListAdapter listAdapter = new ListAdapter(getContext(), 0, list);
-        ListView listView = (ListView) getView().findViewById(R.id.list_view);
+        BottomSheetListView listView = (BottomSheetListView) getView().findViewById(R.id.list_view);
         listView.setAdapter(listAdapter);
+
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                //TODO: Define item click action here
+
+                Switch sw = view.findViewById(R.id.switch1);
+                if (sw.isChecked()) {
+                    sw.setChecked(false);
+                }
+                else {
+                    sw.setChecked(true);
+                }
+
+            }
+        });
     }
 
     @Nullable
@@ -60,24 +141,20 @@ public class Home extends Fragment {
         return getLayoutInflater().inflate(R.layout.home, container, false);
     }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
 
-        alarmIsOn = false;
-
-
-
-    }
 
 
     private void switchAlarmState() {
         if (alarmIsOn) {
             // Turn off alarm
 
+            alarmIsOn = false;
+
         }                            
         else {
             // Turn on alarm
+
+            alarmIsOn = true;
 
         }
     }
