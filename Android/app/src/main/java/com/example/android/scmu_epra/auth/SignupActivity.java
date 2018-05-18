@@ -1,4 +1,4 @@
-package com.example.android.scmu_epra;
+package com.example.android.scmu_epra.auth;
 
 import android.annotation.TargetApi;
 import android.app.LoaderManager;
@@ -30,6 +30,10 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.android.scmu_epra.Constants;
+import com.example.android.scmu_epra.R;
+import com.example.android.scmu_epra.Utils;
 
 import org.json.JSONObject;
 

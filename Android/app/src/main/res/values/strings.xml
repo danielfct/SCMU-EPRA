@@ -139,6 +139,7 @@
     <string name="permission_internet">Login requires permission to access internet.</string>
     <string name="register_account">Register account</string>
     <string name="register">Register</string>
+    <string name="show_history">Show History</string>
 
 </resources>
 

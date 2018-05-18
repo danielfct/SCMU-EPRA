@@ -1,4 +1,4 @@
-package com.example.android.scmu_epra.home;
+package com.example.android.scmu_epra.mn_home;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -12,7 +12,7 @@ import android.widget.TextView;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.example.android.scmu_epra.R;
-import com.example.android.scmu_epra.home.Item;
+import com.example.android.scmu_epra.mn_home.Item;
 
 import java.util.List;
 
@@ -25,7 +25,6 @@ public class ListAdapter extends ArrayAdapter<Item> {
     private TextDrawable.IBuilder builder;
 
     private ColorGenerator generator;
-
 
 //    public ListAdapter(Context context, int textViewResourceId) {
 //        super(context, textViewResourceId);

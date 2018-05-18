@@ -1,4 +1,4 @@
-package com.example.android.scmu_epra.devices;
+package com.example.android.scmu_epra.mn_devices;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;

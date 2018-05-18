@@ -17,6 +17,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.example.android.scmu_epra.mn_burglaryManag.BurglaryManag;
+import com.example.android.scmu_epra.mn_devices.Devices;
+import com.example.android.scmu_epra.history.History;
+import com.example.android.scmu_epra.mn_home.Home;
+
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -72,7 +77,7 @@ public class MainActivity extends AppCompatActivity
                 fragment = new BurglaryManag();
                 break;
             case R.id.nav_settings:
-                Intent intent = new Intent(this, SettingsActivity.class);
+                Intent intent = new Intent(this, com.example.android.scmu_epra.SettingsActivity.class);
                 startActivity(intent);
                 break;
         }

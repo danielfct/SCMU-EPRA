@@ -1,4 +1,4 @@
-package com.example.android.scmu_epra.burglary_management;
+package com.example.android.scmu_epra.mn_burglaryManag;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;

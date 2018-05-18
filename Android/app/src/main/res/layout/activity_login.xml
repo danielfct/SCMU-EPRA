@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#fcfcfc"
-    tools:context=".LoginActivity">
+    tools:context=".auth.LoginActivity">
 
     <!--<include layout="@layout/collapsing_app_bar"/>-->
 

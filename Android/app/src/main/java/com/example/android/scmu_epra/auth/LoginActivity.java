@@ -1,4 +1,4 @@
-package com.example.android.scmu_epra;
+package com.example.android.scmu_epra.auth;
 
 import android.annotation.TargetApi;
 import android.app.LoaderManager;
@@ -28,10 +28,13 @@ import android.view.animation.AlphaAnimation;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.android.scmu_epra.Constants;
+import com.example.android.scmu_epra.MainActivity;
+import com.example.android.scmu_epra.R;
+import com.example.android.scmu_epra.Utils;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
