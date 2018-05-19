@@ -9,16 +9,18 @@ public interface Constants {
     interface Login {
         int LOGIN_SUCCESS = -1;
         int LOGIN_FAILURE_ACTIVITY_INVALID = 0;
-        int LOGIN_FAILURE_INCORRECT_EMAIL = 1;
+        int LOGIN_FAILURE_UNREGISTERED_EMAIL = 1;
         int LOGIN_FAILURE_INCORRECT_PASSWORD = 2;
-        int LOGIN_FAILURE_TIMEOUT = 3;
-        int LOGIN_FAILURE_UNKNOWN = 4;
-        int LOGIN_FAILURE_EXECUTION_FAILED = 5;
+        int LOGIN_FAILURE = 3;
     }
 
     interface Signup {
         int SIGNUP_SUCCESS = -1;
         int SIGNUP_FAILURE_ACTIVITY_INVALID = 0;
-        int SIGNUP_FAILURE_EXECUTION_FAILED = 1;
+        int SIGNUP_FAILURE_EMAIl_EXISTS = 1;
+        int SIGNUP_FAILURE = 2;
+        String EMAIL = "com.example.android.scmu_epra.auth.email";
+        String PASSWORD = "com.example.android.scmu_epra.auth.password";
+
     }
 }

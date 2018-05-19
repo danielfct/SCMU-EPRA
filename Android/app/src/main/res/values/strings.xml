@@ -116,7 +116,7 @@
     <string name="action_sign_in_short">Sign in</string>
     <string name="error_invalid_email">Invalid email address</string>
     <string name="error_invalid_password">Password must contain between 8 and 20 characters</string>
-    <string name="error_incorrect_email">Incorrect email</string>
+    <string name="error_unregistered_email">Unregistered email</string>
     <string name="error_incorrect_password">Incorrect password</string>
     <string name="error_field_required">Required field</string>
     <string name="permission_email">"Address email autocomplete requires permission to access contacts."</string>
@@ -135,11 +135,13 @@
     <string name="error_invalid_mobile">Invalid phone number.</string>
     <string name="action_sign_up_short">Register</string>
     <string name="login_timeout">Unable to connect to authentication server.</string>
-    <string name="login_failed">Unable to login.</string>
+    <string name="login_failed">Login failed.</string>
     <string name="permission_internet">Login requires permission to access internet.</string>
     <string name="register_account">Register account</string>
     <string name="register">Register</string>
     <string name="show_history">Show History</string>
+    <string name="signup_success">User register successfully!</string>
+    <string name="email_already_exists">Email already exists</string>
 
 </resources>
 

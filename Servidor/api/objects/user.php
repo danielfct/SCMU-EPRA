@@ -20,14 +20,13 @@ class User {
     }
 
     // read users
-    function read($search) {
-        // select all query
-        if ($search) {
-          $query = "SELECT * FROM " . $this->table_name . " WHERE nome LIKE '%$search%'";
-        } else if ($this->email) {
-          $query = "SELECT * FROM utilizador WHERE email='$email' LIMIT 1";
+    function read() {
+        if ($this->email) {
+            $query = "SELECT * FROM " . $this->table_name . " WHERE email LIKE '$this->email' LIMIT 1";
+        } else if ($this->nome) {
+            $query = "SELECT * FROM " . $this->table_name . " WHERE nome LIKE '%$this->nome%'";
         } else {
-          $query = "SELECT * FROM " . $this->table_name;
+            $query = "SELECT * FROM " . $this->table_name;
         }
 
         // prepare query statement
@@ -68,6 +67,8 @@ class User {
 
         // execute query
         $stmt->execute();
+        
+        return $stmt;
     }
 
     function delete(){

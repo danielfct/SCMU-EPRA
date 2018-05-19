@@ -32,7 +32,7 @@
         android:layout_marginBottom="8dp"
         android:layout_below="@+id/login_title"
         app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout"
-        app:errorTextAppearance="@style/error_appearance"
+        app:errorTextAppearance="@style/LoginErrorAppearance"
         android:textColorHint="@color/white">
 
         <AutoCompleteTextView
@@ -60,7 +60,7 @@
         app:passwordToggleEnabled="true"
         app:passwordToggleTint="@color/white"
         app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout"
-        app:errorTextAppearance="@style/error_appearance"
+        app:errorTextAppearance="@style/LoginErrorAppearance"
         android:textColorHint="@color/white">
 
         <android.support.design.widget.TextInputEditText

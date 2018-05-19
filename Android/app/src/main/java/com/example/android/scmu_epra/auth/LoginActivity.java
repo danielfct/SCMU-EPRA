@@ -3,6 +3,7 @@ package com.example.android.scmu_epra.auth;
 import android.annotation.TargetApi;
 import android.app.LoaderManager;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Loader;
 import android.content.pm.PackageManager;
@@ -26,6 +27,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.TextView;
@@ -36,8 +38,12 @@ import com.example.android.scmu_epra.MainActivity;
 import com.example.android.scmu_epra.R;
 import com.example.android.scmu_epra.Utils;
 
-import java.io.IOException;
+import org.json.JSONObject;
+
+import java.io.DataOutputStream;
 import java.lang.ref.WeakReference;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,9 +54,6 @@ import static android.Manifest.permission.INTERNET;
 import static android.Manifest.permission.READ_CONTACTS;
 
 // TODO
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 
 
 public class LoginActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -226,9 +229,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == Constants.REQUEST_SIGNUP) {
             if (resultCode == RESULT_OK) {
-                // TODO: Implement successful signup logic here
-                // By default we just finish the Activity and log them in automatically
-                this.finish();
+                String email = data.getStringExtra(Constants.Signup.EMAIL);
+                String password = data.getStringExtra(Constants.Signup.PASSWORD);
+                mEmailView.setText(email);
+                mPasswordView.setText(password);
+                Toast.makeText(this, getString(R.string.signup_success), Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -317,27 +322,47 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
             if (activity == null)
                 return Constants.Login.LOGIN_FAILURE_ACTIVITY_INVALID;
             try {
-                // TODO change to httpurlconnection
                 String pwd = Utils.digest("SHA-256", mPassword);
-                OkHttpClient client = new OkHttpClient();
-                Request request = new Request
-                        .Builder()
-                        .url("http://192.168.56.1/epra/auth.php?email=" + mEmail + "&pwd=" + pwd)
-                        .build();
-                Response response = client.newCall(request).execute();
-                String reply = response.body().string().trim();
-                if (reply.equalsIgnoreCase("Email not found"))
-                    return Constants.Login.LOGIN_FAILURE_INCORRECT_EMAIL;
-                else if (reply.equalsIgnoreCase("Incorrect password"))
-                    return Constants.Login.LOGIN_FAILURE_INCORRECT_PASSWORD;
-                else if (reply.equalsIgnoreCase("Authenticated"))
+                URL url = new URL("http://192.168.1.106/epra/api/authenticate_user.php");
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("GET");
+                conn.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
+                conn.setRequestProperty("Accept", "application/json");
+                conn.setDoOutput(true);
+                conn.setDoInput(true);
+
+                JSONObject jsonParam = new JSONObject();
+                jsonParam.put("email", mEmail);
+                jsonParam.put("password", pwd);
+
+                Log.i("JSON", jsonParam.toString());
+                DataOutputStream os = new DataOutputStream(conn.getOutputStream());
+                os.writeBytes(jsonParam.toString());
+
+                os.flush();
+                os.close();
+
+                String reply = Utils.readStream(conn);
+                conn.disconnect();
+
+                Log.i("MESSAGE", reply);
+
+                JSONObject reader = new JSONObject(reply);
+                JSONObject replyJSON  = reader.getJSONObject("reply");
+                String replyMessage = replyJSON.getString("message").trim();
+                String errorCode = replyJSON.getString("errorCode").trim().toLowerCase();
+                String errorMessage = replyJSON.getString("errorMessage").trim().toLowerCase();
+                if (TextUtils.isEmpty(errorMessage)) {
                     return Constants.Login.LOGIN_SUCCESS;
-                else
-                    return Constants.Login.LOGIN_FAILURE_UNKNOWN;
-            } catch (IOException e) {
+                } else if (errorMessage.contains("unregistered email")) {
+                    return Constants.Login.LOGIN_FAILURE_UNREGISTERED_EMAIL;
+                } else if (errorMessage.contains("incorrect password")) {
+                    return Constants.Login.LOGIN_FAILURE_INCORRECT_PASSWORD;
+                }
+            } catch (Exception e) {
                 e.printStackTrace();
             }
-            return Constants.Login.LOGIN_FAILURE_EXECUTION_FAILED;
+            return Constants.Login.LOGIN_FAILURE;
         }
 
         @Override
@@ -377,19 +402,27 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
 
     private void onLoginFailed(int failureCode) {
         Log.d("login code", String.valueOf(failureCode));
-        if (failureCode == Constants.Login.LOGIN_FAILURE_INCORRECT_EMAIL) {
-            mEmailView.setError(getString(R.string.error_incorrect_email));
-            mEmailView.requestFocus();
+        if (failureCode == Constants.Login.LOGIN_FAILURE_UNREGISTERED_EMAIL) {
+            mEmailLayout.setError(getString(R.string.error_unregistered_email));
+            mEmailLayout.requestFocus();
         }
         else if (failureCode == Constants.Login.LOGIN_FAILURE_INCORRECT_PASSWORD) {
-            mPasswordView.setError(getString(R.string.error_incorrect_password));
-            mPasswordView.requestFocus();
-        }
-        else if (failureCode == Constants.Login.LOGIN_FAILURE_TIMEOUT) {
-            Toast.makeText(getBaseContext(), getString(R.string.login_timeout), Toast.LENGTH_LONG).show();
+            mPasswordLayout.setError(getString(R.string.error_incorrect_password));
+            mPasswordLayout.requestFocus();
         }
         else {
             Toast.makeText(getBaseContext(), getString(R.string.login_failed), Toast.LENGTH_LONG).show();
+        }
+        hideKeyboard();
+    }
+
+    private void hideKeyboard() {
+        // Check if no view has focus:
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (imm != null)
+                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
 }

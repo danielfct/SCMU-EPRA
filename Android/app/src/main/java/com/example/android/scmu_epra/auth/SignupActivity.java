@@ -1,8 +1,10 @@
 package com.example.android.scmu_epra.auth;
 
+import android.accessibilityservice.AccessibilityService;
 import android.annotation.TargetApi;
 import android.app.LoaderManager;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
@@ -26,6 +28,7 @@ import android.util.Patterns;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.TextView;
@@ -217,15 +220,15 @@ public class SignupActivity extends AppCompatActivity implements LoaderManager.L
             focusView = mReEnterPasswordLayout;
             cancel = true;
         } else if (!password.equals(rePassword)) {
-            mReEnterPasswordLayout.setError(getString(R.string.error_nonmatching_password));
-            focusView = mReEnterPasswordLayout;
+            passwordLayout.setError(getString(R.string.error_nonmatching_password));
+            focusView = passwordLayout;
             cancel = true;
         }
 
         if (cancel) {
             focusView.requestFocus();
         } else {
-            mSignupTask = new UserSignupTask(this, name, Integer.parseInt(mobile), email, password);
+            mSignupTask = new UserSignupTask(this, name, mobile, email, password);
             mSignupTask.execute((Void) null);
         }
     }
@@ -302,12 +305,12 @@ public class SignupActivity extends AppCompatActivity implements LoaderManager.L
 
         private final WeakReference<SignupActivity> activityReference;
         private final String mName;
-        private final int mMobile;
+        private final String mMobile;
         private final String mEmail;
         private final String mPassword;
         private final ProgressDialog progressDialog;
 
-        UserSignupTask(SignupActivity context, String name, int mobile, String email, String password) {
+        UserSignupTask(SignupActivity context, String name, String mobile, String email, String password) {
             this.activityReference = new WeakReference<>(context);
             mName = name;
             mMobile = mobile;
@@ -320,7 +323,7 @@ public class SignupActivity extends AppCompatActivity implements LoaderManager.L
         protected void onPreExecute() {
             super.onPreExecute();
             progressDialog.setIndeterminate(true);
-            progressDialog.setMessage("Authenticating...");
+            progressDialog.setMessage("Registering user...");
             progressDialog.show();
         }
 
@@ -330,7 +333,7 @@ public class SignupActivity extends AppCompatActivity implements LoaderManager.L
             if (activity == null)
                 return Constants.Signup.SIGNUP_FAILURE_ACTIVITY_INVALID;
             try {
-                URL url = new URL("http://10.22.120.229/epra/api/register_user.php");
+                URL url = new URL("http://192.168.1.106/epra/api/register_user.php");
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("POST");
                 conn.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
@@ -351,37 +354,26 @@ public class SignupActivity extends AppCompatActivity implements LoaderManager.L
                 os.flush();
                 os.close();
 
-                Log.i("STATUS", String.valueOf(conn.getResponseCode()));
-                Log.i("MSG" , conn.getResponseMessage());
-                Log.i("MESSAGE" , readStream(conn));
-
+                String reply = Utils.readStream(conn);
                 conn.disconnect();
 
+                Log.i("MESSAGE", reply);
+
+                JSONObject reader = new JSONObject(reply);
+                JSONObject replyJSON  = reader.getJSONObject("reply");
+                String replyMessage = replyJSON.getString("message").trim();
+                String errorCode = replyJSON.getString("errorCode").trim().toLowerCase();
+                String errorMessage = replyJSON.getString("errorMessage").trim().toLowerCase();
+                if (TextUtils.isEmpty(errorMessage)) {
+                    return Constants.Signup.SIGNUP_SUCCESS;
+                } else if (errorMessage.contains("duplicate entry")) {
+                    return Constants.Signup.SIGNUP_FAILURE_EMAIl_EXISTS;
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            return Constants.Signup.SIGNUP_FAILURE_EXECUTION_FAILED;
+            return Constants.Signup.SIGNUP_FAILURE;
         }
-
-        private String readStream(HttpURLConnection conn) {
-            String result = null;
-            StringBuffer sb = new StringBuffer();
-
-            try (InputStream is = new BufferedInputStream(conn.getInputStream())) {
-                BufferedReader br = new BufferedReader(new InputStreamReader(is));
-                String inputLine = "";
-                while ((inputLine = br.readLine()) != null) {
-                    sb.append(inputLine);
-                }
-                result = sb.toString();
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            return result;
-        }
-
 
         @Override
         protected void onPostExecute(final Integer failureCode) {
@@ -414,14 +406,33 @@ public class SignupActivity extends AppCompatActivity implements LoaderManager.L
         }
     }
 
+    private void hideKeyboard() {
+        // Check if no view has focus:
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (imm != null)
+                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
+
     public void onSignupSuccess() {
-        mSignupButton.setEnabled(true);
-        setResult(RESULT_OK, null); //TODO conta
+        hideKeyboard();
+        Intent data = new Intent();
+        data.putExtra(Constants.Signup.EMAIL, mEmailView.getText().toString());
+        data.putExtra(Constants.Signup.PASSWORD, mPasswordView.getText().toString());
+        setResult(RESULT_OK, data);
         finish();
     }
 
     public void onSignupFailed(int failureCode) {
-        Toast.makeText(getBaseContext(), getString(R.string.signup_failed), Toast.LENGTH_LONG).show();
+        if (failureCode == Constants.Signup.SIGNUP_FAILURE_EMAIl_EXISTS) {
+            mEmailLayout.setError(getString(R.string.email_already_exists));
+            mEmailLayout.requestFocus();
+        } else {
+            Toast.makeText(getBaseContext(), getString(R.string.signup_failed), Toast.LENGTH_LONG).show();
+        }
+        hideKeyboard();
     }
 
 }

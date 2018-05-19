@@ -39,7 +39,7 @@
         android:layout_marginBottom="8dp"
         android:layout_marginTop="8dp"
         app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout"
-        app:errorTextAppearance="@style/error_appearance"
+        app:errorTextAppearance="@style/SignupErrorAppearance"
         android:textColorHint="@color/white">
 
         <android.support.design.widget.TextInputEditText
@@ -62,7 +62,7 @@
         android:layout_marginBottom="8dp"
         android:layout_marginTop="8dp"
         app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout"
-        app:errorTextAppearance="@style/error_appearance"
+        app:errorTextAppearance="@style/SignupErrorAppearance"
         android:textColorHint="@color/white">
 
         <android.support.design.widget.TextInputEditText
@@ -85,7 +85,7 @@
         android:layout_marginBottom="8dp"
         android:layout_marginTop="8dp"
         app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout"
-        app:errorTextAppearance="@style/error_appearance"
+        app:errorTextAppearance="@style/SignupErrorAppearance"
         android:textColorHint="@color/white">
 
         <AutoCompleteTextView
@@ -112,7 +112,7 @@
         app:passwordToggleEnabled="true"
         app:passwordToggleTint="@color/white"
         app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout"
-        app:errorTextAppearance="@style/error_appearance"
+        app:errorTextAppearance="@style/SignupErrorAppearance"
         android:textColorHint="@color/white">
 
         <android.support.design.widget.TextInputEditText
@@ -138,7 +138,7 @@
         app:passwordToggleEnabled="true"
         app:passwordToggleTint="@color/white"
         app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout"
-        app:errorTextAppearance="@style/error_appearance"
+        app:errorTextAppearance="@style/SignupErrorAppearance"
         android:textColorHint="@color/white">
 
         <android.support.design.widget.TextInputEditText
