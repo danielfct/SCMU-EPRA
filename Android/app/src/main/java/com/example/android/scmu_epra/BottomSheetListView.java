@@ -1,4 +1,4 @@
-package com.example.android.scmu_epra.mn_home;
+package com.example.android.scmu_epra;
 
 import android.content.Context;
 import android.util.AttributeSet;

@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Switch;
 
+import com.example.android.scmu_epra.BottomSheetListView;
 import com.example.android.scmu_epra.history.History;
 import com.example.android.scmu_epra.R;
 
@@ -63,18 +64,18 @@ public class Home extends Fragment {
         Rect rect = new Rect();
         getView().getWindowVisibleDisplayFrame(rect);
         bottomSheetBehavior.setPeekHeight((rect.bottom - rect.top) / 2);
-        List<Item> list = Arrays.asList(
-                new Item("Alberto"),
-                new Item("Maria"),
-                new Item("Xavier"),
-                new Item("Teresa"),
-                new Item("Marco"),
-                new Item("Coiso"),
-                new Item("Filipe"),
-                new Item("Matumbo"),
-                new Item("Pessoa"),
-                new Item("Paco"));
-        ListAdapter listAdapter = new ListAdapter(getContext(), 0, list);
+        List<HomeItem> list = Arrays.asList(
+                new HomeItem("Alberto"),
+                new HomeItem("Maria"),
+                new HomeItem("Xavier"),
+                new HomeItem("Teresa"),
+                new HomeItem("Marco"),
+                new HomeItem("Coiso"),
+                new HomeItem("Filipe"),
+                new HomeItem("Matumbo"),
+                new HomeItem("Pessoa"),
+                new HomeItem("Paco"));
+        HomeListAdapter listAdapter = new HomeListAdapter(getContext(), 0, list);
         BottomSheetListView listView = getView().findViewById(R.id.list_view);
         listView.setAdapter(listAdapter);
         listView.setOnItemClickListener((adapterView, v, position, id) -> {

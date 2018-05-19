@@ -50,6 +50,6 @@
         android:background="@drawable/shadow"/>
 
     <!-- include bottom sheet -->
-    <include layout="@layout/activity_list" />
+    <include layout="@layout/list_layout" />
 
 </android.support.design.widget.CoordinatorLayout>

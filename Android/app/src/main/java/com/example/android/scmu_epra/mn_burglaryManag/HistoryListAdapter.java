@@ -1,4 +1,4 @@
-package com.example.android.scmu_epra.mn_home;
+package com.example.android.scmu_epra.mn_burglaryManag;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -6,31 +6,22 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.Switch;
 import android.widget.TextView;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.example.android.scmu_epra.R;
-import com.example.android.scmu_epra.mn_home.Item;
 
 import java.util.List;
 
-public class ListAdapter extends ArrayAdapter<Item> {
+public class HistoryListAdapter extends ArrayAdapter<HistoryItem> {
 
     private Context context;
-    private List<Item> list;
-
-    // declare the builder object once.
+    private List<HistoryItem> list;
     private TextDrawable.IBuilder builder;
-
     private ColorGenerator generator;
 
-//    public ListAdapter(Context context, int textViewResourceId) {
-//        super(context, textViewResourceId);
-//    }
-
-    public ListAdapter(Context context, int resource, List<Item> items) {
+    public HistoryListAdapter(Context context, int resource, List<HistoryItem> items) {
         super(context, 0, items);
         this.context = context;
         this.list = items;
@@ -47,13 +38,12 @@ public class ListAdapter extends ArrayAdapter<Item> {
         View v = convertView;
 
         if (v == null) {
-            v = LayoutInflater.from(this.context).inflate(R.layout.list_item, parent, false);
-            //convertView = LayoutInflater.from(this.context).inflate(R.layout.list_item, null);
+            v = LayoutInflater.from(this.context).inflate(R.layout.history_list_item, parent, false);
         }
 
-        Item item = this.list.get(position);
+        HistoryItem item = this.list.get(position);
 
-        TextView textView = v.findViewById(R.id.divisionName);
+        TextView textView = v.findViewById(R.id.division_name);
         textView.setText(item.getName());
 
         char ch = item.getName().charAt(0);
@@ -61,8 +51,8 @@ public class ListAdapter extends ArrayAdapter<Item> {
         ImageView imageView = v.findViewById(R.id.imgLetter);
         imageView.setImageDrawable(textDrawable);
 
-        Switch switch1 = (Switch) v.findViewById(R.id.switch1);
-        switch1.setChecked(true);
+        TextView time = v.findViewById(R.id.time_text);
+        time.setText(item.getTime());
 
         return v;
     }

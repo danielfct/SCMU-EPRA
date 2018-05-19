@@ -1,10 +1,10 @@
 package com.example.android.scmu_epra.mn_home;
 
-public class Item {
+public class HomeItem {
 
     private String name;
 
-    public Item(String name) {
+    public HomeItem(String name) {
         this.name = name;
     }
 

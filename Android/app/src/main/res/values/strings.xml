@@ -142,6 +142,13 @@
     <string name="show_history">Show History</string>
     <string name="signup_success">User register successfully!</string>
     <string name="email_already_exists">Email already exists</string>
+    <string name="current_room">Current Room:</string>
+    <string name="entry_point">Entry Point:</string>
+    <string name="users_notified">Users Notified:</string>
+    <string name="notify_cops">Notify Police</string>
+    <string name="turn_off_alarm">Turn Off Alarm</string>
+    <string name="ignore">Ignore</string>
+    <string name="simulate">Simulate</string>
 
 </resources>
 

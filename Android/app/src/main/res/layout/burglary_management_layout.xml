@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/baseLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorPrimary">
+
+        <View
+            android:id="@+id/first_separator"
+            android:layout_width="match_parent"
+            android:layout_height="5dp"
+            android:layout_above="@+id/current_room_title"
+            android:background="@drawable/shadow"/>
+
+        <TextView
+            android:id="@+id/current_room_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/current_room"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:paddingTop="5dp"
+            android:paddingStart="15dp"
+            android:paddingEnd="5dp"
+            android:paddingBottom="2.5dp"
+            android:textColor="@color/white"/>
+
+        <TextView
+            android:id="@+id/current_room_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/current_room_title"
+            android:paddingTop="5dp"
+            android:paddingStart="15dp"
+            android:paddingEnd="5dp"
+            android:paddingBottom="2.5dp"
+            android:textSize="18sp"
+            android:textColor="@color/white"/>
+
+        <TextView
+            android:id="@+id/entry_point_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/current_room_title"
+            android:text="@string/entry_point"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:paddingTop="2.5dp"
+            android:paddingStart="15dp"
+            android:paddingEnd="5dp"
+            android:paddingBottom="2.5dp"
+            android:textColor="@color/white"/>
+
+        <TextView
+            android:id="@+id/entry_point_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/current_room_title"
+            android:layout_toEndOf="@id/entry_point_title"
+            android:paddingTop="2.5dp"
+            android:paddingStart="15dp"
+            android:paddingEnd="5dp"
+            android:paddingBottom="2.5dp"
+            android:textSize="18sp"
+            android:textColor="@color/white"/>
+
+        <TextView
+            android:id="@+id/users_notified_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/entry_point_title"
+            android:text="@string/users_notified"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:paddingTop="2.5dp"
+            android:paddingStart="15dp"
+            android:paddingEnd="5dp"
+            android:paddingBottom="2.5dp"
+            android:textColor="@color/white"/>
+
+        <TextView
+            android:id="@+id/users_notified_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/entry_point_title"
+            android:layout_toEndOf="@id/users_notified_title"
+            android:paddingTop="2.5dp"
+            android:paddingStart="15dp"
+            android:paddingEnd="5dp"
+            android:paddingBottom="2.5dp"
+            android:textSize="18sp"
+            android:textColor="@color/white"/>
+
+
+        <View
+            android:id="@+id/second_separator"
+            android:layout_width="match_parent"
+            android:layout_height="5dp"
+            android:layout_below="@+id/users_notified_text"
+            android:background="@drawable/shadow"/>
+
+        <LinearLayout
+            android:id="@+id/first_two_buttons"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingEnd="5dp"
+            android:paddingStart="5dp"
+            android:layout_below="@id/second_separator">
+
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/notify_police_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="?android:attr/selectableItemBackground"
+                android:text="@string/notify_cops"
+                android:textColor="@color/white"/>
+
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/simulate_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="?android:attr/selectableItemBackground"
+                android:text="@string/simulate"
+                android:textColor="@color/white"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/last_two_buttons"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingEnd="5dp"
+            android:paddingStart="5dp"
+            android:layout_below="@id/first_two_buttons">
+
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/turn_off_alarm_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="?android:attr/selectableItemBackground"
+                android:text="@string/turn_off_alarm"
+                android:textColor="@color/white"/>
+
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/ignore_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="?android:attr/selectableItemBackground"
+                android:text="@string/ignore"
+                android:textColor="@color/white"/>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="12dp"
+        app:layout_anchor="@id/bottom_sheet"
+        android:background="@drawable/shadow"/>
+
+    <!-- include bottom sheet -->
+    <include layout="@layout/list_layout" />
+
+</android.support.design.widget.CoordinatorLayout>

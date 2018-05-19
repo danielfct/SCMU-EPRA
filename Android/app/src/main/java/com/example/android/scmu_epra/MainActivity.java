@@ -4,20 +4,16 @@ import android.content.Intent;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentTransaction;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
 
-import com.example.android.scmu_epra.mn_burglaryManag.BurglaryManag;
+import com.example.android.scmu_epra.mn_burglaryManag.BurglaryManagementFragment;
 import com.example.android.scmu_epra.mn_devices.Devices;
 import com.example.android.scmu_epra.history.History;
 import com.example.android.scmu_epra.mn_home.Home;
@@ -74,7 +70,7 @@ public class MainActivity extends AppCompatActivity
                 fragment = new Devices();
                 break;
             case R.id.nav_burglaryManag:
-                fragment = new BurglaryManag();
+                fragment = new BurglaryManagementFragment();
                 break;
             case R.id.nav_settings:
                 Intent intent = new Intent(this, com.example.android.scmu_epra.SettingsActivity.class);
