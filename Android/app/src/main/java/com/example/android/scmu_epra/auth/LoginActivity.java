@@ -345,7 +345,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
                 String reply = Utils.readStream(conn);
                 conn.disconnect();
 
-                Log.i("MESSAGE", reply);
+                Log.i("message", reply);
 
                 JSONObject reader = new JSONObject(reply);
                 JSONObject replyJSON  = reader.getJSONObject("reply");
@@ -401,7 +401,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
     }
 
     private void onLoginFailed(int failureCode) {
-        Log.d("login code", String.valueOf(failureCode));
+        Log.i("login_code", String.valueOf(failureCode));
         if (failureCode == Constants.Login.LOGIN_FAILURE_UNREGISTERED_EMAIL) {
             mEmailLayout.setError(getString(R.string.error_unregistered_email));
             mEmailLayout.requestFocus();
