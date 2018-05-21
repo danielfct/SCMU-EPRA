@@ -17,7 +17,7 @@ import android.widget.Switch;
 
 import com.example.android.scmu_epra.BottomSheetListView;
 import com.example.android.scmu_epra.R;
-import com.example.android.scmu_epra.history.History;
+import com.example.android.scmu_epra.mn_history.AlarmHistoryFragment;
 
 
 import java.util.ArrayList;
@@ -62,7 +62,7 @@ public class Home extends Fragment {
         btnShowHistory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Fragment f = new History();
+                Fragment f = new AlarmHistoryFragment();
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
                 ft.replace(R.id.screen_area, f);
                 ft.commit();

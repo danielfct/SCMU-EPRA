@@ -15,7 +15,7 @@ import android.view.MenuItem;
 
 import com.example.android.scmu_epra.mn_burglaryManag.BurglaryManagementFragment;
 import com.example.android.scmu_epra.mn_devices.Devices;
-import com.example.android.scmu_epra.history.History;
+import com.example.android.scmu_epra.mn_history.AlarmHistoryFragment;
 import com.example.android.scmu_epra.mn_home.Home;
 
 
@@ -54,8 +54,6 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-
-
     private void displaySelectedScreen(int id) {
         Fragment fragment = null;
 
@@ -64,7 +62,7 @@ public class MainActivity extends AppCompatActivity
                 fragment = new Home();
                 break;
             case R.id.nav_history:
-                fragment = new History();
+                fragment = new AlarmHistoryFragment();
                 break;
             case R.id.nav_devices:
                 fragment = new Devices();

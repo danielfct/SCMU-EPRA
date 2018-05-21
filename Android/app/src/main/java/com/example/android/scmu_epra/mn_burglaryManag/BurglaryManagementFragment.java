@@ -10,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.Switch;
 
 import com.example.android.scmu_epra.BottomSheetListView;
 import com.example.android.scmu_epra.R;
@@ -65,15 +64,15 @@ public class BurglaryManagementFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         getActivity().setTitle("Burglary Management");
 
-        List<HistoryItem> list = Arrays.asList(
-                new HistoryItem("Entrada", "1 minute"),
-                new HistoryItem("Cozinha", "5 minutes"),
-                new HistoryItem("Quarto 1", "3 minutes"),
-                new HistoryItem("Quarto 2", "10 minutes"),
-                new HistoryItem("Casa de Banho 1", "1 minute"),
-                new HistoryItem("Casa de Banho 2", "2 minutes"),
-                new HistoryItem("Sala", "20 minutes"));
-        HistoryListAdapter listAdapter = new HistoryListAdapter(getContext(), 0, list);
+        List<BurglaryHistoryItem> list = Arrays.asList(
+                new BurglaryHistoryItem("Entrada", "1 minute"),
+                new BurglaryHistoryItem("Cozinha", "5 minutes"),
+                new BurglaryHistoryItem("Quarto 1", "3 minutes"),
+                new BurglaryHistoryItem("Quarto 2", "10 minutes"),
+                new BurglaryHistoryItem("Casa de Banho 1", "1 minute"),
+                new BurglaryHistoryItem("Casa de Banho 2", "2 minutes"),
+                new BurglaryHistoryItem("Sala", "20 minutes"));
+        BurglaryHistoryListAdapter listAdapter = new BurglaryHistoryListAdapter(getContext(), 0, list);
         listView.setAdapter(listAdapter);
         listView.setOnItemClickListener((adapterView, v, position, id) -> {
             //TODO: Define item click action here

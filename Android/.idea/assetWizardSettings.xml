@@ -16,11 +16,38 @@
                             <entry key="actionbar">
                               <value>
                                 <PersistentState>
+                                  <option name="children">
+                                    <map>
+                                      <entry key="clipArt">
+                                        <value>
+                                          <PersistentState>
+                                            <option name="values">
+                                              <map>
+                                                <entry key="trimmed" value="true" />
+                                              </map>
+                                            </option>
+                                          </PersistentState>
+                                        </value>
+                                      </entry>
+                                      <entry key="clipartAsset">
+                                        <value>
+                                          <PersistentState>
+                                            <option name="values">
+                                              <map>
+                                                <entry key="url" value="jar:file:/C:/Program%20Files/Android/Android%20Studio/plugins/android/lib/android.jar!/images/material_design_icons/alert/ic_error_outline_black_24dp.xml" />
+                                              </map>
+                                            </option>
+                                          </PersistentState>
+                                        </value>
+                                      </entry>
+                                    </map>
+                                  </option>
                                   <option name="values">
                                     <map>
-                                      <entry key="assetType" value="IMAGE" />
-                                      <entry key="imageAsset" value="$USER_HOME$/Downloads/architecture-bungalow-chimney-731082.jpg" />
-                                      <entry key="outputName" value="slkfdjngdsalkbndflinb" />
+                                      <entry key="imageAsset" value="C:\Users\ASUS\Downloads\architecture-bungalow-chimney-731082.jpg" />
+                                      <entry key="outputName" value="ic_error_outline" />
+                                      <entry key="theme" value="CUSTOM" />
+                                      <entry key="themeColor" value="ff0000" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -32,7 +59,7 @@
                                   <option name="values">
                                     <map>
                                       <entry key="backgroundLayerName" value="ic_launcher_background" />
-                                      <entry key="foregroundImage" value="$USER_HOME$/Downloads/architecture-bungalow-chimney-731082.jpg" />
+                                      <entry key="foregroundImage" value="C:\Users\ASUS\Downloads\architecture-bungalow-chimney-731082.jpg" />
                                       <entry key="foregroundLayerName" value="ic_launcher_foreground" />
                                       <entry key="outputName" value="nav_header_background" />
                                     </map>
