@@ -100,13 +100,11 @@
     <string name="epra_description">Entry Prevention Alarm System</string>
 
 
-
     <!--Strings related to preferences-->
     <string name="list_interval_title">Set interval between sounds</string>
     <string name="seek_sound_title">Set Sound Intensity</string>
     <string name="switch_ring_title">Ring alarm for a limited period</string>
     <string name="list_period_title">Set alarm ring period</string>
-
 
 
     <!-- Strings related to login -->
@@ -149,6 +147,9 @@
     <string name="turn_off_alarm">Turn Off Alarm</string>
     <string name="ignore">Ignore</string>
     <string name="simulate">Simulate</string>
+    <string name="authentication_title">Authentication</string>
+    <string name="authentication_description">Place your finger on the scanner to proceed.</string>
+    <string name="authentication_divider">Or</string>
 
 </resources>
 
