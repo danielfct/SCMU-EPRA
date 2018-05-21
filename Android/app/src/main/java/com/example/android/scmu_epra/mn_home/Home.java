@@ -25,14 +25,24 @@ import java.util.List;
 
 import belka.us.androidtoggleswitch.widgets.BaseToggleSwitch;
 import belka.us.androidtoggleswitch.widgets.ToggleSwitch;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class Home extends Fragment {
 
-    private Button btnShowHistory;
-    private ToggleSwitch toggleOnOff;
+    @BindView(R.id.show_history)
+    Button btnShowHistory;
+    @BindView(R.id.toggleOnOff)
+    ToggleSwitch toggleOnOff;
+    @BindView(R.id.bottom_sheet)
+    LinearLayout bottomListView;
+    @BindView(R.id.backgroundOfButton)
+    LinearLayout baseLayout;
+
     private boolean alarmIsOn;
-    private LinearLayout bottomListView;
-    private CoordinatorLayout baseLayout;
+    private boolean bottomSheetIsSet = false;
+
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -45,11 +55,10 @@ public class Home extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        ButterKnife.bind(this, view);
 
         getActivity().setTitle("Home");
 
-
-        btnShowHistory = getView().findViewById(R.id.show_history);
         btnShowHistory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -60,8 +69,6 @@ public class Home extends Fragment {
             }
         });
 
-
-        toggleOnOff = getView().findViewById(R.id.toggleOnOff);
         toggleOnOff.setOnToggleSwitchChangeListener(new ToggleSwitch.OnToggleSwitchChangeListener(){
 
             @Override
@@ -75,14 +82,24 @@ public class Home extends Fragment {
             }
         });
 
-        bottomListView = getView().findViewById(R.id.bottom_sheet);
         BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(bottomListView);
-        baseLayout = getView().findViewById(R.id.baseLayout);
 
+        Rect baseRect = new Rect();
+        baseLayout.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+            @Override
+            public void onLayoutChange(View view, int i, int i1, int i2, int i3, int i4, int i5, int i6, int i7) {
+                if (!bottomSheetIsSet && Math.abs(i1-i3) > 0) {
+                    bottomSheetBehavior.setPeekHeight(Math.abs(i1-i3));
+                    bottomSheetIsSet = true;
+                }
+            }
+        });
+        int rH = baseRect.height();
 
-        Rect rect = new Rect();
-        getView().getWindowVisibleDisplayFrame(rect);
-        bottomSheetBehavior.setPeekHeight((rect.bottom - rect.top) / 2);
+//        Rect rect = new Rect();
+//        getView().getWindowVisibleDisplayFrame(rect);
+//        int height = (rect.bottom - rect.top) / 2;
+//        bottomSheetBehavior.setPeekHeight(height);
 
 
         ArrayList<HomeItem> list = new ArrayList<HomeItem>();

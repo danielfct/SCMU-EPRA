@@ -3,6 +3,7 @@ package com.example.android.scmu_epra.mn_burglaryManag;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatButton;
 import android.view.LayoutInflater;
@@ -24,6 +25,8 @@ public class BurglaryManagementFragment extends Fragment {
 
     @BindView(R.id.bottom_sheet)
     LinearLayout bottomListView;
+    @BindView(R.id.baseOfBM)
+    LinearLayout baseLayout;
     @BindView(R.id.notify_police_button)
     AppCompatButton notifyPoliceButton;
     @BindView(R.id.simulate_button)
@@ -34,6 +37,10 @@ public class BurglaryManagementFragment extends Fragment {
     AppCompatButton ignoreButton;
     @BindView(R.id.list_view)
     BottomSheetListView listView;
+
+    private boolean bottomSheetIsSet = false;
+
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -71,6 +78,20 @@ public class BurglaryManagementFragment extends Fragment {
         listView.setOnItemClickListener((adapterView, v, position, id) -> {
             //TODO: Define item click action here
         });
+
+
+        BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(bottomListView);
+
+        baseLayout.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+            @Override
+            public void onLayoutChange(View view, int i, int i1, int i2, int i3, int i4, int i5, int i6, int i7) {
+                if (!bottomSheetIsSet && Math.abs(i1-i3) > 0) {
+                    bottomSheetBehavior.setPeekHeight(Math.abs(i1-i3));
+                    bottomSheetIsSet = true;
+                }
+            }
+        });
+
     }
 
 }
