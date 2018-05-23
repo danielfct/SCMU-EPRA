@@ -8,12 +8,12 @@
 
     <ImageView
         android:id="@+id/fingerprintImage"
-        android:layout_width="72dp"
-        android:layout_height="72dp"
-        android:layout_alignParentTop="true"
+        android:layout_width="175dp"
+        android:layout_height="125dp"
+        android:layout_below="@+id/paragraphLabel"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="123dp"
-        app:srcCompat="@mipmap/ic_fingerprint" />
+        app:srcCompat="@mipmap/ic_fingerprint"
+        android:contentDescription="@string/authentication_description"/>
 
     <TextView
         android:id="@+id/paragraphLabel"
@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="20dp"
         android:padding="16dp"
         android:text="@string/authentication_description"
         android:textAlignment="center" />
@@ -32,9 +32,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="165dp"
+        android:layout_marginBottom="183dp"
         android:padding="16dp"
-        android:text="@string/authentication_description"
+        android:text="@string/auth_pin"
         android:textAlignment="center" />
 
     <TextView
@@ -62,35 +62,46 @@
         android:layout_toRightOf="@id/tvText"
         android:background="@color/gray_very_light" />
 
-    <EditText
-        android:id="@+id/editText2"
-        android:layout_width="64dp"
+    <LinearLayout
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="75dp"
-        android:layout_alignTop="@+id/editText3"
-        android:ems="10"
-        android:inputType="numberSigned" />
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/paragraphLabel2"
+        android:layout_marginTop="-183dp"
+        android:gravity="top|center_horizontal"
+        android:orientation="horizontal">
 
-    <EditText
-        android:id="@+id/editText3"
-        android:layout_width="64dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginBottom="110dp"
-        android:layout_marginEnd="160dp"
-        android:ems="10"
-        android:inputType="numberSigned" />
+        <EditText
+            android:id="@+id/pin1"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:ems="10"
+            android:inputType="number"
+            android:maxLength="1"
+            android:textAlignment="center" />
 
-    <EditText
-        android:id="@+id/editText4"
-        android:layout_width="64dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignTop="@+id/editText2"
-        android:layout_marginEnd="75dp"
-        android:ems="10"
-        android:inputType="numberSigned" />
+        <EditText
+            android:id="@+id/pin2"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:ems="10"
+            android:inputType="number"
+            android:maxLength="1"
+            android:textAlignment="center" />
+
+        <EditText
+            android:id="@+id/pin3"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:ems="10"
+            android:inputType="number"
+            android:maxLength="1"
+            android:textAlignment="center" />
+
+    </LinearLayout>
 
 
 </RelativeLayout>

@@ -54,7 +54,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".auth.LoginActivity" />
         </activity>
-        <activity android:name=".auth.AuthActivity"></activity>
+        <activity
+            android:name=".auth.AuthActivity"
+            android:label="Authentication">
+        </activity>
     </application>
 
 </manifest>
