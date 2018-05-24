@@ -13,18 +13,19 @@ import android.widget.TextView;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.example.android.scmu_epra.R;
+import com.example.android.scmu_epra.connection.Row;
 import com.example.android.scmu_epra.mn_burglaryManag.BurglaryHistoryItem;
 
 import java.util.List;
 
-public class AlarmHistoryListAdapter extends ArrayAdapter<AlarmHistoryItem> {
+public class AlarmHistoryListAdapter extends ArrayAdapter<Row> {
 
     private Context context;
-    private List<AlarmHistoryItem> list;
+    private List<Row> list;
     private TextDrawable.IBuilder builder;
     private ColorGenerator generator;
 
-    public AlarmHistoryListAdapter(Context context, int resource, List<AlarmHistoryItem> items) {
+    public AlarmHistoryListAdapter(Context context, int resource, List<Row> items) {
         super(context, 0, items);
         this.context = context;
         this.list = items;
@@ -44,23 +45,24 @@ public class AlarmHistoryListAdapter extends ArrayAdapter<AlarmHistoryItem> {
             v = LayoutInflater.from(this.context).inflate(R.layout.alarm_history_list_item, parent, false);
         }
 
-        AlarmHistoryItem item = this.list.get(position);
-        AlarmHistoryItem.AlarmHistoryType type = item.getType();
-        String message = item.getMessage();
-        String date = item.getDate();
+        Row item = this.list.get(position);
+        //AlarmHistoryItem.AlarmHistoryType type = item.getType();
+        //String message = item.getMessage();
+        String evento = item.getEvento();
+        String date = item.getData();
 
         TextView messageView = v.findViewById(R.id.message);
-        messageView.setText(message);
+        messageView.setText(evento);
 
         ImageView imageView = v.findViewById(R.id.image);
-        if (type == AlarmHistoryItem.AlarmHistoryType.AlarmTrigger) {
+        //if (type == AlarmHistoryItem.AlarmHistoryType.AlarmTrigger) {
             Drawable d = ContextCompat.getDrawable(context, R.drawable.ic_error_outline);
             imageView.setImageDrawable(d);
-        } else {
+        /*} else {
             char ch = message.charAt(0);
             TextDrawable textDrawable = builder.build(String.valueOf(ch), generator.getColor(ch));
             imageView.setImageDrawable(textDrawable);
-        }
+        }*/
 
         TextView time = v.findViewById(R.id.date);
         time.setText(date);
