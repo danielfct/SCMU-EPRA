@@ -3,6 +3,7 @@ package com.example.android.scmu_epra.mn_home;
 import android.graphics.Rect;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -42,6 +43,7 @@ public class Home extends Fragment {
     private boolean alarmIsOn;
     private boolean bottomSheetIsSet = false;
 
+    private NavigationView navigationView;
 
 
     @Override
@@ -62,10 +64,13 @@ public class Home extends Fragment {
         btnShowHistory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                navigationView.getMenu().getItem(1).setChecked(true);
+
                 Fragment f = new AlarmHistoryFragment();
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
                 ft.replace(R.id.screen_area, f);
                 ft.commit();
+
             }
         });
 
@@ -154,6 +159,9 @@ public class Home extends Fragment {
         return getLayoutInflater().inflate(R.layout.home, container, false);
     }
 
+    public void somefunction(){
+
+    }
 
 
 
@@ -169,6 +177,12 @@ public class Home extends Fragment {
 
             alarmIsOn = true;
 
+        }
+    }
+
+    public void setNavigationView(NavigationView n) {
+        if (navigationView == null) {
+            navigationView = n;
         }
     }
 }

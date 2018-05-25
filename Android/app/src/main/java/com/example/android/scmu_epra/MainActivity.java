@@ -22,6 +22,10 @@ import com.example.android.scmu_epra.mn_home.Home;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+
+    NavigationView navigationView;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,7 +42,7 @@ public class MainActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         displaySelectedScreen(R.id.nav_home);
@@ -59,7 +63,9 @@ public class MainActivity extends AppCompatActivity
 
         switch (id) {
             case R.id.nav_home:
-                fragment = new Home();
+                Home h = new Home();
+                h.setNavigationView(navigationView);
+                fragment = h;
                 break;
             case R.id.nav_history:
                 fragment = new AlarmHistoryFragment();
@@ -73,7 +79,7 @@ public class MainActivity extends AppCompatActivity
             case R.id.nav_settings:
                 Intent intent = new Intent(this, com.example.android.scmu_epra.SettingsActivity.class);
                 startActivity(intent);
-                break;
+                break  
         }
 
         if (fragment != null) {
