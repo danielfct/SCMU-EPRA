@@ -101,11 +101,6 @@ public class Home extends Fragment {
         });
         int rH = baseRect.height();
 
-//        Rect rect = new Rect();
-//        getView().getWindowVisibleDisplayFrame(rect);
-//        int height = (rect.bottom - rect.top) / 2;
-//        bottomSheetBehavior.setPeekHeight(height);
-
 
         ArrayList<HomeItem> list = new ArrayList<HomeItem>();
 
@@ -159,26 +154,6 @@ public class Home extends Fragment {
         return getLayoutInflater().inflate(R.layout.home, container, false);
     }
 
-    public void somefunction(){
-
-    }
-
-
-
-    private void switchAlarmState() {
-        if (alarmIsOn) {
-            // Turn off alarm
-
-            alarmIsOn = false;
-
-        }
-        else {
-            // Turn on alarm
-
-            alarmIsOn = true;
-
-        }
-    }
 
     public void setNavigationView(NavigationView n) {
         if (navigationView == null) {
