@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity
             case R.id.nav_settings:
                 Intent intent = new Intent(this, com.example.android.scmu_epra.SettingsActivity.class);
                 startActivity(intent);
-                break  
+                break;
         }
 
         if (fragment != null) {
