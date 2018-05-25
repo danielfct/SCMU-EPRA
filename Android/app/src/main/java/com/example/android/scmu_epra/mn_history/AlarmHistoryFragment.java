@@ -14,6 +14,7 @@ import com.example.android.scmu_epra.R;
 import com.example.android.scmu_epra.connection.DownloadStatus;
 import com.example.android.scmu_epra.connection.GetJsonData;
 import com.example.android.scmu_epra.connection.GetRawData;
+import com.example.android.scmu_epra.connection.PostJsonData;
 import com.example.android.scmu_epra.connection.Row;
 
 import java.util.Arrays;
@@ -22,7 +23,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class AlarmHistoryFragment extends Fragment implements GetJsonData.OnDataAvailable {
+public class AlarmHistoryFragment extends Fragment implements GetJsonData.OnDataAvailable, PostJsonData.OnStatusAvailable {
 
     private static final String TAG = "AlarmHistoryFragment";
 
@@ -41,6 +42,8 @@ public class AlarmHistoryFragment extends Fragment implements GetJsonData.OnData
         super.onResume();
         GetJsonData getJsonData = new GetJsonData(this,"https://test966996.000webhostapp.com/api/get_history.php");
         getJsonData.execute("test");
+        //PostJsonData postJsonData = new PostJsonData(this, "https://test966996.000webhostapp.com/api/post_history.php");
+        //postJsonData.execute("evento=Teste Post Android!");
     }
 
     @Override
@@ -82,5 +85,18 @@ public class AlarmHistoryFragment extends Fragment implements GetJsonData.OnData
         }
 
         Log.d(TAG, "onDataAvailable: ends");
+    }
+
+    @Override
+    public void onStatusAvailable(Boolean status) {
+        Log.d(TAG, "onStatusAvailable: starts");
+
+        if (status) {
+            Log.d(TAG, "onStatusAvailable: SHOW SUCCESS MESSAGE!!");
+        } else {
+            Log.d(TAG, "onStatusAvailable: SHOW ERROR MESSAGE!!");
+        }
+        
+        Log.d(TAG, "onStatusAvailable: ends");
     }
 }
