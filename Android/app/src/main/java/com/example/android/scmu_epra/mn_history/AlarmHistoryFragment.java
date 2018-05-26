@@ -12,6 +12,7 @@ import android.widget.ListView;
 
 import com.example.android.scmu_epra.R;
 import com.example.android.scmu_epra.connection.DownloadStatus;
+import com.example.android.scmu_epra.connection.GetHistoryJsonData;
 import com.example.android.scmu_epra.connection.GetJsonData;
 import com.example.android.scmu_epra.connection.GetRawData;
 import com.example.android.scmu_epra.connection.PostJsonData;
@@ -23,7 +24,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class AlarmHistoryFragment extends Fragment implements GetJsonData.OnDataAvailable, PostJsonData.OnStatusAvailable {
+public class AlarmHistoryFragment extends Fragment implements GetHistoryJsonData.OnDataAvailable, PostJsonData.OnStatusAvailable {
 
     private static final String TAG = "AlarmHistoryFragment";
 
@@ -40,7 +41,7 @@ public class AlarmHistoryFragment extends Fragment implements GetJsonData.OnData
     public void onResume() {
         Log.d(TAG, "onResume: starts");
         super.onResume();
-        GetJsonData getJsonData = new GetJsonData(this,"https://test966996.000webhostapp.com/api/get_history.php");
+        GetHistoryJsonData getJsonData = new GetHistoryJsonData(this,"https://test966996.000webhostapp.com/api/get_history.php");
         getJsonData.execute("test");
         //PostJsonData postJsonData = new PostJsonData(this, "https://test966996.000webhostapp.com/api/post_history.php");
         //postJsonData.execute("evento=Teste Post Android!");

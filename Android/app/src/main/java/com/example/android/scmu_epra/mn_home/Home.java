@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,8 +19,13 @@ import android.widget.Switch;
 
 import com.example.android.scmu_epra.BottomSheetListView;
 import com.example.android.scmu_epra.R;
+import com.example.android.scmu_epra.connection.DownloadStatus;
+import com.example.android.scmu_epra.connection.GetJsonData;
 import com.example.android.scmu_epra.mn_history.AlarmHistoryFragment;
 
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,8 +35,9 @@ import belka.us.androidtoggleswitch.widgets.ToggleSwitch;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class Home extends Fragment {
+public class Home extends Fragment implements GetJsonData.OnDataAvailable {
 
+    private static final String TAG = "Home";
     @BindView(R.id.show_history)
     Button btnShowHistory;
     @BindView(R.id.toggleOnOff)
@@ -42,6 +49,7 @@ public class Home extends Fragment {
 
     private boolean alarmIsOn;
     private boolean bottomSheetIsSet = false;
+    private Switch sw;
 
     private NavigationView navigationView;
 
@@ -49,6 +57,9 @@ public class Home extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        GetJsonData getJsonData = new GetJsonData(this, "https://test966996.000webhostapp.com/api/get_alarminfo.php");
+        getJsonData.execute();
 
         alarmIsOn = false;
 
@@ -60,6 +71,8 @@ public class Home extends Fragment {
         ButterKnife.bind(this, view);
 
         getActivity().setTitle("Home");
+
+        Log.d(TAG, "onViewCreated: sw = " + (sw != null));
 
         btnShowHistory.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -136,7 +149,8 @@ public class Home extends Fragment {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 //TODO: Define item click action here
 
-                Switch sw = view.findViewById(R.id.switch1);
+                sw = view.findViewById(R.id.switch1);
+
                 if (sw.isChecked()) {
                     sw.setChecked(false);
                 }
@@ -159,5 +173,26 @@ public class Home extends Fragment {
         if (navigationView == null) {
             navigationView = n;
         }
+    }
+
+    @Override
+    public void onDataAvailable(JSONObject data) {
+        Log.d(TAG, "onDataAvailable Home: starts");
+        if (data != null) {
+            Log.d(TAG, "onDataAvailable: data is not null");
+            try {
+                String state = data.getString("estadoAtual");
+                Log.d(TAG, "onDataAvailable: state = " + state);
+                if (state != null && toggleOnOff != null) {
+                    Log.d(TAG, "onDataAvailable: state = " + state + " sw is not null");
+                    int stateInt = Integer.parseInt(state);
+                    Log.d(TAG, "onDataAvailable: stateInt = " + stateInt);
+                    toggleOnOff.setCheckedTogglePosition(stateInt);
+                }
+            } catch (JSONException e) {
+                Log.e(TAG, "onDataAvailable: Home JSON GET error: " + e.getMessage() );
+            }
+        }
+        Log.d(TAG, "onDataAvailable Home: ends");
     }
 }

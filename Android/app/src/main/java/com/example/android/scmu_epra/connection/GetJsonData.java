@@ -8,19 +8,25 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GetJsonData extends AsyncTask<String, Void, List<Row>> implements GetRawData.OnDownloadComplete {
+public class GetJsonData extends AsyncTask<String, Void, JSONObject>  {
     private static final String TAG = "GetJsonData";
 
-    private List<Row> mRowList = null;
     private String mBaseURL;
 
     private final OnDataAvailable mCallBack;
 
     public interface OnDataAvailable {
-        void onDataAvailable(List<Row> data, DownloadStatus status);
+        void onDataAvailable(JSONObject data);
     }
 
     public GetJsonData(OnDataAvailable callBack, String baseURL) {
@@ -30,62 +36,61 @@ public class GetJsonData extends AsyncTask<String, Void, List<Row>> implements G
     }
 
     @Override
-    protected void onPostExecute(List<Row> rows) {
+    protected void onPostExecute(JSONObject data) {
         Log.d(TAG, "onPostExecute starts");
 
         if(mCallBack != null) {
-            mCallBack.onDataAvailable(mRowList, DownloadStatus.OK);
+            mCallBack.onDataAvailable(data);
         }
         Log.d(TAG, "onPostExecute ends");
     }
 
     @Override
-    protected List<Row> doInBackground(String... params) {
-        Log.d(TAG, "doInBackground starts");
-        String destinationUri = createUri(params[0]);
+    protected JSONObject doInBackground(String... params) {
+        HttpURLConnection connection = null;
+        BufferedReader reader = null;
 
-        GetRawData getRawData = new GetRawData(this);
-        getRawData.runInSameThread(destinationUri);
-        Log.d(TAG, "doInBackground ends");
-        return mRowList;
-    }
+        try {
+            URL url = new URL(mBaseURL);
 
-    private String createUri(String searchCriteria) {
-        Log.d(TAG, "createUri starts");
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            connection.connect();
+            int response = connection.getResponseCode();
+            Log.d(TAG, "doInBackground: The response code was " + response);
 
-        return Uri.parse(mBaseURL).buildUpon()
-                .appendQueryParameter("test", searchCriteria)
-                .build().toString();
-    }
+            StringBuilder result = new StringBuilder();
 
-    @Override
-    public void onDownloadComplete(String data, DownloadStatus status) {
-        Log.d(TAG, "onDownloadComplete starts. Status = " + status);
+            reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 
-        if(status == DownloadStatus.OK) {
-            mRowList = new ArrayList<>();
+            for(String line = reader.readLine(); line != null; line = reader.readLine()) {
+                result.append(line).append("\n");
+            }
 
-            try {
-                JSONArray itemsArray = new JSONArray(data);
+            return new JSONObject(result.toString());
 
-                for(int i=0; i<itemsArray.length(); i++) {
-                    JSONObject jsonRow = itemsArray.getJSONObject(i);
-                    String id = jsonRow.getString("id");
-                    String evento = jsonRow.getString("evento");
-                    String datahora = jsonRow.getString("datahora");
 
-                    Row rowObject = new Row(Integer.parseInt(id), evento, datahora);
-                    mRowList.add(rowObject);
-
-                    Log.d(TAG, "onDownloadComplete " + rowObject.toString());
+        } catch(MalformedURLException e) {
+            Log.e(TAG, "doInBackground: Invalid URL " + e.getMessage() );
+        } catch(IOException e) {
+            Log.e(TAG, "doInBackground: IO Exception reading data: " + e.getMessage() );
+        } catch(SecurityException e) {
+            Log.e(TAG, "doInBackground: Security Exception. Needs permission? " + e.getMessage());
+        } catch (JSONException e) {
+            Log.e(TAG, "doInBackground: JSON create Exception: " + e.getMessage() );
+        } finally {
+            if(connection != null) {
+                connection.disconnect();
+            }
+            if(reader != null) {
+                try {
+                    reader.close();
+                } catch(IOException e) {
+                    Log.e(TAG, "doInBackground: Error closing stream " + e.getMessage() );
                 }
-            } catch(JSONException jsone) {
-                jsone.printStackTrace();
-                Log.e(TAG, "onDownloadComplete: Error processing Json data " + jsone.getMessage());
-                status = DownloadStatus.FAILED_OR_EMPTY;
             }
         }
 
-        Log.d(TAG, "onDownloadComplete ends");
+        return null;
     }
 }
