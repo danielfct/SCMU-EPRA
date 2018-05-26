@@ -4,6 +4,8 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.example.android.scmu_epra.mn_home.HomeItem;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -11,26 +13,26 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GetHistoryJsonData extends AsyncTask<String, Void, List<Row>> implements GetRawData.OnDownloadComplete {
-    private static final String TAG = "GetHistoryJsonData";
+public class GetSimulatorJsonData extends AsyncTask<String, Void, List<HomeItem>> implements GetRawData.OnDownloadComplete {
+    private static final String TAG = "GetSimulatorJsonData";
 
-    private List<Row> mRowList = null;
+    private List<HomeItem> mRowList = null;
     private String mBaseURL;
 
     private final OnDataAvailable mCallBack;
 
     public interface OnDataAvailable {
-        void onDataAvailable(List<Row> data, DownloadStatus status);
+        void onDataAvailable(List<HomeItem> data, DownloadStatus status);
     }
 
-    public GetHistoryJsonData(OnDataAvailable callBack, String baseURL) {
-        Log.d(TAG, "GetJsonData called");
+    public GetSimulatorJsonData(OnDataAvailable callBack, String baseURL) {
+        Log.d(TAG, "GetJsonSimulatorData called");
         mBaseURL = baseURL;
         mCallBack = callBack;
     }
 
     @Override
-    protected void onPostExecute(List<Row> rows) {
+    protected void onPostExecute(List<HomeItem> rows) {
         Log.d(TAG, "onPostExecute starts");
 
         if(mCallBack != null) {
@@ -40,7 +42,7 @@ public class GetHistoryJsonData extends AsyncTask<String, Void, List<Row>> imple
     }
 
     @Override
-    protected List<Row> doInBackground(String... params) {
+    protected List<HomeItem> doInBackground(String... params) {
         Log.d(TAG, "doInBackground starts");
         String destinationUri = createUri(params[0]);
 
@@ -71,10 +73,11 @@ public class GetHistoryJsonData extends AsyncTask<String, Void, List<Row>> imple
                 for(int i=0; i<itemsArray.length(); i++) {
                     JSONObject jsonRow = itemsArray.getJSONObject(i);
                     String id = jsonRow.getString("id");
-                    String evento = jsonRow.getString("evento");
-                    String datahora = jsonRow.getString("datahora");
+                    String nome = jsonRow.getString("nome");
+                    String estadoAtual = jsonRow.getString("estadoAtual");
+                    String areaId = jsonRow.getString("areaId");
 
-                    Row rowObject = new Row(Integer.parseInt(id), evento, datahora);
+                    HomeItem rowObject = new HomeItem(Integer.parseInt(id), nome, Integer.parseInt(estadoAtual), Integer.parseInt(areaId));
                     mRowList.add(rowObject);
 
                     Log.d(TAG, "onDownloadComplete " + rowObject.toString());

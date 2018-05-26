@@ -21,7 +21,9 @@ import com.example.android.scmu_epra.BottomSheetListView;
 import com.example.android.scmu_epra.R;
 import com.example.android.scmu_epra.connection.DownloadStatus;
 import com.example.android.scmu_epra.connection.GetJsonData;
+import com.example.android.scmu_epra.connection.GetSimulatorJsonData;
 import com.example.android.scmu_epra.mn_history.AlarmHistoryFragment;
+import com.example.android.scmu_epra.mn_history.AlarmHistoryListAdapter;
 
 
 import org.json.JSONException;
@@ -35,7 +37,7 @@ import belka.us.androidtoggleswitch.widgets.ToggleSwitch;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class Home extends Fragment implements GetJsonData.OnDataAvailable {
+public class Home extends Fragment implements GetJsonData.OnDataAvailable, GetSimulatorJsonData.OnDataAvailable {
 
     private static final String TAG = "Home";
     @BindView(R.id.show_history)
@@ -60,6 +62,9 @@ public class Home extends Fragment implements GetJsonData.OnDataAvailable {
 
         GetJsonData getJsonData = new GetJsonData(this, "https://test966996.000webhostapp.com/api/get_alarminfo.php");
         getJsonData.execute();
+
+        GetSimulatorJsonData getSimulatorJsonData = new GetSimulatorJsonData(this, "https://test966996.000webhostapp.com/api/get_simulators.php");
+        getSimulatorJsonData.execute("test");
 
         alarmIsOn = false;
 
@@ -113,53 +118,6 @@ public class Home extends Fragment implements GetJsonData.OnDataAvailable {
             }
         });
         int rH = baseRect.height();
-
-
-        ArrayList<HomeItem> list = new ArrayList<HomeItem>();
-
-        HomeItem a = new HomeItem("Alberto");
-        HomeItem b = new HomeItem("Maria");
-        HomeItem c = new HomeItem("Xavier");
-        HomeItem d = new HomeItem("Teresa");
-        HomeItem e = new HomeItem("Marco");
-        HomeItem f = new HomeItem("Coiso");
-        HomeItem g = new HomeItem("Filipe");
-        HomeItem h = new HomeItem("Matumbo");
-        HomeItem i = new HomeItem("Pessoa");
-        HomeItem j = new HomeItem("Paco");
-
-        list.add(a);
-        list.add(b);
-        list.add(c);
-        list.add(d);
-        list.add(e);
-        list.add(f);
-        list.add(g);
-        list.add(i);
-        list.add(h);
-
-
-        HomeListAdapter listAdapter = new HomeListAdapter(getContext(), 0, list);
-        BottomSheetListView listView = (BottomSheetListView) getView().findViewById(R.id.list_view);
-        listView.setAdapter(listAdapter);
-
-
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                //TODO: Define item click action here
-
-                sw = view.findViewById(R.id.switch1);
-
-                if (sw.isChecked()) {
-                    sw.setChecked(false);
-                }
-                else {
-                    sw.setChecked(true);
-                }
-
-            }
-        });
     }
 
     @Nullable
@@ -194,5 +152,36 @@ public class Home extends Fragment implements GetJsonData.OnDataAvailable {
             }
         }
         Log.d(TAG, "onDataAvailable Home: ends");
+    }
+
+    @Override
+    public void onDataAvailable(List<HomeItem> data, DownloadStatus status) {
+        Log.d(TAG, "onDataAvailable: starts");
+        if(status == DownloadStatus.OK) {
+            HomeListAdapter listAdapter = new HomeListAdapter(getContext(), 0, data);
+            BottomSheetListView listView = (BottomSheetListView) getView().findViewById(R.id.list_view);
+            listView.setAdapter(listAdapter);
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    //TODO: Define item click action here
+
+                    sw = view.findViewById(R.id.switch1);
+
+                    if (sw.isChecked()) {
+                        sw.setChecked(false);
+                    }
+                    else {
+                        sw.setChecked(true);
+                    }
+
+                }
+            });
+        } else {
+            // download or processing failed
+            Log.e(TAG, "onDataAvailable failed with status " + status);
+        }
+
+        Log.d(TAG, "onDataAvailable: ends");
     }
 }
