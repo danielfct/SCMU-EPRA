@@ -1,6 +1,5 @@
 package com.example.android.scmu_epra.mn_devices;
 
-import android.content.ClipData;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -66,7 +65,7 @@ public class DevicesListAdapter extends ArrayAdapter<DevicesItem> implements Fil
         View v = convertView;
 
         if (v == null) {
-            v = LayoutInflater.from(this.context).inflate(R.layout.devices_list_item, parent, false);
+            v = LayoutInflater.from(this.context).inflate(R.layout.frag_devices_list_item, parent, false);
         }
 
         DevicesItem item = this.listDevices.get(position);

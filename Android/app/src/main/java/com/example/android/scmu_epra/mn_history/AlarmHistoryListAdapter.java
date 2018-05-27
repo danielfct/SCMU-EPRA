@@ -14,7 +14,6 @@ import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.example.android.scmu_epra.R;
 import com.example.android.scmu_epra.connection.Row;
-import com.example.android.scmu_epra.mn_burglaryManag.BurglaryHistoryItem;
 
 import java.util.List;
 
@@ -42,7 +41,7 @@ public class AlarmHistoryListAdapter extends ArrayAdapter<Row> {
         View v = convertView;
 
         if (v == null) {
-            v = LayoutInflater.from(this.context).inflate(R.layout.alarm_history_list_item, parent, false);
+            v = LayoutInflater.from(this.context).inflate(R.layout.frag_history_list_item, parent, false);
         }
 
         Row item = this.list.get(position);

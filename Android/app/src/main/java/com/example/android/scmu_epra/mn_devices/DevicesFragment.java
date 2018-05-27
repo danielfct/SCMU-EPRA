@@ -1,6 +1,5 @@
 package com.example.android.scmu_epra.mn_devices;
 
-import android.hardware.Sensor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -8,19 +7,14 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.Switch;
-import android.widget.TextView;
 
-import com.example.android.scmu_epra.BottomSheetListView;
 import com.example.android.scmu_epra.R;
-import com.example.android.scmu_epra.mn_home.HomeListAdapter;
 
 import java.util.Arrays;
 import java.util.List;
@@ -98,15 +92,13 @@ public class DevicesFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        return getLayoutInflater().inflate(R.layout.devices, container, false);
+        return getLayoutInflater().inflate(R.layout.frag_devices, container, false);
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-
     }
-
 
 }

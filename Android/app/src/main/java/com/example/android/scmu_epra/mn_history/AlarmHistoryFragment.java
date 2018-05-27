@@ -13,12 +13,9 @@ import android.widget.ListView;
 import com.example.android.scmu_epra.R;
 import com.example.android.scmu_epra.connection.DownloadStatus;
 import com.example.android.scmu_epra.connection.GetHistoryJsonData;
-import com.example.android.scmu_epra.connection.GetJsonData;
-import com.example.android.scmu_epra.connection.GetRawData;
 import com.example.android.scmu_epra.connection.PostJsonData;
 import com.example.android.scmu_epra.connection.Row;
 
-import java.util.Arrays;
 import java.util.List;
 
 import butterknife.BindView;
@@ -49,7 +46,7 @@ public class AlarmHistoryFragment extends Fragment implements GetHistoryJsonData
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.alarm_history_layout, container, false);
+        View view = inflater.inflate(R.layout.frag_history, container, false);
         ButterKnife.bind(this, view);
         return view;
     }

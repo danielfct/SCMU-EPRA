@@ -23,7 +23,8 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
 
-    NavigationView navigationView;
+    private NavigationView navigationView;
+    private int currentFragmentID = Integer.MIN_VALUE;
 
 
     @Override
@@ -61,31 +62,38 @@ public class MainActivity extends AppCompatActivity
     private void displaySelectedScreen(int id) {
         Fragment fragment = null;
 
-        switch (id) {
-            case R.id.nav_home:
-                Home h = new Home();
-                h.setNavigationView(navigationView);
-                fragment = h;
-                break;
-            case R.id.nav_history:
-                fragment = new AlarmHistoryFragment();
-                break;
-            case R.id.nav_devices:
-                fragment = new DevicesFragment();
-                break;
-            case R.id.nav_burglaryManag:
-                fragment = new BurglaryManagementFragment();
-                break;
-            case R.id.nav_settings:
-                Intent intent = new Intent(this, com.example.android.scmu_epra.SettingsActivity.class);
-                startActivity(intent);
-                break;
-        }
+        if (currentFragmentID != id) {
+            switch (id) {
+                case R.id.nav_home:
+                    Home h = new Home();
+                    h.setNavigationView(navigationView);
+                    fragment = h;
+                    currentFragmentID = R.id.nav_home;
+                    break;
+                case R.id.nav_history:
+                    fragment = new AlarmHistoryFragment();
+                    currentFragmentID = R.id.nav_history;
+                    break;
+                case R.id.nav_devices:
+                    fragment = new DevicesFragment();
+                    currentFragmentID = R.id.nav_devices;
+                    break;
+                case R.id.nav_burglaryManag:
+                    fragment = new BurglaryManagementFragment();
+                    currentFragmentID = R.id.nav_burglaryManag;
+                    break;
+                case R.id.nav_settings:
+                    Intent intent = new Intent(this, com.example.android.scmu_epra.SettingsActivity.class);
+                    startActivity(intent);
+                    currentFragmentID = R.id.nav_settings;
+                    break;
+            }
 
-        if (fragment != null) {
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.screen_area, fragment);
-            ft.commit();
+            if (fragment != null) {
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                ft.replace(R.id.screen_area, fragment);
+                ft.commit();
+            }
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

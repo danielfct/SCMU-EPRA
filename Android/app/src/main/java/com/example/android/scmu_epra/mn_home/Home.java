@@ -2,7 +2,6 @@ package com.example.android.scmu_epra.mn_home;
 
 import android.graphics.Rect;
 import android.support.design.widget.BottomSheetBehavior;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -23,16 +22,13 @@ import com.example.android.scmu_epra.connection.DownloadStatus;
 import com.example.android.scmu_epra.connection.GetJsonData;
 import com.example.android.scmu_epra.connection.GetSimulatorJsonData;
 import com.example.android.scmu_epra.mn_history.AlarmHistoryFragment;
-import com.example.android.scmu_epra.mn_history.AlarmHistoryListAdapter;
 
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import belka.us.androidtoggleswitch.widgets.BaseToggleSwitch;
 import belka.us.androidtoggleswitch.widgets.ToggleSwitch;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -123,7 +119,7 @@ public class Home extends Fragment implements GetJsonData.OnDataAvailable, GetSi
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        return getLayoutInflater().inflate(R.layout.home, container, false);
+        return getLayoutInflater().inflate(R.layout.frag_home, container, false);
     }
 
 

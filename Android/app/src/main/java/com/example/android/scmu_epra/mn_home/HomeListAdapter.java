@@ -39,7 +39,7 @@ public class HomeListAdapter extends ArrayAdapter<HomeItem> {
         View v = convertView;
 
         if (v == null) {
-            v = LayoutInflater.from(this.context).inflate(R.layout.home_list_item, parent, false);
+            v = LayoutInflater.from(this.context).inflate(R.layout.frag_home_list_item, parent, false);
         }
 
         HomeItem item = this.list.get(position);

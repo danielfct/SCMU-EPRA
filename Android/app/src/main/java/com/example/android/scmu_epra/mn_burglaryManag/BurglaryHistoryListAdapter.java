@@ -38,7 +38,7 @@ public class BurglaryHistoryListAdapter extends ArrayAdapter<BurglaryHistoryItem
         View v = convertView;
 
         if (v == null) {
-            v = LayoutInflater.from(this.context).inflate(R.layout.burglary_history_list_item, parent, false);
+            v = LayoutInflater.from(this.context).inflate(R.layout.frag_burglary_manag_list_item, parent, false);
         }
 
         BurglaryHistoryItem item = this.list.get(position);

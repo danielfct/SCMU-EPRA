@@ -48,7 +48,7 @@ public class BurglaryManagementFragment extends Fragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.burglary_management_layout, container, false);
+        View view = inflater.inflate(R.layout.frag_burglary_manag, container, false);
         ButterKnife.bind(this, view);
 
         notifyPoliceButton.setOnClickListener(v -> {});
