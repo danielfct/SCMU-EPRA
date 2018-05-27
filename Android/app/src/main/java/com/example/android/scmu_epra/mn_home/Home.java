@@ -157,7 +157,7 @@ public class Home extends Fragment implements GetJsonData.OnDataAvailable, GetSi
     @Override
     public void onDataAvailable(List<HomeItem> data, DownloadStatus status) {
         Log.d(TAG, "onDataAvailable: starts");
-        if(status == DownloadStatus.OK) {
+        if(status == DownloadStatus.OK && data != null && data.size() > 0) {
             HomeListAdapter listAdapter = new HomeListAdapter(getContext(), 0, data);
             BottomSheetListView listView = (BottomSheetListView) getView().findViewById(R.id.list_view);
             listView.setAdapter(listAdapter);
@@ -179,7 +179,7 @@ public class Home extends Fragment implements GetJsonData.OnDataAvailable, GetSi
             });
         } else {
             // download or processing failed
-            Log.e(TAG, "onDataAvailable failed with status " + status);
+            Log.e(TAG, "onDataAvailable failed with status or  " + status + " or it has no items");
         }
 
         Log.d(TAG, "onDataAvailable: ends");
