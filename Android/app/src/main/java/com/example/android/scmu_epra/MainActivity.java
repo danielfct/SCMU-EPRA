@@ -14,7 +14,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.example.android.scmu_epra.mn_burglaryManag.BurglaryManagementFragment;
-import com.example.android.scmu_epra.mn_devices.Devices;
+import com.example.android.scmu_epra.mn_devices.DevicesFragment;
 import com.example.android.scmu_epra.mn_history.AlarmHistoryFragment;
 import com.example.android.scmu_epra.mn_home.Home;
 
@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity
                 fragment = new AlarmHistoryFragment();
                 break;
             case R.id.nav_devices:
-                fragment = new Devices();
+                fragment = new DevicesFragment();
                 break;
             case R.id.nav_burglaryManag:
                 fragment = new BurglaryManagementFragment();
