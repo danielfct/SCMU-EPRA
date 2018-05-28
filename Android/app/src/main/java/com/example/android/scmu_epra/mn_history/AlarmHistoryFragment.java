@@ -73,7 +73,7 @@ public class AlarmHistoryFragment extends Fragment
     public void onDataAvailable(List<Row> data, DownloadStatus status) {
         Log.d(TAG, "onDataAvailable: starts");
         if(status == DownloadStatus.OK && data != null && data.size() > 0) {
-            AlarmHistoryListAdapter listAdapter = new AlarmHistoryListAdapter(getContext(), 0, data);
+            AlarmHistoryListAdapter listAdapter = new AlarmHistoryListAdapter(getActivity().getApplicationContext(), 0, data);
             listView.setAdapter(listAdapter);
             listView.setOnItemClickListener((adapterView, v, position, id) -> {
                 //TODO: Define item click action here

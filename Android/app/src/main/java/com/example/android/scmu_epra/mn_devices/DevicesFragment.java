@@ -46,7 +46,7 @@ public class DevicesFragment extends Fragment {
                 new DevicesItem("Sensor de vibração do Escritório", DevicesItem.DevicesType.Sensor, false),
                 new DevicesItem("Janela da cozinha", DevicesItem.DevicesType.Simulator, false));
 
-        listAdapter = new DevicesListAdapter(getContext(), 0, list);
+        listAdapter = new DevicesListAdapter(getActivity().getApplicationContext(), 0, list);
         listView.setAdapter(listAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

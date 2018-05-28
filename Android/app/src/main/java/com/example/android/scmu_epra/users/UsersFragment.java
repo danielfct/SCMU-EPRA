@@ -70,7 +70,7 @@ public class UsersFragment extends Fragment
     @Override
     public void onDataAvailable(List<UserItem> data, DownloadStatus status) {
         if (status == DownloadStatus.OK) {
-            UsersListAdapter listAdapter = new UsersListAdapter(getContext(), 0, data);
+            UsersListAdapter listAdapter = new UsersListAdapter(getActivity().getApplicationContext(), 0, data);
             listView.setAdapter(listAdapter);
         } else {
             // download or processing failed

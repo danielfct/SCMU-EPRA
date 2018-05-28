@@ -72,7 +72,7 @@ public class BurglaryManagementFragment extends Fragment {
                 new BurglaryHistoryItem("Casa de Banho 1", "1 minute"),
                 new BurglaryHistoryItem("Casa de Banho 2", "2 minutes"),
                 new BurglaryHistoryItem("Sala", "20 minutes"));
-        BurglaryHistoryListAdapter listAdapter = new BurglaryHistoryListAdapter(getContext(), 0, list);
+        BurglaryHistoryListAdapter listAdapter = new BurglaryHistoryListAdapter(getActivity().getApplicationContext(), 0, list);
         listView.setAdapter(listAdapter);
         listView.setOnItemClickListener((adapterView, v, position, id) -> {
             //TODO: Define item click action here

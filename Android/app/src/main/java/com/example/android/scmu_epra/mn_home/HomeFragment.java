@@ -184,5 +184,7 @@ public class HomeFragment extends Fragment implements GetJsonData.OnDataAvailabl
     private void getData() {
         GetJsonData getJsonData = new GetJsonData(this, "https://test966996.000webhostapp.com/api/get_alarminfo.php");
         getJsonData.execute();
+        Log.d(TAG, "getData: data aqquired");
+
     }
 }
