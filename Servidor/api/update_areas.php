@@ -31,6 +31,7 @@ if($area->update()){
 }
 
 else{
+    http_response_code(404);
     echo '{';
         echo '"message": "Unable to update area.", "success": "0"';
     echo '}';

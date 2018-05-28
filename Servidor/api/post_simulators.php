@@ -30,6 +30,7 @@ if($simulator->create()){
 }
 
 else{
+    http_response_code(404);
     echo '{';
         echo '"message": "Unable to create simulator.", "success": "0"';
     echo '}';

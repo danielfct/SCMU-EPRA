@@ -39,10 +39,10 @@ if($num>0){
             "sensor" => $sensor,
         );
 
-        if ($num == 1) {
+        /*if ($num == 1) {
           echo json_encode($area_item);
           return;
-        }
+        }*/
 
         array_push($area_arr, $area_item);
     }
@@ -51,6 +51,7 @@ if($num>0){
 }
 
 else{
+    http_response_code(404);
     echo json_encode(
         array("message" => "No areas found.")
     );

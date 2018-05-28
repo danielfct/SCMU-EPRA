@@ -29,6 +29,7 @@ if($tracking->create()){
 }
 
 else{
+    http_response_code(404);
     echo '{';
         echo '"message": "Unable to create tracking.", "success": "0"';
     echo '}';

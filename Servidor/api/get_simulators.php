@@ -46,6 +46,7 @@ if($num>0){
 }
 
 else{
+    http_response_code(404);
     echo json_encode(
         array("message" => "No simulators found.")
     );

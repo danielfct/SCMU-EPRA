@@ -30,6 +30,7 @@ if($historyTracking->create()){
 }
 
 else{
+    http_response_code(404);
     echo '{';
         echo '"message": "Unable to save HistoryTracking.", "success": "0"';
     echo '}';

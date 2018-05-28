@@ -19,7 +19,7 @@ class History {
     function read(){
 
         // select all query
-        $query = "SELECT * FROM historico";
+        $query = "SELECT * FROM historico ORDER BY datahora DESC";
 
         // prepare query statement
         $stmt = $this->conn->prepare($query);
