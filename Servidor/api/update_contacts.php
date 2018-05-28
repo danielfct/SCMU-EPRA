@@ -37,6 +37,7 @@ if($user->update()){
 }
 
 else{
+    http_response_code(404);
     echo '{';
         echo '"message": "Unable to update user.", "success": "0"';
     echo '}';

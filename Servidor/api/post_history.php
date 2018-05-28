@@ -32,6 +32,7 @@ if($history->create()){
 
 // if unable to create the history, tell the user
 else{
+    http_response_code(404);
     echo '{';
         echo '"message": "Unable to save history.", "success": "0"';
     echo '}';

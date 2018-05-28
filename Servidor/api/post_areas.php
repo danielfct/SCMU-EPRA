@@ -30,6 +30,7 @@ if($area->create()){
 }
 
 else{
+    http_response_code(404);
     echo '{';
         echo '"message": "Unable to save area.", "success": "0"';
     echo '}';
