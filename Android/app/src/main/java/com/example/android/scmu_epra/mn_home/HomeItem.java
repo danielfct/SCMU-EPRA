@@ -4,18 +4,14 @@ public class HomeItem {
 
     private int id;
     private String name;
-    private int estadoAtual;
-    private int areaId;
+    private int alarmeLigado;
+    private String sensor;
 
-    public HomeItem(int id, String name, int estadoAtual, int areaId) {
+    public HomeItem(int id, String name, int alarmeLigado, String sensor) {
         this.id = id;
         this.name = name;
-        this.estadoAtual = estadoAtual;
-        this.areaId = areaId;
-    }
-
-    public String getName() {
-        return name;
+        this.alarmeLigado = alarmeLigado;
+        this.sensor = sensor;
     }
 
     public int getId() {
@@ -26,19 +22,27 @@ public class HomeItem {
         this.id = id;
     }
 
-    public int getEstadoAtual() {
-        return estadoAtual;
+    public String getName() {
+        return name;
     }
 
-    public void setEstadoAtual(int estadoAtual) {
-        this.estadoAtual = estadoAtual;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public int getAreaId() {
-        return areaId;
+    public int getAlarmeLigado() {
+        return alarmeLigado;
     }
 
-    public void setAreaId(int areaId) {
-        this.areaId = areaId;
+    public void setAlarmeLigado(int alarmeLigado) {
+        this.alarmeLigado = alarmeLigado;
+    }
+
+    public String getSensor() {
+        return sensor;
+    }
+
+    public void setSensor(String sensor) {
+        this.sensor = sensor;
     }
 }

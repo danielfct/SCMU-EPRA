@@ -19,8 +19,9 @@ import android.widget.Switch;
 import com.example.android.scmu_epra.BottomSheetListView;
 import com.example.android.scmu_epra.R;
 import com.example.android.scmu_epra.connection.DownloadStatus;
+import com.example.android.scmu_epra.connection.GetAreaJsonData;
 import com.example.android.scmu_epra.connection.GetJsonData;
-import com.example.android.scmu_epra.connection.GetSimulatorJsonData;
+import com.example.android.scmu_epra.connection.PostJsonData;
 import com.example.android.scmu_epra.mn_history.AlarmHistoryFragment;
 
 
@@ -33,7 +34,7 @@ import belka.us.androidtoggleswitch.widgets.ToggleSwitch;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class Home extends Fragment implements GetJsonData.OnDataAvailable, GetSimulatorJsonData.OnDataAvailable {
+public class Home extends Fragment implements GetJsonData.OnDataAvailable, GetAreaJsonData.OnDataAvailable, PostJsonData.OnStatusAvailable {
 
     private static final String TAG = "Home";
     @BindView(R.id.show_history)
@@ -59,7 +60,7 @@ public class Home extends Fragment implements GetJsonData.OnDataAvailable, GetSi
         GetJsonData getJsonData = new GetJsonData(this, "https://test966996.000webhostapp.com/api/get_alarminfo.php");
         getJsonData.execute();
 
-        GetSimulatorJsonData getSimulatorJsonData = new GetSimulatorJsonData(this, "https://test966996.000webhostapp.com/api/get_simulators.php");
+        GetAreaJsonData getSimulatorJsonData = new GetAreaJsonData(this, "https://test966996.000webhostapp.com/api/get_areas.php");
         getSimulatorJsonData.execute("test");
 
         alarmIsOn = false;
@@ -92,12 +93,7 @@ public class Home extends Fragment implements GetJsonData.OnDataAvailable, GetSi
 
             @Override
             public void onToggleSwitchChangeListener(int position, boolean isChecked) {
-                if (position == 0) {
-                    //TODO: turn alarm off
-                }
-                else {
-                    //TODO: turn alarm on
-                }
+                executePostJson("https://test966996.000webhostapp.com/api/post_alarminfo.php", "estadoAtual="+position);
             }
         });
 
@@ -114,6 +110,11 @@ public class Home extends Fragment implements GetJsonData.OnDataAvailable, GetSi
             }
         });
         int rH = baseRect.height();
+    }
+
+    private final void executePostJson(String url, String... params) {
+        PostJsonData postJsonData = new PostJsonData(this, url);
+        postJsonData.execute(params);
     }
 
     @Nullable
@@ -159,17 +160,18 @@ public class Home extends Fragment implements GetJsonData.OnDataAvailable, GetSi
             listView.setAdapter(listAdapter);
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
-                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                     //TODO: Define item click action here
 
                     sw = view.findViewById(R.id.switch1);
+                    HomeItem item = data.get(position);
 
-                    if (sw.isChecked()) {
-                        sw.setChecked(false);
-                    }
-                    else {
-                        sw.setChecked(true);
-                    }
+                    boolean newState = !sw.isChecked();
+
+                    executePostJson("https://test966996.000webhostapp.com/api/update_areas.php",
+                            "id="+item.getId(), "nome="+item.getName(), "alarmeLigado="+newState, "sensor="+item.getSensor());
+
+                    sw.setChecked(newState);
 
                 }
             });
@@ -179,5 +181,10 @@ public class Home extends Fragment implements GetJsonData.OnDataAvailable, GetSi
         }
 
         Log.d(TAG, "onDataAvailable: ends");
+    }
+
+    @Override
+    public void onStatusAvailable(Boolean status) {
+
     }
 }

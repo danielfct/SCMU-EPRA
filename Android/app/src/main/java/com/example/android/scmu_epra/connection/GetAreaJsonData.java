@@ -13,7 +13,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GetSimulatorJsonData extends AsyncTask<String, Void, List<HomeItem>> implements GetRawData.OnDownloadComplete {
+public class GetAreaJsonData extends AsyncTask<String, Void, List<HomeItem>> implements GetRawData.OnDownloadComplete {
     private static final String TAG = "GetSimulatorJsonData";
 
     private List<HomeItem> mRowList = null;
@@ -25,7 +25,7 @@ public class GetSimulatorJsonData extends AsyncTask<String, Void, List<HomeItem>
         void onDataAvailable(List<HomeItem> data, DownloadStatus status);
     }
 
-    public GetSimulatorJsonData(OnDataAvailable callBack, String baseURL) {
+    public GetAreaJsonData(OnDataAvailable callBack, String baseURL) {
         Log.d(TAG, "GetJsonSimulatorData called");
         mBaseURL = baseURL;
         mCallBack = callBack;
@@ -74,13 +74,13 @@ public class GetSimulatorJsonData extends AsyncTask<String, Void, List<HomeItem>
                     JSONObject jsonRow = itemsArray.getJSONObject(i);
                     String id = jsonRow.getString("id");
                     String nome = jsonRow.getString("nome");
-                    String estadoAtual = jsonRow.getString("estadoAtual");
-                    String areaId = jsonRow.getString("areaId");
+                    String alarmeLigado = jsonRow.getString("alarmeLigado");
+                    String sensor = jsonRow.getString("sensor");
 
-                    //HomeItem rowObject = new HomeItem(Integer.parseInt(id), nome, Integer.parseInt(estadoAtual), Integer.parseInt(areaId));
-                    //mRowList.add(rowObject);
+                    HomeItem rowObject = new HomeItem(Integer.parseInt(id), nome, Integer.parseInt(alarmeLigado), sensor);
+                    mRowList.add(rowObject);
 
-                    //Log.d(TAG, "onDownloadComplete " + rowObject.toString());
+                    Log.d(TAG, "onDownloadComplete " + rowObject.toString());
                 }
             } catch(JSONException jsone) {
                 jsone.printStackTrace();
