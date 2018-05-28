@@ -1,10 +1,12 @@
 package com.example.android.scmu_epra.mn_burglaryManag;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.AppCompatButton;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +24,9 @@ import butterknife.ButterKnife;
 
 public class BurglaryManagementFragment extends Fragment {
 
+    public static final String TAG = "BurglaryManagementFragment";
+
+
     @BindView(R.id.bottom_sheet)
     LinearLayout bottomListView;
     @BindView(R.id.baseOfBM)
@@ -36,10 +41,13 @@ public class BurglaryManagementFragment extends Fragment {
     AppCompatButton ignoreButton;
     @BindView(R.id.list_view)
     BottomSheetListView listView;
+    @BindView(R.id.burglary_swipe_refresh)
+    SwipeRefreshLayout swipeRefresh;
 
     private boolean bottomSheetIsSet = false;
+    private Context mContext;
 
-    public static final String TAG = "BurglaryManagementFragment";
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -64,15 +72,15 @@ public class BurglaryManagementFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         getActivity().setTitle("Burglary Management");
 
-        List<BurglaryHistoryItem> list = Arrays.asList(
-                new BurglaryHistoryItem("Entrada", "1 minute"),
-                new BurglaryHistoryItem("Cozinha", "5 minutes"),
-                new BurglaryHistoryItem("Quarto 1", "3 minutes"),
-                new BurglaryHistoryItem("Quarto 2", "10 minutes"),
-                new BurglaryHistoryItem("Casa de Banho 1", "1 minute"),
-                new BurglaryHistoryItem("Casa de Banho 2", "2 minutes"),
-                new BurglaryHistoryItem("Sala", "20 minutes"));
-        BurglaryHistoryListAdapter listAdapter = new BurglaryHistoryListAdapter(getActivity().getApplicationContext(), 0, list);
+        List<BurglaryManagementItem> list = Arrays.asList(
+                new BurglaryManagementItem("Entrada", "1 minute"),
+                new BurglaryManagementItem("Cozinha", "5 minutes"),
+                new BurglaryManagementItem("Quarto 1", "3 minutes"),
+                new BurglaryManagementItem("Quarto 2", "10 minutes"),
+                new BurglaryManagementItem("Casa de Banho 1", "1 minute"),
+                new BurglaryManagementItem("Casa de Banho 2", "2 minutes"),
+                new BurglaryManagementItem("Sala", "20 minutes"));
+        BurglaryManagementListAdapter listAdapter = new BurglaryManagementListAdapter(mContext, 0, list);
         listView.setAdapter(listAdapter);
         listView.setOnItemClickListener((adapterView, v, position, id) -> {
             //TODO: Define item click action here
@@ -90,7 +98,13 @@ public class BurglaryManagementFragment extends Fragment {
                 }
             }
         });
+    }
 
+
+    @Override
+    public void onAttach(Context context) {
+        mContext = context;
+        super.onAttach(context);
     }
 
 }

@@ -14,14 +14,14 @@ import com.example.android.scmu_epra.R;
 
 import java.util.List;
 
-public class BurglaryHistoryListAdapter extends ArrayAdapter<BurglaryHistoryItem> {
+public class BurglaryManagementListAdapter extends ArrayAdapter<BurglaryManagementItem> {
 
     private Context context;
-    private List<BurglaryHistoryItem> list;
+    private List<BurglaryManagementItem> list;
     private TextDrawable.IBuilder builder;
     private ColorGenerator generator;
 
-    public BurglaryHistoryListAdapter(Context context, int resource, List<BurglaryHistoryItem> items) {
+    public BurglaryManagementListAdapter(Context context, int resource, List<BurglaryManagementItem> items) {
         super(context, 0, items);
         this.context = context;
         this.list = items;
@@ -41,7 +41,7 @@ public class BurglaryHistoryListAdapter extends ArrayAdapter<BurglaryHistoryItem
             v = LayoutInflater.from(this.context).inflate(R.layout.frag_burglary_manag_list_item, parent, false);
         }
 
-        BurglaryHistoryItem item = this.list.get(position);
+        BurglaryManagementItem item = this.list.get(position);
 
         TextView textView = v.findViewById(R.id.division_name);
         textView.setText(item.getName());

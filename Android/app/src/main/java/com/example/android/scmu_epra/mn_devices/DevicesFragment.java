@@ -1,8 +1,10 @@
 package com.example.android.scmu_epra.mn_devices;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -28,9 +30,13 @@ public class DevicesFragment extends Fragment {
 
     @BindView(R.id.list_devices)
     ListView listView;
+    @BindView(R.id.devices_swipe_refresh)
+    SwipeRefreshLayout swipeRefresh;
 
     private Switch sw;
     private DevicesListAdapter listAdapter;
+    private Context mContext;
+
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -46,7 +52,7 @@ public class DevicesFragment extends Fragment {
                 new DevicesItem("Sensor de vibração do Escritório", DevicesItem.DevicesType.Sensor, false),
                 new DevicesItem("Janela da cozinha", DevicesItem.DevicesType.Simulator, false));
 
-        listAdapter = new DevicesListAdapter(getActivity().getApplicationContext(), 0, list);
+        listAdapter = new DevicesListAdapter(mContext, 0, list);
         listView.setAdapter(listAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -98,6 +104,13 @@ public class DevicesFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+    }
+
+
+    @Override
+    public void onAttach(Context context) {
+        mContext = context;
+        super.onAttach(context);
     }
 
 }

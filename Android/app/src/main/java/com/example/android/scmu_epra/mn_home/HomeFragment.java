@@ -1,23 +1,30 @@
 package com.example.android.scmu_epra.mn_home;
 
+import android.content.Context;
 import android.graphics.Rect;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
+import android.view.DragEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Switch;
 
 import com.example.android.scmu_epra.BottomSheetListView;
+import com.example.android.scmu_epra.Constants;
 import com.example.android.scmu_epra.MainActivity;
 import com.example.android.scmu_epra.R;
 import com.example.android.scmu_epra.connection.DownloadStatus;
@@ -38,7 +45,6 @@ import butterknife.ButterKnife;
 public class HomeFragment extends Fragment implements GetJsonData.OnDataAvailable, GetSimulatorJsonData.OnDataAvailable {
 
     public static final String TAG = "Home";
-    private static final int DATA_UPDATE_FREQUENCY = 15000;
 
     @BindView(R.id.show_history)
     Button btnShowHistory;
@@ -48,20 +54,26 @@ public class HomeFragment extends Fragment implements GetJsonData.OnDataAvailabl
     LinearLayout bottomListView;
     @BindView(R.id.backgroundOfButton)
     LinearLayout baseLayout;
+    @BindView(R.id.home_progress_spinner)
+    ProgressBar progressSpinner;
+    @BindView(R.id.list_view)
+    BottomSheetListView listView;
+
 
     private boolean alarmIsOn;
     private boolean bottomSheetIsSet = false;
     private Switch sw;
+    private Context mContext;
+    private Handler mHandler;
+    private Runnable mRunnable;
 
     private NavigationView navigationView;
+
 
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        GetSimulatorJsonData getSimulatorJsonData = new GetSimulatorJsonData(this, "https://test966996.000webhostapp.com/api/get_simulators.php");
-        getSimulatorJsonData.execute("test");
 
         alarmIsOn = false;
 
@@ -72,17 +84,21 @@ public class HomeFragment extends Fragment implements GetJsonData.OnDataAvailabl
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
 
-        getActivity().setTitle("HomeFragment");
+        getActivity().setTitle(TAG);
 
         Log.d(TAG, "onViewCreated: sw = " + (sw != null));
 
-        final Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
+
+        getData();
+
+        mHandler = new Handler();
+        mRunnable = new Runnable() {
             @Override
             public void run() {
                 getData();
             }
-        }, DATA_UPDATE_FREQUENCY);
+        };
+        mHandler.postDelayed(mRunnable, Constants.DATA_UPDATE_FREQUENCY);
 
         btnShowHistory.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -130,6 +146,17 @@ public class HomeFragment extends Fragment implements GetJsonData.OnDataAvailabl
         return getLayoutInflater().inflate(R.layout.frag_home, container, false);
     }
 
+    @Override
+    public void onAttach(Context context) {
+        mContext = context;
+        super.onAttach(context);
+    }
+
+    @Override
+    public void onDestroy() {
+        mHandler.removeCallbacks(mRunnable);
+        super.onDestroy();
+    }
 
     public void setNavigationView(NavigationView n) {
         if (navigationView == null) {
@@ -162,8 +189,8 @@ public class HomeFragment extends Fragment implements GetJsonData.OnDataAvailabl
     public void onDataAvailable(List<HomeItem> data, DownloadStatus status) {
         Log.d(TAG, "onDataAvailable: starts");
         if(status == DownloadStatus.OK && data != null && data.size() > 0) {
-            HomeListAdapter listAdapter = new HomeListAdapter(getActivity().getApplicationContext(), 0, data);
-            BottomSheetListView listView = getView().findViewById(R.id.list_view);
+            HomeListAdapter listAdapter = new HomeListAdapter(mContext, 0, data);
+            listView = getView().findViewById(R.id.list_view);
             listView.setAdapter(listAdapter);
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
@@ -177,14 +204,19 @@ public class HomeFragment extends Fragment implements GetJsonData.OnDataAvailabl
             // download or processing failed
             Log.e(TAG, "onDataAvailable failed with status or  " + status + " or it has no items");
         }
-
+        if (progressSpinner.isEnabled()) {
+            progressSpinner.setVisibility(View.GONE);
+        }
         Log.d(TAG, "onDataAvailable: ends");
     }
 
     private void getData() {
         GetJsonData getJsonData = new GetJsonData(this, "https://test966996.000webhostapp.com/api/get_alarminfo.php");
         getJsonData.execute();
-        Log.d(TAG, "getData: data aqquired");
 
+        GetSimulatorJsonData getSimulatorJsonData = new GetSimulatorJsonData(this, "https://test966996.000webhostapp.com/api/get_simulators.php");
+        getSimulatorJsonData.execute("test");
+
+        Log.d(TAG, "getData: data aqquired");
     }
 }
