@@ -31,6 +31,7 @@ if($simulator->delete()){
 
 // if unable to delete the simulator
 else{
+	http_response_code(404);
 	echo '{';
 		echo '"message": "Unable to delete simulator.", "success": "0"';
 	echo '}';

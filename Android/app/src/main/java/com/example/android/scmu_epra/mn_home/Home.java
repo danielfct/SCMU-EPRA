@@ -17,6 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.Switch;
 
 import com.example.android.scmu_epra.BottomSheetListView;
+import com.example.android.scmu_epra.MainActivity;
 import com.example.android.scmu_epra.R;
 import com.example.android.scmu_epra.connection.DownloadStatus;
 import com.example.android.scmu_epra.connection.GetAreaJsonData;
@@ -85,7 +86,6 @@ public class Home extends Fragment implements GetJsonData.OnDataAvailable, GetAr
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
                 ft.replace(R.id.screen_area, f);
                 ft.commit();
-
             }
         });
 

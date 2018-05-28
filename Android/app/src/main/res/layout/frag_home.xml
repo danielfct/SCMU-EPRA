@@ -21,20 +21,32 @@
             android:layout_weight="1"
             android:orientation="vertical">
 
+
+
             <belka.us.androidtoggleswitch.widgets.ToggleSwitch
                 android:id="@+id/toggleOnOff"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingBottom="20dp"
-                android:textSize="20sp"
+                android:textSize="20dp"
                 custom:toggleWidth="90dp"
                 custom:textToggleLeft="OFF"
                 custom:textToggleRight="ON" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
+                android:textStyle="bold"
+                android:text="Active for: x minutes"
+                />
 
             <android.support.v7.widget.AppCompatButton
                 android:id="@+id/show_history"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
                 android:text="@string/show_history"
                 android:textColor="@color/colorPrimaryDark"
                 android:backgroundTint="@color/white" />
