@@ -1,4 +1,4 @@
-package com.example.android.scmu_epra.users;
+package com.example.android.scmu_epra.mn_users;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -53,7 +53,7 @@ public class UsersFragment extends Fragment
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.users_layout, container, false);
+        View view = inflater.inflate(R.layout.frag_users, container, false);
         ButterKnife.bind(this, view);
 
         swipeRefresh.setOnRefreshListener(() -> getData());

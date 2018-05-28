@@ -4,7 +4,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.example.android.scmu_epra.users.AreaItem;
+import com.example.android.scmu_epra.mn_users.AreaItem;
 
 import org.json.JSONArray;
 import org.json.JSONException;

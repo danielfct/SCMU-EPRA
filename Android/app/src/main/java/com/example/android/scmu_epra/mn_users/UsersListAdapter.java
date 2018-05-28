@@ -1,4 +1,4 @@
-package com.example.android.scmu_epra.users;
+package com.example.android.scmu_epra.mn_users;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -48,7 +48,7 @@ public class UsersListAdapter extends ArrayAdapter<UserItem> {
     public View getView(int position, View convertView, ViewGroup parent) {
         View v = convertView;
         if (v == null) {
-            v = LayoutInflater.from(this.context).inflate(R.layout.users_list_item, parent, false);
+            v = LayoutInflater.from(this.context).inflate(R.layout.frag_users_list_item, parent, false);
         }
 
         UserItem item = this.list.get(position);

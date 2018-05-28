@@ -1,4 +1,4 @@
-package com.example.android.scmu_epra.users;
+package com.example.android.scmu_epra.mn_users;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
