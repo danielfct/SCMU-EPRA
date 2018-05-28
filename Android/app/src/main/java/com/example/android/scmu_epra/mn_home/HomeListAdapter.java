@@ -53,7 +53,7 @@ public class HomeListAdapter extends ArrayAdapter<HomeItem> {
         imageView.setImageDrawable(textDrawable);
 
         Switch switch1 = v.findViewById(R.id.switch1);
-        switch1.setChecked(item.getEstadoAtual() == 1);
+        switch1.setChecked(item.getAlarmeLigado() == 1);
 
         return v;
     }
