@@ -25,20 +25,12 @@ public class Devices extends Fragment {
 
         getActivity().setTitle("Devices");
 
-        stateTxV = getView().findViewById(R.id.alarmStateTV);
-        stateTxV.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                switchAlarmState();
-                return true;
-            }
-        });
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        return getLayoutInflater().inflate(R.layout.devices, container, false);
+        return getLayoutInflater().inflate(R.layout.frag_devices, container, false);
     }
 
     @Override
@@ -51,15 +43,4 @@ public class Devices extends Fragment {
 
     }
 
-
-    private void switchAlarmState() {
-        if (alarmIsOn) {
-            // Turn off alarm
-
-        }                            
-        else {
-            // Turn on alarm
-
-        }
-    }
 }

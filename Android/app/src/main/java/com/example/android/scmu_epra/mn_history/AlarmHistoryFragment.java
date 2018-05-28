@@ -24,7 +24,7 @@ import butterknife.ButterKnife;
 public class AlarmHistoryFragment extends Fragment
         implements GetHistoryJsonData.OnDataAvailable, PostJsonData.OnStatusAvailable {
 
-    public static final String TAG = "AlarmHistoryFragment";
+    public static final String TAG = "History";
 
     @BindView(R.id.alarm_history)
     ListView listView;
