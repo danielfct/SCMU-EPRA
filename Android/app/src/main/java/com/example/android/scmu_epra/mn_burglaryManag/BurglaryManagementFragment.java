@@ -39,7 +39,7 @@ public class BurglaryManagementFragment extends Fragment {
 
     private boolean bottomSheetIsSet = false;
 
-
+    public static final String TAG = "BurglaryManagementFragment";
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

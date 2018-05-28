@@ -6,6 +6,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Loader;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
@@ -396,6 +397,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
     }
 
     private void onLoginSuccess() {
+//        SharedPreferences mPrefs = getPreferences(MODE_PRIVATE);
+//        SharedPreferences.Editor prefsEditor = mPrefs.edit();
+//        Gson gson = new Gson();
+//        String json = gson.toJson(MyObject);
+//        prefsEditor.putString("MyObject", json);
+//        prefsEditor.commit();
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }

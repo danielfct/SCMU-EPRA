@@ -2,6 +2,7 @@ package com.example.android.scmu_epra;
 
 import android.content.Intent;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
@@ -12,15 +13,19 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.widget.Toast;
 
+import com.example.android.scmu_epra.connection.PostJsonData;
+import com.example.android.scmu_epra.users.UsersFragment;
 import com.example.android.scmu_epra.mn_burglaryManag.BurglaryManagementFragment;
 import com.example.android.scmu_epra.mn_devices.DevicesFragment;
 import com.example.android.scmu_epra.mn_history.AlarmHistoryFragment;
-import com.example.android.scmu_epra.mn_home.Home;
+import com.example.android.scmu_epra.mn_home.HomeFragment;
 
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener,
+        PostJsonData.OnStatusAvailable {
 
 
     private NavigationView navigationView;
@@ -59,21 +64,29 @@ public class MainActivity extends AppCompatActivity
 
     private void displaySelectedScreen(int id) {
         Fragment fragment = null;
-
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         switch (id) {
             case R.id.nav_home:
-                Home h = new Home();
+                HomeFragment h = new HomeFragment();
                 h.setNavigationView(navigationView);
                 fragment = h;
+                ft.replace(R.id.screen_area, fragment, HomeFragment.TAG);
                 break;
             case R.id.nav_history:
                 fragment = new AlarmHistoryFragment();
+                ft.replace(R.id.screen_area, fragment, AlarmHistoryFragment.TAG);
                 break;
             case R.id.nav_devices:
                 fragment = new DevicesFragment();
+                ft.replace(R.id.screen_area, fragment, DevicesFragment.TAG);
                 break;
             case R.id.nav_burglaryManag:
                 fragment = new BurglaryManagementFragment();
+                ft.replace(R.id.screen_area, fragment, BurglaryManagementFragment.TAG);
+                break;
+            case R.id.nav_contacts:
+                fragment = new UsersFragment();
+                ft.replace(R.id.screen_area, fragment, UsersFragment.TAG);
                 break;
             case R.id.nav_settings:
                 Intent intent = new Intent(this, com.example.android.scmu_epra.SettingsActivity.class);
@@ -81,20 +94,16 @@ public class MainActivity extends AppCompatActivity
                 break;
         }
 
-        if (fragment != null) {
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.screen_area, fragment);
-            ft.commit();
-        }
+        ft.commit();
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
     }
 
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
@@ -102,4 +111,29 @@ public class MainActivity extends AppCompatActivity
 
         return true;
     }
+
+    @Override
+    public void onStatusAvailable(Boolean status) {
+        // TODO adicionar id ao statusAvailable para saber de onde veio
+//        //if (id == whatever) {
+//            if (status) {
+//                Toast.makeText(this, R.string.permissions_saved, Toast.LENGTH_LONG).show();
+//            } else {
+//                Toast.makeText(this, R.string.permissions_not_saved, Toast.LENGTH_LONG).show();
+//            }
+//        //} else if (id == whatever) {
+            if (status) {
+                Toast.makeText(this, R.string.account_deleted, Toast.LENGTH_LONG).show();
+
+                // Update fragment
+                UsersFragment fragment = (UsersFragment) getSupportFragmentManager().findFragmentByTag(UsersFragment.TAG);
+                final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                ft.detach(fragment);
+                ft.attach(fragment);
+                ft.commit();
+            } else {
+                Toast.makeText(this, R.string.account_delete_failed, Toast.LENGTH_LONG).show();
+            }
+    }
+
 }

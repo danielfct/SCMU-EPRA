@@ -11,10 +11,12 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GetHistoryJsonData extends AsyncTask<String, Void, List<Row>> implements GetRawData.OnDownloadComplete {
+public class GetHistoryJsonData extends AsyncTask<String, Void, List<Row>>
+        implements GetRawData.OnDownloadComplete {
+
     private static final String TAG = "GetHistoryJsonData";
 
-    private List<Row> mRowList = null;
+    private List<Row> mRowList;
     private String mBaseURL;
 
     private final OnDataAvailable mCallBack;
@@ -27,6 +29,7 @@ public class GetHistoryJsonData extends AsyncTask<String, Void, List<Row>> imple
         Log.d(TAG, "GetJsonData called");
         mBaseURL = baseURL;
         mCallBack = callBack;
+        mRowList = new ArrayList<>();
     }
 
     @Override
@@ -62,13 +65,11 @@ public class GetHistoryJsonData extends AsyncTask<String, Void, List<Row>> imple
     public void onDownloadComplete(String data, DownloadStatus status) {
         Log.d(TAG, "onDownloadComplete starts. Status = " + status);
 
-        if(status == DownloadStatus.OK) {
-            mRowList = new ArrayList<>();
-
+        if (status == DownloadStatus.OK) {
             try {
                 JSONArray itemsArray = new JSONArray(data);
 
-                for(int i=0; i<itemsArray.length(); i++) {
+                for (int i = 0; i < itemsArray.length(); i++) {
                     JSONObject jsonRow = itemsArray.getJSONObject(i);
                     String id = jsonRow.getString("id");
                     String evento = jsonRow.getString("evento");

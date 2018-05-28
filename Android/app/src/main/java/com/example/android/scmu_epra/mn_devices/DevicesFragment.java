@@ -24,14 +24,13 @@ import butterknife.ButterKnife;
 
 public class DevicesFragment extends Fragment {
 
+    public static final String TAG = "DevicesFragment";
 
     @BindView(R.id.list_devices)
     ListView listView;
 
     private Switch sw;
     private DevicesListAdapter listAdapter;
-
-
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {

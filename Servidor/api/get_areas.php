@@ -39,11 +39,6 @@ if($num>0){
             "sensor" => $sensor,
         );
 
-        /*if ($num == 1) {
-          echo json_encode($area_item);
-          return;
-        }*/
-
         array_push($area_arr, $area_item);
     }
 

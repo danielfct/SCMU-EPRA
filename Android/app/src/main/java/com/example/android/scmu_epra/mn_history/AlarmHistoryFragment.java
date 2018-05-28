@@ -21,9 +21,10 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class AlarmHistoryFragment extends Fragment implements GetHistoryJsonData.OnDataAvailable, PostJsonData.OnStatusAvailable {
+public class AlarmHistoryFragment extends Fragment
+        implements GetHistoryJsonData.OnDataAvailable, PostJsonData.OnStatusAvailable {
 
-    private static final String TAG = "AlarmHistoryFragment";
+    public static final String TAG = "AlarmHistoryFragment";
 
     @BindView(R.id.alarm_history)
     ListView listView;

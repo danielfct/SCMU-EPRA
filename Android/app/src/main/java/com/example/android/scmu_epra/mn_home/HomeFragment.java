@@ -34,9 +34,10 @@ import belka.us.androidtoggleswitch.widgets.ToggleSwitch;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class Home extends Fragment implements GetJsonData.OnDataAvailable, GetSimulatorJsonData.OnDataAvailable {
+public class HomeFragment extends Fragment implements GetJsonData.OnDataAvailable, GetSimulatorJsonData.OnDataAvailable {
 
-    private static final String TAG = "Home";
+    public static final String TAG = "HomeFragment";
+
     @BindView(R.id.show_history)
     Button btnShowHistory;
     @BindView(R.id.toggleOnOff)
@@ -72,7 +73,7 @@ public class Home extends Fragment implements GetJsonData.OnDataAvailable, GetSi
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
 
-        getActivity().setTitle("Home");
+        getActivity().setTitle("HomeFragment");
 
         Log.d(TAG, "onViewCreated: sw = " + (sw != null));
 
@@ -131,7 +132,7 @@ public class Home extends Fragment implements GetJsonData.OnDataAvailable, GetSi
 
     @Override
     public void onDataAvailable(JSONObject data) {
-        Log.d(TAG, "onDataAvailable Home: starts");
+        Log.d(TAG, "onDataAvailable HomeFragment: starts");
         if (data != null) {
             Log.d(TAG, "onDataAvailable: data is not null");
             try {
@@ -144,10 +145,10 @@ public class Home extends Fragment implements GetJsonData.OnDataAvailable, GetSi
                     toggleOnOff.setCheckedTogglePosition(stateInt);
                 }
             } catch (JSONException e) {
-                Log.e(TAG, "onDataAvailable: Home JSON GET error: " + e.getMessage() );
+                Log.e(TAG, "onDataAvailable: HomeFragment JSON GET error: " + e.getMessage() );
             }
         }
-        Log.d(TAG, "onDataAvailable Home: ends");
+        Log.d(TAG, "onDataAvailable HomeFragment: ends");
     }
 
     @Override
@@ -155,22 +156,14 @@ public class Home extends Fragment implements GetJsonData.OnDataAvailable, GetSi
         Log.d(TAG, "onDataAvailable: starts");
         if(status == DownloadStatus.OK && data != null && data.size() > 0) {
             HomeListAdapter listAdapter = new HomeListAdapter(getContext(), 0, data);
-            BottomSheetListView listView = (BottomSheetListView) getView().findViewById(R.id.list_view);
+            BottomSheetListView listView = getView().findViewById(R.id.list_view);
             listView.setAdapter(listAdapter);
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                     //TODO: Define item click action here
-
                     sw = view.findViewById(R.id.switch1);
-
-                    if (sw.isChecked()) {
-                        sw.setChecked(false);
-                    }
-                    else {
-                        sw.setChecked(true);
-                    }
-
+                    sw.setChecked(!sw.isChecked());
                 }
             });
         } else {

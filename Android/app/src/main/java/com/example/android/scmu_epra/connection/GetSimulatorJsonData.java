@@ -13,10 +13,12 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GetSimulatorJsonData extends AsyncTask<String, Void, List<HomeItem>> implements GetRawData.OnDownloadComplete {
+public class GetSimulatorJsonData extends AsyncTask<String, Void, List<HomeItem>>
+        implements GetRawData.OnDownloadComplete {
+
     private static final String TAG = "GetSimulatorJsonData";
 
-    private List<HomeItem> mRowList = null;
+    private List<HomeItem> mRowList;
     private String mBaseURL;
 
     private final OnDataAvailable mCallBack;
@@ -27,8 +29,9 @@ public class GetSimulatorJsonData extends AsyncTask<String, Void, List<HomeItem>
 
     public GetSimulatorJsonData(OnDataAvailable callBack, String baseURL) {
         Log.d(TAG, "GetJsonSimulatorData called");
-        mBaseURL = baseURL;
         mCallBack = callBack;
+        mBaseURL = baseURL;
+        mRowList = new ArrayList<>();
     }
 
     @Override
@@ -65,8 +68,6 @@ public class GetSimulatorJsonData extends AsyncTask<String, Void, List<HomeItem>
         Log.d(TAG, "onDownloadComplete starts. Status = " + status);
 
         if(status == DownloadStatus.OK) {
-            mRowList = new ArrayList<>();
-
             try {
                 JSONArray itemsArray = new JSONArray(data);
 
