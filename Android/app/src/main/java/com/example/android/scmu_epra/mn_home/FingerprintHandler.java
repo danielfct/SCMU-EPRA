@@ -1,4 +1,4 @@
-package com.example.android.scmu_epra.auth;
+package com.example.android.scmu_epra.mn_home;
 
 import android.annotation.TargetApi;
 import android.app.Activity;

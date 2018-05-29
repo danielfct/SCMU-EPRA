@@ -22,15 +22,28 @@
             android:orientation="vertical">
 
 
-
-            <belka.us.androidtoggleswitch.widgets.ToggleSwitch
-                android:id="@+id/toggleOnOff"
+            <RelativeLayout
+                android:id="@+id/toggleParent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="20dp"
-                custom:toggleWidth="90dp"
-                custom:textToggleLeft="OFF"
-                custom:textToggleRight="ON" />
+                android:clickable="true">
+
+                <belka.us.androidtoggleswitch.widgets.ToggleSwitch
+                    android:id="@+id/toggleOnOff"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:clickable="false"
+                    android:focusable="false"
+                    android:textSize="20dp"
+                    custom:toggleWidth="90dp"
+                    custom:textToggleLeft="OFF"
+                    custom:textToggleRight="ON" />
+            </RelativeLayout>
+
+
+
+
+
 
 
             <TextView

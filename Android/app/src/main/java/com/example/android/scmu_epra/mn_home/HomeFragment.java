@@ -1,7 +1,15 @@
 package com.example.android.scmu_epra.mn_home;
 
+import android.Manifest;
+import android.app.AlertDialog;
+import android.app.KeyguardManager;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Rect;
+import android.hardware.fingerprint.FingerprintManager;
+import android.os.Build;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
@@ -10,7 +18,10 @@ import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.DragEvent;
 import android.view.LayoutInflater;
@@ -19,9 +30,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.Switch;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.android.scmu_epra.BottomSheetListView;
 import com.example.android.scmu_epra.Constants;
@@ -58,6 +74,8 @@ public class HomeFragment extends Fragment implements GetJsonData.OnDataAvailabl
     ProgressBar progressSpinner;
     @BindView(R.id.list_view)
     BottomSheetListView listView;
+    @BindView(R.id.toggleParent)
+    RelativeLayout toggleParent;
 
 
     private boolean alarmIsOn;
@@ -88,7 +106,6 @@ public class HomeFragment extends Fragment implements GetJsonData.OnDataAvailabl
 
         Log.d(TAG, "onViewCreated: sw = " + (sw != null));
 
-
         getData();
 
         mHandler = new Handler();
@@ -112,10 +129,43 @@ public class HomeFragment extends Fragment implements GetJsonData.OnDataAvailabl
             }
         });
 
+        toggleParent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d("onclick","toggleParent");
+
+            }
+        });
+
+        toggleOnOff.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d("onclick","toggle");
+            }
+        });
+        toggleOnOff.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                Log.d("ontouch","toggle");
+                return false;
+            }
+        });
+
+
+
         toggleOnOff.setOnToggleSwitchChangeListener(new ToggleSwitch.OnToggleSwitchChangeListener(){
 
             @Override
             public void onToggleSwitchChangeListener(int position, boolean isChecked) {
+                Log.d("ontoggleswitch","toggle");
+
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                View unlockView = getLayoutInflater().inflate(R.layout.activity_auth, null);
+
+
+                //setupUnlockDialog();
+
                 if (position == 0) {
                     //TODO: turn alarm off
                 }
@@ -218,5 +268,123 @@ public class HomeFragment extends Fragment implements GetJsonData.OnDataAvailabl
         getSimulatorJsonData.execute("test");
 
         Log.d(TAG, "getData: data aqquired");
+    }
+
+
+
+
+    private void setupUnlockDialog() {
+        TextView uHeadingLabel;
+        ImageView uFingerprintImage;
+        TextView uParagraphLabel;
+        FingerprintManager uFingerprintManager;
+        KeyguardManager uKeyguardManager;
+        EditText uPin1EditText;
+        EditText uPin2EditText;
+        EditText uPin3EditText;
+
+
+        uFingerprintImage = getView().findViewById(R.id.fingerprintImage);
+        uParagraphLabel = getView().findViewById(R.id.paragraphLabel);
+        uPin1EditText = getView().findViewById(R.id.pin1);
+        uPin2EditText = getView().findViewById(R.id.pin2);
+        uPin3EditText = getView().findViewById(R.id.pin3);
+
+        if (uPin1EditText != null && uPin2EditText != null && uPin3EditText != null) {
+            uPin1EditText.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    String pin1Text = uPin1EditText.getText().toString();
+                    String pin2Text = uPin2EditText.getText().toString();
+                    String pin3Text = uPin3EditText.getText().toString();
+
+                    if (pin1Text.length() > 0 && pin2Text.length() > 0 && pin3Text.length() > 0) {
+                        // TODO: checkPin(pin1Text+pin2Text+pin3Text)
+                    } else if (pin1Text.length() > 0) {
+                        uPin2EditText.requestFocus();
+                    }
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                }
+            });
+
+            uPin2EditText.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    String pin1Text = uPin1EditText.getText().toString();
+                    String pin2Text = uPin2EditText.getText().toString();
+                    String pin3Text = uPin3EditText.getText().toString();
+
+                    if (pin1Text.length() > 0 && pin2Text.length() > 0 && pin3Text.length() > 0) {
+                        // TODO: checkPin(pin1Text+pin2Text+pin3Text)
+                    } else if (pin2Text.length() > 0) {
+                        uPin3EditText.requestFocus();
+                    }
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                }
+            });
+
+            uPin3EditText.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    String pin1Text = uPin1EditText.getText().toString();
+                    String pin2Text = uPin2EditText.getText().toString();
+                    String pin3Text = uPin3EditText.getText().toString();
+
+                    if (pin1Text.length() > 0 && pin2Text.length() > 0 && pin3Text.length() > 0) {
+                        // TODO: checkPin(pin1Text+pin2Text+pin3Text)
+                    }
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                }
+            });
+
+        }
+
+
+        // Android version must be greater or equal to Marshmallow
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            uFingerprintManager = (FingerprintManager) getActivity().getSystemService(Context.FINGERPRINT_SERVICE);
+            uKeyguardManager = (KeyguardManager) getActivity().getSystemService(Context.KEYGUARD_SERVICE);
+
+            // Check if device has fingerprint scanner
+            if (!uFingerprintManager.isHardwareDetected()) {
+                uParagraphLabel.setText("Fingerprint scanner not detected in your device.");
+                // Check if permission to use fingerprint scanner has been granted
+            } else if(ContextCompat.checkSelfPermission(getActivity().getApplicationContext(), Manifest.permission.USE_FINGERPRINT) != PackageManager.PERMISSION_GRANTED) {
+                uParagraphLabel.setText("Permission not granted to use fingerprint scanner.");
+                // Check if lock screen is secured with at least one type of lock
+            } else if(!uKeyguardManager.isKeyguardSecure()) {
+                uParagraphLabel.setText("Add lock to your phone in settings.");
+                // Check if at least one fingerprint is registered
+            } else if(!uFingerprintManager.hasEnrolledFingerprints()) {
+                uParagraphLabel.setText("You should add at least one fingerprint to use this feature.");
+            } else {
+                uParagraphLabel.setText("Place your finger on the scanner to access the system.");
+
+
+                FingerprintHandler fingerprintHandler = new FingerprintHandler(getActivity().getApplicationContext());
+                fingerprintHandler.startAuth(uFingerprintManager, null);
+            }
+        }
     }
 }
