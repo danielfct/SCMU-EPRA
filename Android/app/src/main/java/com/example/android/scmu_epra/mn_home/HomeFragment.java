@@ -13,6 +13,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -38,6 +39,7 @@ import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.example.android.scmu_epra.BottomSheetListView;
 import com.example.android.scmu_epra.Constants;
@@ -65,7 +67,7 @@ public class HomeFragment extends Fragment implements GetJsonData.OnDataAvailabl
     @BindView(R.id.show_history)
     Button btnShowHistory;
     @BindView(R.id.toggleOnOff)
-    ToggleSwitch toggleOnOff;
+    ToggleButton toggleOnOff;
     @BindView(R.id.bottom_sheet)
     LinearLayout bottomListView;
     @BindView(R.id.backgroundOfButton)
@@ -74,10 +76,12 @@ public class HomeFragment extends Fragment implements GetJsonData.OnDataAvailabl
     ProgressBar progressSpinner;
     @BindView(R.id.list_view)
     BottomSheetListView listView;
-    @BindView(R.id.toggleParent)
-    RelativeLayout toggleParent;
+    @BindView(R.id.home_baseLayout)
+    CoordinatorLayout coordinatorLayout;
 
 
+    private View thisView;
+    private View unlockView;
     private boolean alarmIsOn;
     private boolean bottomSheetIsSet = false;
     private Switch sw;
@@ -129,52 +133,59 @@ public class HomeFragment extends Fragment implements GetJsonData.OnDataAvailabl
             }
         });
 
-        toggleParent.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.d("onclick","toggleParent");
-
-            }
-        });
 
         toggleOnOff.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d("onclick","toggle");
-            }
-        });
-        toggleOnOff.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                Log.d("ontouch","toggle");
-                return false;
-            }
-        });
-
-
-
-        toggleOnOff.setOnToggleSwitchChangeListener(new ToggleSwitch.OnToggleSwitchChangeListener(){
-
-            @Override
-            public void onToggleSwitchChangeListener(int position, boolean isChecked) {
-                Log.d("ontoggleswitch","toggle");
-
+                Log.d("onclick","toggle1");
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                View unlockView = getLayoutInflater().inflate(R.layout.activity_auth, null);
+                unlockView = getLayoutInflater().from(getActivity()).inflate(R.layout.activity_auth, null);
+                builder.setView(unlockView);
+                builder.show();
 
-
-                //setupUnlockDialog();
-
-                if (position == 0) {
-                    //TODO: turn alarm off
+                setupUnlockDialog();
+                if (!toggleOnOff.isChecked()){
+                    toggleOnOff.setChecked(false);
                 }
-                else {
-                    //TODO: turn alarm on
+                else{
+                    toggleOnOff.setChecked(true);
                 }
             }
         });
 
+
+
+
+
+
+
+
+
+
+//
+//        toggleOnOff.setOnToggleSwitchChangeListener(new ToggleSwitch.OnToggleSwitchChangeListener(){
+//
+//            @Override
+//            public void onToggleSwitchChangeListener(int position, boolean isChecked) {
+//                Log.d("ontoggleswitch","toggle");
+//
+//
+//                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+//                View unlockView = getLayoutInflater().inflate(R.layout.activity_auth, null);
+//
+//
+//                //setupUnlockDialog();
+//
+//                if (position == 0) {
+//                    //TODO: turn alarm off
+//                }
+//                else {
+//                    //TODO: turn alarm on
+//                }
+//            }
+//        });
+//
         BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(bottomListView);
 
         Rect baseRect = new Rect();
@@ -193,7 +204,8 @@ public class HomeFragment extends Fragment implements GetJsonData.OnDataAvailabl
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        return getLayoutInflater().inflate(R.layout.frag_home, container, false);
+        thisView = getLayoutInflater().inflate(R.layout.frag_home, container, false);
+        return thisView;
     }
 
     @Override
@@ -226,7 +238,14 @@ public class HomeFragment extends Fragment implements GetJsonData.OnDataAvailabl
                     Log.d(TAG, "onDataAvailable: state = " + state + " sw is not null");
                     int stateInt = Integer.parseInt(state);
                     Log.d(TAG, "onDataAvailable: stateInt = " + stateInt);
-                    toggleOnOff.setCheckedTogglePosition(stateInt);
+                    if (stateInt == 1) {
+                        toggleOnOff.setChecked(true);
+                        //TODO:turn toggle on
+                    }
+                    else {
+                        toggleOnOff.setChecked(false);
+                        //TODO: turn toggle off
+                    }
                 }
             } catch (JSONException e) {
                 Log.e(TAG, "onDataAvailable: HomeFragment JSON GET error: " + e.getMessage() );
@@ -284,11 +303,11 @@ public class HomeFragment extends Fragment implements GetJsonData.OnDataAvailabl
         EditText uPin3EditText;
 
 
-        uFingerprintImage = getView().findViewById(R.id.fingerprintImage);
-        uParagraphLabel = getView().findViewById(R.id.paragraphLabel);
-        uPin1EditText = getView().findViewById(R.id.pin1);
-        uPin2EditText = getView().findViewById(R.id.pin2);
-        uPin3EditText = getView().findViewById(R.id.pin3);
+        uFingerprintImage = unlockView.findViewById(R.id.fingerprintImage);
+        uParagraphLabel = unlockView.findViewById(R.id.paragraphLabel);
+        uPin1EditText = unlockView.findViewById(R.id.pin1);
+        uPin2EditText = unlockView.findViewById(R.id.pin2);
+        uPin3EditText = unlockView.findViewById(R.id.pin3);
 
         if (uPin1EditText != null && uPin2EditText != null && uPin3EditText != null) {
             uPin1EditText.addTextChangedListener(new TextWatcher() {
@@ -366,6 +385,7 @@ public class HomeFragment extends Fragment implements GetJsonData.OnDataAvailabl
             uFingerprintManager = (FingerprintManager) getActivity().getSystemService(Context.FINGERPRINT_SERVICE);
             uKeyguardManager = (KeyguardManager) getActivity().getSystemService(Context.KEYGUARD_SERVICE);
 
+
             // Check if device has fingerprint scanner
             if (!uFingerprintManager.isHardwareDetected()) {
                 uParagraphLabel.setText("Fingerprint scanner not detected in your device.");
@@ -382,7 +402,7 @@ public class HomeFragment extends Fragment implements GetJsonData.OnDataAvailabl
                 uParagraphLabel.setText("Place your finger on the scanner to access the system.");
 
 
-                FingerprintHandler fingerprintHandler = new FingerprintHandler(getActivity().getApplicationContext());
+                FingerprintHandler fingerprintHandler = new FingerprintHandler(getActivity(), uParagraphLabel);
                 fingerprintHandler.startAuth(uFingerprintManager, null);
             }
         }

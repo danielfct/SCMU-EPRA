@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout
-    android:id="@+id/baseLayout"
+    android:id="@+id/home_baseLayout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -22,28 +22,13 @@
             android:orientation="vertical">
 
 
-            <RelativeLayout
-                android:id="@+id/toggleParent"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:clickable="true">
-
-                <belka.us.androidtoggleswitch.widgets.ToggleSwitch
-                    android:id="@+id/toggleOnOff"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:clickable="false"
-                    android:focusable="false"
-                    android:textSize="20dp"
-                    custom:toggleWidth="90dp"
-                    custom:textToggleLeft="OFF"
-                    custom:textToggleRight="ON" />
-            </RelativeLayout>
-
-
-
-
-
+            <ToggleButton
+                android:id="@+id/toggleOnOff"
+                android:layout_width="180dp"
+                android:layout_height="60dp"
+                android:disabledAlpha="1.5"
+                android:textOn="ALARM ON"
+                android:textOff="ALARM OFF"/>
 
 
             <TextView

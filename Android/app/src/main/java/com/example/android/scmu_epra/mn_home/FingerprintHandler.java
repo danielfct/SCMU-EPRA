@@ -15,9 +15,11 @@ import com.example.android.scmu_epra.R;
 class FingerprintHandler extends FingerprintManager.AuthenticationCallback {
 
     private Context context;
+    private TextView paragraphLabel;
 
-    public FingerprintHandler(Context context) {
+    public FingerprintHandler(Context context, TextView paragraphLabel) {
         this.context = context;
+        this.paragraphLabel = paragraphLabel;
     }
 
     public void startAuth(FingerprintManager fingerprintManager, FingerprintManager.CryptoObject cryptoObject) {
@@ -46,7 +48,6 @@ class FingerprintHandler extends FingerprintManager.AuthenticationCallback {
     }
 
     private void update(String s, boolean b) {
-        TextView paragraphLabel = (TextView) ((Activity)context).findViewById(R.id.paragraphLabel);
 
         paragraphLabel.setText(s);
 
