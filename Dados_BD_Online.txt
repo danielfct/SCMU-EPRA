@@ -1,0 +1,4 @@
+https://databases-auth.000webhost.com
+User: id5662112_scmu
+Password: scmu2018
+Database: id5662112_epra_db

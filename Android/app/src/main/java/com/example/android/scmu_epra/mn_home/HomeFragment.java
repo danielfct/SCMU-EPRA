@@ -1,27 +1,36 @@
 package com.example.android.scmu_epra.mn_home;
 
+import android.content.Context;
 import android.graphics.Rect;
+import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
+import android.view.DragEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Switch;
 
 import com.example.android.scmu_epra.BottomSheetListView;
+import com.example.android.scmu_epra.Constants;
 import com.example.android.scmu_epra.MainActivity;
 import com.example.android.scmu_epra.R;
 import com.example.android.scmu_epra.connection.DownloadStatus;
 import com.example.android.scmu_epra.connection.GetAreaJsonData;
 import com.example.android.scmu_epra.connection.GetJsonData;
+import com.example.android.scmu_epra.connection.GetSimulatorJsonData;
 import com.example.android.scmu_epra.connection.PostJsonData;
 import com.example.android.scmu_epra.mn_history.AlarmHistoryFragment;
 
@@ -35,9 +44,10 @@ import belka.us.androidtoggleswitch.widgets.ToggleSwitch;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class Home extends Fragment implements GetJsonData.OnDataAvailable, GetAreaJsonData.OnDataAvailable, PostJsonData.OnStatusAvailable {
+public class HomeFragment extends Fragment implements GetJsonData.OnDataAvailable, GetAreaJsonData.OnDataAvailable, PostJsonData.OnStatusAvailable {
 
-    private static final String TAG = "Home";
+    public static final String TAG = "Home";
+
     @BindView(R.id.show_history)
     Button btnShowHistory;
     @BindView(R.id.toggleOnOff)
@@ -46,12 +56,21 @@ public class Home extends Fragment implements GetJsonData.OnDataAvailable, GetAr
     LinearLayout bottomListView;
     @BindView(R.id.backgroundOfButton)
     LinearLayout baseLayout;
+    @BindView(R.id.home_progress_spinner)
+    ProgressBar progressSpinner;
+    @BindView(R.id.list_view)
+    BottomSheetListView listView;
+
 
     private boolean alarmIsOn;
     private boolean bottomSheetIsSet = false;
     private Switch sw;
+    private Context mContext;
+    private Handler mHandler;
+    private Runnable mRunnable;
 
     private NavigationView navigationView;
+
 
 
     @Override
@@ -73,9 +92,12 @@ public class Home extends Fragment implements GetJsonData.OnDataAvailable, GetAr
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
 
-        getActivity().setTitle("Home");
+        getActivity().setTitle(TAG);
 
         Log.d(TAG, "onViewCreated: sw = " + (sw != null));
+
+        mHandler = new Handler();
+        mHandler.postDelayed(mRunnable, Constants.DATA_UPDATE_FREQUENCY);
 
         btnShowHistory.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -112,17 +134,23 @@ public class Home extends Fragment implements GetJsonData.OnDataAvailable, GetAr
         int rH = baseRect.height();
     }
 
-    private final void executePostJson(String url, String... params) {
-        PostJsonData postJsonData = new PostJsonData(this, url);
-        postJsonData.execute(params);
-    }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         return getLayoutInflater().inflate(R.layout.frag_home, container, false);
     }
 
+    @Override
+    public void onAttach(Context context) {
+        mContext = context;
+        super.onAttach(context);
+    }
+
+    @Override
+    public void onDestroy() {
+        mHandler.removeCallbacks(mRunnable);
+        super.onDestroy();
+    }
 
     public void setNavigationView(NavigationView n) {
         if (navigationView == null) {
@@ -132,7 +160,7 @@ public class Home extends Fragment implements GetJsonData.OnDataAvailable, GetAr
 
     @Override
     public void onDataAvailable(JSONObject data) {
-        Log.d(TAG, "onDataAvailable Home: starts");
+        Log.d(TAG, "onDataAvailable HomeFragment: starts");
         if (data != null) {
             Log.d(TAG, "onDataAvailable: data is not null");
             try {
@@ -145,10 +173,10 @@ public class Home extends Fragment implements GetJsonData.OnDataAvailable, GetAr
                     toggleOnOff.setCheckedTogglePosition(stateInt);
                 }
             } catch (JSONException e) {
-                Log.e(TAG, "onDataAvailable: Home JSON GET error: " + e.getMessage() );
+                Log.e(TAG, "onDataAvailable: HomeFragment JSON GET error: " + e.getMessage() );
             }
         }
-        Log.d(TAG, "onDataAvailable Home: ends");
+        Log.d(TAG, "onDataAvailable HomeFragment: ends");
     }
 
     @Override
@@ -181,6 +209,11 @@ public class Home extends Fragment implements GetJsonData.OnDataAvailable, GetAr
         }
 
         Log.d(TAG, "onDataAvailable: ends");
+    }
+
+    private final void executePostJson(String url, String... params) {
+        PostJsonData postJsonData = new PostJsonData(this, url);
+        postJsonData.execute(params);
     }
 
     @Override

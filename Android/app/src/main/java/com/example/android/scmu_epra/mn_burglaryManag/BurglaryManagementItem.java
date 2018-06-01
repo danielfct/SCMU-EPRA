@@ -1,11 +1,11 @@
 package com.example.android.scmu_epra.mn_burglaryManag;
 
-public class BurglaryHistoryItem {
+public class BurglaryManagementItem {
 
     private String name;
     private String time;
 
-    BurglaryHistoryItem(String name, String time) {
+    BurglaryManagementItem(String name, String time) {
         this.name = name;
         this.time = time;
     }

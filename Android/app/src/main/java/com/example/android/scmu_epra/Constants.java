@@ -6,6 +6,9 @@ public interface Constants {
     int REQUEST_READ_CONTACTS = 1;
     int REQUEST_INTERNET_CONNECTION = 2;
 
+    int DATA_UPDATE_FREQUENCY = 15000;
+
+
     interface Login {
         int LOGIN_SUCCESS = -1;
         int LOGIN_FAILURE_ACTIVITY_INVALID = 0;

@@ -45,8 +45,6 @@ public class AlarmHistoryListAdapter extends ArrayAdapter<Row> {
         }
 
         Row item = this.list.get(position);
-        //AlarmHistoryItem.AlarmHistoryType type = item.getType();
-        //String message = item.getMessage();
         String evento = item.getEvento();
         String date = item.getData();
 

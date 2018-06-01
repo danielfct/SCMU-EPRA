@@ -152,6 +152,18 @@
     <string name="authentication_divider">Or</string>
     <string name="auth_pin">Put the alarm pin below</string>
     <string name="auth_alert">Wrong pin!</string>
+    <string name="users">Users</string>
+    <string name="no_users">No users&#8230;</string>
+    <string name="menu_refresh">Refresh</string>
+    <string name="cancel">Cancel</string>
+    <string name="no_permissions">No permissions</string>
+    <string name="permissions_saved">Permissions saved</string>
+    <string name="permissions_not_saved">Failed to save permissions</string>
+    <string name="get_users_failed">Failed to get data about users</string>
+    <string name="delete_user_confirmation_title">Delete user account</string>
+    <string name="delete_user_confirmation">Do you really want to delete %1$s\'s account?</string>
+    <string name="account_deleted">Account deleted</string>
+    <string name="account_delete_failed">Failed to delete account</string>
 
 </resources>
 

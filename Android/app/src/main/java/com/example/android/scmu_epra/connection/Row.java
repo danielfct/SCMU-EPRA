@@ -1,7 +1,5 @@
 package com.example.android.scmu_epra.connection;
 
-import java.util.Date;
-
 public class Row {
 
     private int id;

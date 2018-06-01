@@ -4,7 +4,7 @@ android {
     compileSdkVersion 27
     defaultConfig {
         applicationId "pt.unl.fct.scmu.epra"
-        minSdkVersion 21
+        minSdkVersion 23
         targetSdkVersion 27
         versionCode 1
         versionName "1.0"
@@ -28,4 +28,5 @@ dependencies {
     implementation 'com.android.support:multidex:1.0.0'
     implementation 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
     implementation 'us.belka:androidtoggleswitch:1.2.2'
+    implementation 'com.google.code.gson:gson:2.8.4'
 }
