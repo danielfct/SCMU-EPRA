@@ -164,6 +164,7 @@
     <string name="delete_user_confirmation">Do you really want to delete %1$s\'s account?</string>
     <string name="account_deleted">Account deleted</string>
     <string name="account_delete_failed">Failed to delete account</string>
+    <string name="devices_fragment_title">Devices</string>
 
 </resources>
 

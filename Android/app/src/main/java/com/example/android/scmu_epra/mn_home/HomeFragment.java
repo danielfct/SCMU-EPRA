@@ -195,7 +195,6 @@ public class HomeFragment extends Fragment implements GetJsonData.OnDataAvailabl
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                    //TODO: Define item click action here
                     sw = view.findViewById(R.id.switch1);
                     sw.setChecked(!sw.isChecked());
                 }

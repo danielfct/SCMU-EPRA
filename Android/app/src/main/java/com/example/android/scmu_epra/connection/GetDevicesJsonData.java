@@ -4,7 +4,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.example.android.scmu_epra.mn_users.AreaItem;
+import com.example.android.scmu_epra.mn_devices.DeviceItem;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -13,20 +13,20 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GetAreasJsonData  extends AsyncTask<String, Void, Void>
+public class GetDevicesJsonData extends AsyncTask<String, Void, Void>
         implements GetRawData.OnDownloadComplete {
 
-    private static final String TAG = "GetAreasJsonData";
+    private static final String TAG = "GetDevicesJsonData";
 
-    private List<AreaItem> mList;
+    private List<DeviceItem> mList;
     private String mBaseURL;
-    private final GetAreasJsonData.OnDataAvailable mCallBack;
+    private final OnDataAvailable mCallBack;
 
     public interface OnDataAvailable {
-        void onDataAvailable(List<AreaItem> data, DownloadStatus status);
+        void onDataAvailable(List<DeviceItem> data, DownloadStatus status);
     }
 
-    public GetAreasJsonData(GetAreasJsonData.OnDataAvailable callBack, String baseURL) {
+    public GetDevicesJsonData(OnDataAvailable callBack, String baseURL) {
         mCallBack = callBack;
         mBaseURL = baseURL;
         mList = new ArrayList<>();
@@ -61,12 +61,10 @@ public class GetAreasJsonData  extends AsyncTask<String, Void, Void>
                 JSONArray itemsArray = new JSONArray(data);
                 for (int i = 0; i < itemsArray.length(); i++) {
                     JSONObject jsonRow = itemsArray.getJSONObject(i);
-                    int id = Integer.parseInt(jsonRow.getString("id"));
                     String name = jsonRow.getString("nome");
-                    boolean isAlarmOn = jsonRow.getString("alarmeLigado").equals("1");
-                    String sensor = jsonRow.getString("sensor");
-
-                    AreaItem item = new AreaItem(id, name, isAlarmOn, sensor);
+                    DeviceItem.DeviceType type = DeviceItem.DeviceType.valueOf(jsonRow.getString("tipo"));
+                    boolean isOn = jsonRow.getString("ligado").equals("1");
+                    DeviceItem item = new DeviceItem(name, type, isOn);
                     mList.add(item);
                 }
             } catch (JSONException e) {

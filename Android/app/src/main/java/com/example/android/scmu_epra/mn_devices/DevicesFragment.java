@@ -2,9 +2,11 @@ package com.example.android.scmu_epra.mn_devices;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -13,10 +15,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.SearchView;
 import android.widget.Switch;
 
+import com.example.android.scmu_epra.Constants;
 import com.example.android.scmu_epra.R;
+import com.example.android.scmu_epra.connection.DownloadStatus;
+import com.example.android.scmu_epra.connection.GetDevicesJsonData;
+import com.example.android.scmu_epra.connection.GetHistoryJsonData;
+import com.example.android.scmu_epra.connection.GetJsonData;
+import com.example.android.scmu_epra.connection.GetSimulatorJsonData;
+import com.example.android.scmu_epra.connection.Row;
+import com.example.android.scmu_epra.mn_history.AlarmHistoryListAdapter;
+import com.example.android.scmu_epra.mn_users.AreaItem;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.Arrays;
 import java.util.List;
@@ -24,7 +40,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class DevicesFragment extends Fragment {
+public class DevicesFragment extends Fragment
+        implements GetDevicesJsonData.OnDataAvailable {
 
     public static final String TAG = "DevicesFragment";
 
@@ -32,45 +49,65 @@ public class DevicesFragment extends Fragment {
     ListView listView;
     @BindView(R.id.devices_swipe_refresh)
     SwipeRefreshLayout swipeRefresh;
+    @BindView(R.id.devices_progress_spinner)
+    ProgressBar progressSpinner;
 
-    private Switch sw;
-    private DevicesListAdapter listAdapter;
     private Context mContext;
+    private Handler mHandler;
+    private Runnable mRunnable;
+    private Switch sw;
+    private DevicesListAdapter mListAdapter;
 
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+        View view = getLayoutInflater().inflate(R.layout.frag_devices, container, false);
+        ButterKnife.bind(this, view);
+        return view;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this, view);
+        getActivity().setTitle(mContext.getString(R.string.devices_fragment_title));
 
-        getActivity().setTitle("Devices");
+        getData();
 
+        mHandler = new Handler();
+        mRunnable = () -> getData();
+        mHandler.postDelayed(mRunnable, Constants.DATA_UPDATE_FREQUENCY);
+    }
 
-        List<DevicesItem> list = Arrays.asList(
-                new DevicesItem("Altifalante do alarme",DevicesItem.DevicesType.Actuator, true),
-                new DevicesItem("Sensor de movimento da Sala", DevicesItem.DevicesType.Sensor, true),
-                new DevicesItem("Sensor de vibração do Escritório", DevicesItem.DevicesType.Sensor, false),
-                new DevicesItem("Janela da cozinha", DevicesItem.DevicesType.Simulator, false));
+    @Override
+    public void onAttach(Context context) {
+        mContext = context;
+        super.onAttach(context);
+    }
 
-        listAdapter = new DevicesListAdapter(mContext, 0, list);
-        listView.setAdapter(listAdapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                //TODO: Define item click action here
-
+    @Override
+    public void onDataAvailable(List<DeviceItem> data, DownloadStatus status) {
+        Log.d(TAG, "onDataAvailable: starts");
+        if(status == DownloadStatus.OK && data != null && data.size() > 0) {
+            mListAdapter = new DevicesListAdapter(mContext, 0, data);
+            listView.setAdapter(mListAdapter);
+            listView.setOnItemClickListener((adapterView, view, position, id) -> {
                 sw = view.findViewById(R.id.device_switch);
-
-                if (sw.isChecked()) {
-                    sw.setChecked(false);
-                }
-                else {
-                    sw.setChecked(true);
-                }
-
-            }
-        });
-
+                sw.setChecked(!sw.isChecked());
+            });
+        } else {
+            // download or processing failed
+            Log.e(TAG, "onDataAvailable failed with status " + status);
+        }
+        if (progressSpinner.isEnabled()) {
+            progressSpinner.setVisibility(View.GONE);
+        }
+        Log.d(TAG, "onDataAvailable: ends");
     }
 
     @Override
@@ -86,7 +123,7 @@ public class DevicesFragment extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String s) {
-                listAdapter.getFilter().filter(s);
+                mListAdapter.getFilter().filter(s);
                 return false;
             }
         });
@@ -94,23 +131,10 @@ public class DevicesFragment extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        return getLayoutInflater().inflate(R.layout.frag_devices, container, false);
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
-    }
-
-
-    @Override
-    public void onAttach(Context context) {
-        mContext = context;
-        super.onAttach(context);
+    private void getData() {
+        GetDevicesJsonData getJsonData = new GetDevicesJsonData(this,
+                "https://test966996.000webhostapp.com/api/get_devices.php");
+        getJsonData.execute();
     }
 
 }

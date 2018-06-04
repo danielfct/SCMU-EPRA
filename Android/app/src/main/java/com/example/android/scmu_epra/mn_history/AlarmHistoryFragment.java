@@ -9,10 +9,14 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.SearchView;
 
 import com.example.android.scmu_epra.Constants;
 import com.example.android.scmu_epra.R;
@@ -27,7 +31,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class AlarmHistoryFragment extends Fragment
-        implements GetHistoryJsonData.OnDataAvailable, PostJsonData.OnStatusAvailable {
+        implements GetHistoryJsonData.OnDataAvailable {
 
     public static final String TAG = "History";
 
@@ -35,15 +39,16 @@ public class AlarmHistoryFragment extends Fragment
     ListView listView;
     @BindView(R.id.history_progress_spinner)
     ProgressBar progressSpinner;
+    AlarmHistoryListAdapter mListAdapter;
 
     private Context mContext;
     private Handler mHandler;
     private Runnable mRunnable;
 
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
         Log.d(TAG, "onCreate: ends");
     }
 
@@ -69,17 +74,6 @@ public class AlarmHistoryFragment extends Fragment
             }
         };
         mHandler.postDelayed(mRunnable, Constants.DATA_UPDATE_FREQUENCY);
-
-       /* List<AlarmHistoryItem> list = Arrays.asList(
-                new AlarmHistoryItem(AlarmHistoryItem.AlarmHistoryType.AlarmTrigger,"Alarm triggered", "22/04 at 14h27m"),
-                new AlarmHistoryItem(AlarmHistoryItem.AlarmHistoryType.AlarmOnOff,"WZ activated the alarm", "22/04 at 9h17m"),
-                new AlarmHistoryItem(AlarmHistoryItem.AlarmHistoryType.AlarmOnOff,"WZ deactivated the alarm", "21/04 at 17h03m"),
-                new AlarmHistoryItem(AlarmHistoryItem.AlarmHistoryType.AlarmOnOff,"XYZ activated the alarm", "21/04 at 10h31m"));
-        AlarmHistoryListAdapter listAdapter = new AlarmHistoryListAdapter(getContext(), 0, list);
-        listView.setAdapter(listAdapter);
-        listView.setOnItemClickListener((adapterView, v, position, id) -> {
-            //TODO: Define item click action here
-        });*/
     }
 
 
@@ -99,8 +93,8 @@ public class AlarmHistoryFragment extends Fragment
     public void onDataAvailable(List<Row> data, DownloadStatus status) {
         Log.d(TAG, "onDataAvailable: starts");
         if(status == DownloadStatus.OK && data != null && data.size() > 0) {
-            AlarmHistoryListAdapter listAdapter = new AlarmHistoryListAdapter(mContext, 0, data);
-            listView.setAdapter(listAdapter);
+            mListAdapter = new AlarmHistoryListAdapter(mContext, 0, data);
+            listView.setAdapter(mListAdapter);
             listView.setOnItemClickListener((adapterView, v, position, id) -> {
                 //TODO: Define item click action here
             });
@@ -114,25 +108,30 @@ public class AlarmHistoryFragment extends Fragment
         Log.d(TAG, "onDataAvailable: ends");
     }
 
-    @Override
-    public void onStatusAvailable(Boolean status) {
-        Log.d(TAG, "onStatusAvailable: starts");
-
-        if (status) {
-            Log.d(TAG, "onStatusAvailable: SHOW SUCCESS MESSAGE!!");
-        } else {
-            Log.d(TAG, "onStatusAvailable: SHOW ERROR MESSAGE!!");
-        }
-        
-        Log.d(TAG, "onStatusAvailable: ends");
-    }
-
     private void getData() {
         GetHistoryJsonData getJsonData = new GetHistoryJsonData(this,"https://test966996.000webhostapp.com/api/get_history.php");
         getJsonData.execute("test");
         Log.d(TAG, "getData: data aqquired");
+    }
 
-        //PostJsonData postJsonData = new PostJsonData(this, "https://test966996.000webhostapp.com/api/post_history.php");
-        //postJsonData.execute("evento=Teste Post Android!");
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_search, menu);
+        MenuItem item = menu.findItem(R.id.menu_Search);
+        SearchView searchView = (SearchView)item.getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                mListAdapter.getFilter().filter(s);
+                return false;
+            }
+        });
+
+        super.onCreateOptionsMenu(menu, inflater);
     }
 }

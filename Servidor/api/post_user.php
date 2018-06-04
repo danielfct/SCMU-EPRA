@@ -18,7 +18,7 @@ $user = new User($db);
 
 $data = json_decode(file_get_contents("php://input"));
 
-$user->privilegios = $data->privilegios
+$user->privilegios = $data->privilegios;
 
 if ($user->update()) {
     echo '{';

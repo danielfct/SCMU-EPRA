@@ -1,16 +1,20 @@
-create table if not exists utilizador
+create table if not exists utilizadores
 (
-		nome      varchar(255) not null,
-		telemovel varchar(20) not null unique,
-		email     varchar(255) primary key,
-		password  varchar(255) not null,
-		admin     boolean not null default 0,
-		privilegios varchar(255) -- exemplo: 1,2,7 --> são os id's das áreas que ele tem permissão
+		nome      VARCHAR(255) NOT NULL,
+		telemovel VARCHAR(20) NOT NULL unique,
+		email     VARCHAR(255),
+		password  VARCHAR(255) NOT NULL,
+		admin     BOOLEAN NOT NULL DEFAULT 0,
+		privilegios VARCHAR(255), -- exemplo: 1,2,7 --> são os id's das áreas que ele tem permissão
+		PRIMARY KEY (email)
 );
 
-CREATE TABLE IF NOT EXISTS sensoresAtuadores
+CREATE TABLE IF NOT EXISTS devices
 (
-	nome VARCHAR(255) NOT NULL PRIMARY KEY -- exemplo: pir1, piezzo1, led1, led2, pir2, ...
+	nome VARCHAR(255) NOT NULL, -- exemplo: pir1, piezzo1, led1, led2, pir2, ...
+	tipo ENUM('sensor','actuator','simulator'),
+	ligado BOOLEAN NOT NULL DEFAULT 0,
+	PRIMARY KEY (nome)
 );
 
 CREATE TABLE IF NOT EXISTS areas
@@ -19,7 +23,7 @@ CREATE TABLE IF NOT EXISTS areas
 	nome VARCHAR(255) NOT NULL UNIQUE,
 	alarmeLigado BOOLEAN NOT NULL DEFAULT 0, -- saber se está ativa ou não (0 = false)
 	sensor VARCHAR(255) NOT NULL, -- sensor associado à área
-	FOREIGN KEY (sensor) REFERENCES sensoresAtuadores(nome),
+	FOREIGN KEY (sensor) REFERENCES devices(nome),
 	PRIMARY KEY(id)
 );
 
@@ -38,7 +42,7 @@ CREATE TABLE IF NOT EXISTS simuladores
 	estadoAtual BOOLEAN NOT NULL DEFAULT 0,
 	atuador VARCHAR(255) NOT NULL,
 	areaId INT(11) NOT NULL,
-	FOREIGN KEY (atuador) REFERENCES sensoresAtuadores(nome),
+	FOREIGN KEY (atuador) REFERENCES devices(nome),
 	FOREIGN KEY (areaId) REFERENCES areas(id),
 	PRIMARY KEY(id)
 );

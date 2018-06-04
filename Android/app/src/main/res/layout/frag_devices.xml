@@ -5,6 +5,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <ProgressBar
+        android:id="@+id/devices_progress_spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"/>
+
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/devices_swipe_refresh"
         android:layout_width="match_parent"
@@ -17,7 +23,5 @@
         </ListView>
 
     </android.support.v4.widget.SwipeRefreshLayout>
-
-
 
 </RelativeLayout>

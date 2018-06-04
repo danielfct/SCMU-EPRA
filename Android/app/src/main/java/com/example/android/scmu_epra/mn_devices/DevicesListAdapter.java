@@ -20,17 +20,17 @@ import com.example.android.scmu_epra.R;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DevicesListAdapter extends ArrayAdapter<DevicesItem> implements Filterable {
+public class DevicesListAdapter extends ArrayAdapter<DeviceItem> implements Filterable {
 
     private Context context;
-    private List<DevicesItem> listDevices;
-    private List<DevicesItem> listOriginal;
+    private List<DeviceItem> listDevices;
+    private List<DeviceItem> listOriginal;
     private TextDrawable.IBuilder builder;
     private ColorGenerator generator;
     private NameFilter nameFilter;
 
 
-    public DevicesListAdapter(Context context, int resource, List<DevicesItem> items) {
+    public DevicesListAdapter(Context context, int resource, List<DeviceItem> items) {
         super(context, 0, items);
         this.context = context;
         this.listDevices = items;
@@ -50,7 +50,7 @@ public class DevicesListAdapter extends ArrayAdapter<DevicesItem> implements Fil
 
     @Nullable
     @Override
-    public DevicesItem getItem(int position) {
+    public DeviceItem getItem(int position) {
         return listDevices.get(position);
     }
 
@@ -68,7 +68,7 @@ public class DevicesListAdapter extends ArrayAdapter<DevicesItem> implements Fil
             v = LayoutInflater.from(this.context).inflate(R.layout.frag_devices_list_item, parent, false);
         }
 
-        DevicesItem item = this.listDevices.get(position);
+        DeviceItem item = this.listDevices.get(position);
 
         TextView textView = v.findViewById(R.id.device_name);
         textView.setText(item.getName());
@@ -99,12 +99,12 @@ public class DevicesListAdapter extends ArrayAdapter<DevicesItem> implements Fil
             FilterResults results = new FilterResults();
 
             if (constraint != null && constraint.length() > 0) {
-                ArrayList<DevicesItem> filterList = new ArrayList<DevicesItem>();
+                ArrayList<DeviceItem> filterList = new ArrayList<DeviceItem>();
                 for (int i = 0; i < listOriginal.size(); i++) {
                     if ((listOriginal.get(i).getName().toUpperCase())
                             .contains(constraint.toString().toUpperCase())) {
 
-                        DevicesItem item = new DevicesItem(
+                        DeviceItem item = new DeviceItem(
                                 listOriginal.get(i).getName(),
                                 listOriginal.get(i).getType(),
                                 listOriginal.get(i).isOn());
@@ -124,7 +124,7 @@ public class DevicesListAdapter extends ArrayAdapter<DevicesItem> implements Fil
         @Override
         protected void publishResults(CharSequence constraint,
                                       FilterResults results) {
-            listDevices = (List<DevicesItem>) results.values;
+            listDevices = (List<DeviceItem>) results.values;
             notifyDataSetChanged();
         }
 
