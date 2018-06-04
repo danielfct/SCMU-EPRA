@@ -3,7 +3,7 @@ class HistoryTracking {
 
     // database connection and table name
     private $conn;
-    private $table_name = "historicotracking";
+    private $table_name = "historicoTracking";
 
     // object properties
     public $area;
@@ -16,19 +16,26 @@ class HistoryTracking {
     }
 
     // read history
-    function read(){
-
+    function read($id){
+        echo $id;
+         if ($id == NULL) {
+          $query = "SELECT * FROM $this->table_name INNER JOIN areas on $this->table_name.area = areas.id";
+        } else {
+          $query = "SELECT * FROM $this->table_name WHERE trackingId = :trackingId INNER JOIN areas on $this->table_name.area = areas.id";
+        }
         // select all query
-        $query = "SELECT * FROM historicotracking WHERE trackingId = :trackingId";
+        
 
         // prepare query statement
         $stmt = $this->conn->prepare($query);
 
-        // sanitize
-        $this->trackingId=htmlspecialchars(strip_tags($this->trackingId));
+       
 
         // bind values
-        $stmt->bindParam(":trackingId", $this->trackingId);
+        if ($id != NULL) {
+            $id = htmlspecialchars(strip_tags($id));
+            $stmt->bindParam(":trackingId", $id);
+        }
 
         // execute query
         $stmt->execute();
@@ -40,9 +47,7 @@ class HistoryTracking {
     function create(){
 
       // query to insert record
-      $query = "INSERT INTO
-                  " . $this->table_name . "
-              SET
+      $query = "INSERT INTO $this->table_name SET
                   area=:area, duracao=:duracao, trackingId=:trackingId";
 
       // prepare query
@@ -60,9 +65,7 @@ class HistoryTracking {
 
       // execute query
       try {
-        if($stmt->execute()){
-            return true;
-        }
+        return $stmt->execute();
       } catch(PDOException $e) {
       }
 

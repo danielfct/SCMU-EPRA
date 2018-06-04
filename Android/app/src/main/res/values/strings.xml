@@ -165,6 +165,13 @@
     <string name="account_deleted">Account deleted</string>
     <string name="account_delete_failed">Failed to delete account</string>
     <string name="devices_fragment_title">Devices</string>
+    <string name="burglary_management_fragment_title">Burglary Management</string>
+    <plurals
+        name="burglary_management_time">
+        <item quantity="zero">%d minutes</item>
+        <item quantity="one">%d minute</item>
+        <item quantity="other">%d minutes</item>
+    </plurals>
 
 </resources>
 

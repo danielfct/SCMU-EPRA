@@ -4,6 +4,8 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.example.android.scmu_epra.mn_burglaryManag.BurglaryManagementItem;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -11,35 +13,34 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GetHistoryJsonData extends AsyncTask<String, Void, List<Row>>
+public class GetBurglaryHistoryJsonData extends AsyncTask<String, Void, Void>
         implements GetRawData.OnDownloadComplete {
 
-    private static final String TAG = "GetHistoryJsonData";
+    private static final String TAG = "GetBuglHistoryJsonData";
 
-    private List<Row> mList;
+    private List<BurglaryManagementItem> mList;
     private String mBaseURL;
-
     private final OnDataAvailable mCallBack;
 
     public interface OnDataAvailable {
-        void onDataAvailable(List<Row> data, DownloadStatus status);
+        void onDataAvailable(List<BurglaryManagementItem> data, DownloadStatus status);
     }
 
-    public GetHistoryJsonData(OnDataAvailable callBack, String baseURL) {
-        mBaseURL = baseURL;
+    public GetBurglaryHistoryJsonData(OnDataAvailable callBack, String baseURL) {
         mCallBack = callBack;
+        mBaseURL = baseURL;
         mList = new ArrayList<>();
     }
 
     @Override
-    protected void onPostExecute(List<Row> rows) {
+    protected void onPostExecute(Void aVoid) {
         if (mCallBack != null) {
             mCallBack.onDataAvailable(mList, DownloadStatus.OK);
         }
     }
 
     @Override
-    protected List<Row> doInBackground(String... params) {
+    protected Void doInBackground(String... params) {
         String destinationUri;
         if (params.length > 0) {
             destinationUri = Uri.parse(mBaseURL).buildUpon()
@@ -55,28 +56,24 @@ public class GetHistoryJsonData extends AsyncTask<String, Void, List<Row>>
 
     @Override
     public void onDownloadComplete(String data, DownloadStatus status) {
-        Log.d(TAG, "onDownloadComplete starts. Status = " + status);
         if (status == DownloadStatus.OK) {
             try {
                 JSONArray itemsArray = new JSONArray(data);
                 for (int i = 0; i < itemsArray.length(); i++) {
                     JSONObject jsonRow = itemsArray.getJSONObject(i);
-                    String id = jsonRow.getString("id");
-                    String evento = jsonRow.getString("evento");
-                    String datahora = jsonRow.getString("datahora");
-
-                    Row rowObject = new Row(Integer.parseInt(id), evento, datahora);
-                    mList.add(rowObject);
-
-                    Log.d(TAG, "onDownloadComplete " + rowObject.toString());
+                    String area = jsonRow.getString("area");
+                    int duracao = Integer.valueOf(jsonRow.getString("duracao"));
+                    BurglaryManagementItem item = new BurglaryManagementItem(area, duracao);
+                    mList.add(item);
                 }
-            } catch(JSONException jsone) {
-                jsone.printStackTrace();
-                Log.e(TAG, "onDownloadComplete: Error processing Json data " + jsone.getMessage());
+            } catch (JSONException e) {
+                e.printStackTrace();
+                Log.e(TAG, "onDownloadComplete: Error processing Json data " + e.getMessage());
                 status = DownloadStatus.FAILED_OR_EMPTY;
             }
         }
 
         Log.d(TAG, "onDownloadComplete ends");
     }
+
 }

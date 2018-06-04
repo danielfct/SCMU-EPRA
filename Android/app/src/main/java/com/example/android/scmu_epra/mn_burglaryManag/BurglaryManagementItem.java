@@ -2,20 +2,27 @@ package com.example.android.scmu_epra.mn_burglaryManag;
 
 public class BurglaryManagementItem {
 
-    private String name;
-    private String time;
+    private String area;
+    private int duration;
 
-    BurglaryManagementItem(String name, String time) {
-        this.name = name;
-        this.time = time;
+    public BurglaryManagementItem(String area, int duration) {
+        this.area = area;
+        this.duration = duration;
     }
 
-    public String getName() {
-        return name;
+    public String getArea() {
+        return area;
     }
 
-    public String getTime() {
-        return time;
+    public void setArea(String area) {
+        this.area = area;
     }
 
+    public int getDuration() {
+        return duration;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
+    }
 }

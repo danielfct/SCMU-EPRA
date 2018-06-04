@@ -91,6 +91,12 @@ public class DevicesFragment extends Fragment
     }
 
     @Override
+    public void onDestroy() {
+        mHandler.removeCallbacks(mRunnable);
+        super.onDestroy();
+    }
+
+    @Override
     public void onDataAvailable(List<DeviceItem> data, DownloadStatus status) {
         Log.d(TAG, "onDataAvailable: starts");
         if(status == DownloadStatus.OK && data != null && data.size() > 0) {

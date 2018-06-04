@@ -109,9 +109,9 @@ public class AlarmHistoryFragment extends Fragment
     }
 
     private void getData() {
-        GetHistoryJsonData getJsonData = new GetHistoryJsonData(this,"https://test966996.000webhostapp.com/api/get_history.php");
-        getJsonData.execute("test");
-        Log.d(TAG, "getData: data aqquired");
+        GetHistoryJsonData getJsonData = new GetHistoryJsonData(this,
+                "https://test966996.000webhostapp.com/api/get_history.php");
+        getJsonData.execute();
     }
 
     @Override

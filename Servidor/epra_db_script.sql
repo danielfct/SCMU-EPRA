@@ -12,7 +12,7 @@ create table if not exists utilizadores
 CREATE TABLE IF NOT EXISTS devices
 (
 	nome VARCHAR(255) NOT NULL, -- exemplo: pir1, piezzo1, led1, led2, pir2, ...
-	tipo ENUM('sensor','actuator','simulator'),
+	tipo ENUM('Sensor','Actuator','Simulator') NOT NULL,
 	ligado BOOLEAN NOT NULL DEFAULT 0,
 	PRIMARY KEY (nome)
 );

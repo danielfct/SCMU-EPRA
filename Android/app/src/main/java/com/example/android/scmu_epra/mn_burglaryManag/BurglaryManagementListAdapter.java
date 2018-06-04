@@ -44,15 +44,16 @@ public class BurglaryManagementListAdapter extends ArrayAdapter<BurglaryManageme
         BurglaryManagementItem item = this.list.get(position);
 
         TextView textView = v.findViewById(R.id.division_name);
-        textView.setText(item.getName());
+        textView.setText(item.getArea());
 
-        char ch = item.getName().charAt(0);
+        char ch = item.getArea().charAt(0);
         TextDrawable textDrawable = builder.build(String.valueOf(ch), generator.getColor(ch));
         ImageView imageView = v.findViewById(R.id.imgLetter);
         imageView.setImageDrawable(textDrawable);
 
         TextView time = v.findViewById(R.id.time_text);
-        time.setText(item.getTime());
+        time.setText(context.getResources().getQuantityString(R.plurals.burglary_management_time,
+                item.getDuration(), item.getDuration()));
 
         return v;
     }
