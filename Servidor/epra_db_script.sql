@@ -6,6 +6,7 @@ create table if not exists utilizadores
 		password  VARCHAR(255) NOT NULL,
 		admin     BOOLEAN NOT NULL DEFAULT 0,
 		privilegios VARCHAR(255), -- exemplo: 1,2,7 --> são os id's das áreas que ele tem permissão
+		pin 	  INT(4) NOT NULL,
 		PRIMARY KEY (email)
 );
 

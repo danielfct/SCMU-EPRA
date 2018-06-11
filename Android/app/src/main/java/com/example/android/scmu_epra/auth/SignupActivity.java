@@ -1,6 +1,5 @@
 package com.example.android.scmu_epra.auth;
 
-import android.accessibilityservice.AccessibilityService;
 import android.annotation.TargetApi;
 import android.app.LoaderManager;
 import android.app.ProgressDialog;
@@ -40,11 +39,7 @@ import com.example.android.scmu_epra.Utils;
 
 import org.json.JSONObject;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
 import java.io.DataOutputStream;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.lang.ref.WeakReference;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -73,13 +68,17 @@ public class SignupActivity extends AppCompatActivity implements LoaderManager.L
     @BindView(R.id.input_email)
     AutoCompleteTextView mEmailView;
     @BindView(R.id.password_layout)
-    TextInputLayout passwordLayout;
+    TextInputLayout mPasswordLayout;
     @BindView(R.id.input_password)
     TextInputEditText mPasswordView;
     @BindView(R.id.re_enter_password_layout)
     TextInputLayout mReEnterPasswordLayout;
     @BindView(R.id.input_re_enter_password)
     TextInputEditText mReEnterPasswordView;
+    @BindView(R.id.pin_layout)
+    TextInputLayout mPinLayout;
+    @BindView(R.id.input_pin)
+    TextInputEditText mPinView;
     @BindView(R.id.signup_button)
     AppCompatButton mSignupButton;
     @BindView(R.id.login_link)
@@ -179,7 +178,7 @@ public class SignupActivity extends AppCompatActivity implements LoaderManager.L
         mNameLayout.setError(null);
         mMobileLayout.setError(null);
         mEmailLayout.setError(null);
-        passwordLayout.setError(null);
+        mPasswordLayout.setError(null);
         mReEnterPasswordLayout.setError(null);
 
         boolean cancel = false;
@@ -191,6 +190,7 @@ public class SignupActivity extends AppCompatActivity implements LoaderManager.L
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
         String rePassword = mReEnterPasswordView.getText().toString();
+        String pin = mPinView.getText().toString();
 
         // Check for a valid mobile
         if (!TextUtils.isEmpty(mobile) && !isMobileValid(mobile)) {
@@ -208,20 +208,24 @@ public class SignupActivity extends AppCompatActivity implements LoaderManager.L
             focusView = mEmailLayout;
             cancel = true;
         } else if (TextUtils.isEmpty(password)) {
-            passwordLayout.setError(getString(R.string.error_field_required));
-            focusView = passwordLayout;
+            mPasswordLayout.setError(getString(R.string.error_field_required));
+            focusView = mPasswordLayout;
             cancel = true;
         } else if (!isPasswordValid(password)) {
-            passwordLayout.setError(getString(R.string.error_invalid_password));
-            focusView = passwordLayout;
+            mPasswordLayout.setError(getString(R.string.error_invalid_password));
+            focusView = mPasswordLayout;
             cancel = true;
         } else if (TextUtils.isEmpty(rePassword)) {
             mReEnterPasswordLayout.setError(getString(R.string.error_field_required));
             focusView = mReEnterPasswordLayout;
             cancel = true;
         } else if (!password.equals(rePassword)) {
-            passwordLayout.setError(getString(R.string.error_nonmatching_password));
-            focusView = passwordLayout;
+            mPasswordLayout.setError(getString(R.string.error_nonmatching_password));
+            focusView = mPasswordLayout;
+            cancel = true;
+        } else if (TextUtils.isEmpty(pin)) {
+            mPinLayout.setError(getString(R.string.error_field_required));
+            focusView = mPinLayout;
             cancel = true;
         }
 

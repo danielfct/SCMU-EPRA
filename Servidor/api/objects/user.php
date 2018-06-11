@@ -12,6 +12,7 @@ class User {
     public $password;
     public $admin;
     public $privilegios;
+    public $pin;
 
     // constructor with $db as database connection
     public function __construct($db) {
@@ -20,18 +21,21 @@ class User {
     }
 
     // read users
-    function read() {
-        if ($this->email) {
-            $query = "SELECT * FROM " . $this->table_name . " WHERE email LIKE '$this->email' LIMIT 1";
-        } else if ($this->nome) {
-            $query = "SELECT * FROM " . $this->table_name . " WHERE nome LIKE '%$this->nome%'";
+    function read($filter) {
+        if ($filter) {
+            $query = "SELECT * FROM $this->table_name WHERE email = ? LIMIT 1";
         } else {
-            $query = "SELECT * FROM " . $this->table_name;
+            $query = "SELECT * FROM $this->table_name";
         }
-
         // prepare query statement
         $stmt = $this->conn->prepare($query);
 
+        // bind
+        if ($filter) {
+            $filter=htmlspecialchars(strip_tags($filter));
+            $stmt->bindParam(1, $filter);
+        }
+        
         // execute query
         $stmt->execute();
 
@@ -42,13 +46,14 @@ class User {
     function create() {
 
         // query to insert record
-        $query = "INSERT INTO "
-                  . $this->table_name . "
-                  SET
+        $query = "INSERT INTO $this->table_name SET
                     nome=:nome,
                     telemovel=:telemovel,
                     email=:email,
-                    password=:password";
+                    password=:password,
+                    admin=:admin,
+                    privilegios=:privilegios,
+                    pin=:pin";
 
         // prepare query
         $stmt = $this->conn->prepare($query);
@@ -58,12 +63,18 @@ class User {
         $this->telemovel=htmlspecialchars(strip_tags($this->telemovel));
         $this->email=htmlspecialchars(strip_tags($this->email));
         $this->password=htmlspecialchars(strip_tags($this->password));
+        $this->admin=htmlspecialchars(strip_tags($this->admin));
+        $this->privilegios=htmlspecialchars(strip_tags($this->privilegios));
+        $this->pin=htmlspecialchars(strip_tags($this->pin));
 
         // bind values
         $stmt->bindParam(":nome", $this->nome);
         $stmt->bindParam(":telemovel", $this->telemovel);
         $stmt->bindParam(":email", $this->email);
         $stmt->bindParam(":password", $this->password);
+        $stmt->bindParam(":admin", $this->admin);
+        $stmt->bindParam(":privilegios", $this->privilegios);
+        $stmt->bindParam(":pin", $this->pin);
 
         // execute query
         $stmt->execute();
@@ -71,10 +82,10 @@ class User {
         return $stmt;
     }
 
-    function delete(){
+    function delete() {
 
         // delete query
-        $query = "DELETE FROM " . $this->table_name . " WHERE email = ?";
+        $query = "DELETE FROM $this->table_name WHERE email = ?";
 
         // prepare query
         $stmt = $this->conn->prepare($query);
@@ -106,60 +117,76 @@ class User {
 
     function buildQueryAttributes() {
       $res = "";
-      if($this->privilegios) {
-        $res .= "privilegios = :privilegios";
-      }
       if($this->nome) {
-        $res = $this->addComma($res);
         $res .= "nome = :nome";
       }
       if($this->telemovel) {
         $res = $this->addComma($res);
         $res .= "telemovel = :telemovel";
       }
+      if($this->password) {
+        $res = $this->addComma($res);
+        $res .= "password = :password";
+      }
+      if($this->admin) {
+        $res = $this->addComma($res);
+        $res .= "admin = :admin";
+      }
+      if($this->privilegios) {
+        $res = $this->addComma($res);
+        $res .= "privilegios = :privilegios";
+      }
+      if($this->pin) {
+        $res = $this->addComma($res);
+        $res .= "pin = :pin";
+      }
+
       return $res;
     }
 
-    function update(){
+    function update() {
 
-      $query = "UPDATE
-                  " . $this->table_name . "
-              SET " . $this->buildQueryAttributes() ." WHERE email = :email";
+      $query = "UPDATE $this->table_name SET " . $this->buildQueryAttributes() . " WHERE email = ?";
 
         // prepare query statement
         $stmt = $this->conn->prepare($query);
 
-        // sanitize
-        $this->email=htmlspecialchars(strip_tags($this->email));
-        if($this->privilegios) {
-          $this->privilegios=htmlspecialchars(strip_tags($this->privilegios));
-        }
         if($this->nome) {
           $this->nome=htmlspecialchars(strip_tags($this->nome));
-        }
-        if($this->telemovel) {
-          $this->telemovel=htmlspecialchars(strip_tags($this->telemovel));
-        }
-
-        // bind new values
-        $stmt->bindParam(':email', $this->email);
-        if($this->privilegios) {
-          $stmt->bindParam(':privilegios', $this->privilegios);
-        }
-        if($this->nome) {
           $stmt->bindParam(':nome', $this->nome);
         }
         if($this->telemovel) {
+          $this->telemovel=htmlspecialchars(strip_tags($this->telemovel));
           $stmt->bindParam(':telemovel', $this->telemovel);
         }
+        if($this->email) {
+          $this->email=htmlspecialchars(strip_tags($this->email));
+          $stmt->bindParam(':email', $this->email);
+        }
+        if($this->password) {
+          $this->password=htmlspecialchars(strip_tags($this->password));
+          $stmt->bindParam(':password', $this->password);
+        }
+        if($this->admin) {
+          $this->admin=htmlspecialchars(strip_tags($this->admin));
+          $stmt->bindParam(':admin', $this->admin);
+        }
+        if($this->privilegios) {
+          $this->privilegios=htmlspecialchars(strip_tags($this->privilegios));
+          $stmt->bindParam(':privilegios', $this->privilegios);
+        }
+        if($this->pin) {
+          $this->pin=htmlspecialchars(strip_tags($this->pin));
+          $stmt->bindParam(':pin', $this->pin);
+        }
+
+        $stmt->bindParam(1, $this->email);
 
         // execute the query
 
           try {
-            if($stmt->execute()){
-                return true;
-            }
-          } catch(PDOException $e){
+            return $stmt->execute();
+          } catch(PDOException $e) {
           }
 
 

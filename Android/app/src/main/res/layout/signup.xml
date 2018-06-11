@@ -135,6 +135,32 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginTop="8dp"
+        android:textColorHint="@color/white"
+        app:errorTextAppearance="@style/SignupErrorAppearance"
+        app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout"
+        app:passwordToggleEnabled="true"
+        app:passwordToggleTint="@color/white">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/input_re_enter_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/reenter_password"
+            android:imeActionId="5"
+            android:imeOptions="actionUnspecified"
+            android:inputType="textPassword"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:textColor="@color/white" />
+    </android.support.design.widget.TextInputLayout>
+
+    <!-- Pin Label -->
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/pin_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp"
         app:passwordToggleEnabled="true"
         app:passwordToggleTint="@color/white"
         app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout"
@@ -142,10 +168,10 @@
         android:textColorHint="@color/white">
 
         <android.support.design.widget.TextInputEditText
-            android:id="@+id/input_re_enter_password"
+            android:id="@+id/input_pin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/reenter_password"
+            android:hint="@string/pin"
             android:imeActionId="6"
             android:imeActionLabel="@string/action_sign_up_short"
             android:imeOptions="actionUnspecified"

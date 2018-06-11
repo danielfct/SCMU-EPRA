@@ -14,7 +14,8 @@ $db = $database->getConnection();
 // initialize object
 $user = new User($db);
 
-$stmt = $user->read(isset($_GET['search']) ? $_GET['search'] : NULL);
+$filter = filter_input(INPUT_GET, 'search');
+$stmt = $user->read($filter);
 $num = $stmt->rowCount();
 
 // check if more than 0 record found
@@ -38,7 +39,8 @@ if($num>0){
             "email" => $email,
             "password" => $password,
             "admin" => $admin,
-            "privilegios" => $privilegios
+            "privilegios" => $privilegios,
+            "pin" => $pin
         );
 
         array_push($user_arr, $user_item);

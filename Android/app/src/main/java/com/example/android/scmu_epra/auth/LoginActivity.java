@@ -10,9 +10,9 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -37,14 +37,11 @@ import android.widget.Toast;
 import com.example.android.scmu_epra.Constants;
 import com.example.android.scmu_epra.MainActivity;
 import com.example.android.scmu_epra.R;
-import com.example.android.scmu_epra.Utils;
+import com.example.android.scmu_epra.connection.DownloadStatus;
+import com.example.android.scmu_epra.connection.GetUsersJsonData;
+import com.example.android.scmu_epra.mn_users.UserItem;
+import com.google.gson.Gson;
 
-import org.json.JSONObject;
-
-import java.io.DataOutputStream;
-import java.lang.ref.WeakReference;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,7 +54,9 @@ import static android.Manifest.permission.READ_CONTACTS;
 // TODO
 
 
-public class LoginActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class LoginActivity extends AppCompatActivity
+        implements GetUsersJsonData.OnDataAvailable,
+        LoaderManager.LoaderCallbacks<Cursor> {
 
     @BindView(R.id.email_layout)
     TextInputLayout mEmailLayout;
@@ -77,17 +76,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
 
     private AlphaAnimation linkClick = new AlphaAnimation(1F, 0.5F);
 
-    /**
-     * Keep track of the login task to ensure we can cancel it if requested.
-     */
-    private UserLoginTask mLoginTask = null;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
-
         populateAutoComplete();
 
         mPasswordView.setOnEditorActionListener((view, id, keyEvent) -> {
@@ -185,10 +178,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
      * errors are presented and no actual login attempt is made.
      */
     private void login() {
-        if (mLoginTask != null) {
-            return;
-        }
-
         if (!mayPerformNetworking()) {
             return;
         }
@@ -221,9 +210,17 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
-            mLoginTask = new UserLoginTask(this, email, password);
-            mLoginTask.execute((Void) null);
+            executeLogin();
         }
+    }
+
+    private void executeLogin() {
+        ProgressDialog d = new ProgressDialog(this, R.style.AppTheme_Dark_Dialog);
+        d.setIndeterminate(true);
+        d.setMessage("Authenticating...");
+        GetUsersJsonData loginTask = new GetUsersJsonData(this,
+                "https://test966996.000webhostapp.com/api/get_users.php", d);
+        loginTask.execute(mEmailView.getText().toString());
     }
 
     @Override
@@ -280,7 +277,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
         mEmailView.setAdapter(adapter);
     }
 
-
     private interface ProfileQuery {
         String[] PROJECTION = {
                 ContactsContract.CommonDataKinds.Email.ADDRESS,
@@ -291,118 +287,27 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
         int IS_PRIMARY = 1;
     }
 
-    /**
-     * Represents an asynchronous login/registration task used to authenticate
-     * the user.
-     */
-    public static class UserLoginTask extends AsyncTask<Void, Void, Integer> {
-
-        private final WeakReference<LoginActivity> activityReference;
-        private final String mEmail;
-        private final String mPassword;
-        private final ProgressDialog progressDialog;
-
-        UserLoginTask(LoginActivity context, String email, String password) {
-            this.activityReference = new WeakReference<>(context);
-            this.mEmail = email;
-            this.mPassword = password;
-            this.progressDialog = new ProgressDialog(context, R.style.AppTheme_Dark_Dialog);
+    @Override
+    public void onDataAvailable(List<UserItem> user, DownloadStatus status) {
+        if (user.size() < 1) {
+            onLoginFailed(Constants.Login.LOGIN_FAILURE_UNREGISTERED_EMAIL);
         }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            progressDialog.setIndeterminate(true);
-            progressDialog.setMessage("Authenticating...");
-            progressDialog.show();
+        else if (!user.get(0).getPassword().equalsIgnoreCase(mPasswordView.getText().toString())) {
+            onLoginFailed(Constants.Login.LOGIN_FAILURE_INCORRECT_PASSWORD);
         }
-
-        @Override
-        protected Integer doInBackground(Void... params) {
-            LoginActivity activity = getActivity();
-            if (activity == null)
-                return Constants.Login.LOGIN_FAILURE_ACTIVITY_INVALID;
-            try {
-                String pwd = Utils.digest("SHA-256", mPassword);
-                URL url = new URL("http://192.168.1.106/epra/api/authenticate_user.php");
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setRequestMethod("GET");
-                conn.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
-                conn.setRequestProperty("Accept", "application/json");
-                conn.setDoOutput(true);
-                conn.setDoInput(true);
-
-                JSONObject jsonParam = new JSONObject();
-                jsonParam.put("email", mEmail);
-                jsonParam.put("password", pwd);
-
-                Log.i("JSON", jsonParam.toString());
-                DataOutputStream os = new DataOutputStream(conn.getOutputStream());
-                os.writeBytes(jsonParam.toString());
-
-                os.flush();
-                os.close();
-
-                String reply = Utils.readStream(conn);
-                conn.disconnect();
-
-                Log.i("message", reply);
-
-                JSONObject reader = new JSONObject(reply);
-                JSONObject replyJSON  = reader.getJSONObject("reply");
-                String replyMessage = replyJSON.getString("message").trim();
-                String errorCode = replyJSON.getString("errorCode").trim().toLowerCase();
-                String errorMessage = replyJSON.getString("errorMessage").trim().toLowerCase();
-                if (TextUtils.isEmpty(errorMessage)) {
-                    return Constants.Login.LOGIN_SUCCESS;
-                } else if (errorMessage.contains("unregistered email")) {
-                    return Constants.Login.LOGIN_FAILURE_UNREGISTERED_EMAIL;
-                } else if (errorMessage.contains("incorrect password")) {
-                    return Constants.Login.LOGIN_FAILURE_INCORRECT_PASSWORD;
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return Constants.Login.LOGIN_FAILURE;
-        }
-
-        @Override
-        protected void onPostExecute(final Integer failureCode) {
-            LoginActivity activity = getActivity();
-            if (activity == null)
-                return;
-            activity.mLoginTask = null;
-            progressDialog.dismiss();
-            if (failureCode < 0) {
-                activity.onLoginSuccess();
-            } else {
-                activity.onLoginFailed(failureCode);
-            }
-        }
-
-        @Override
-        protected void onCancelled() {
-            LoginActivity activity = getActivity();
-            if (activity == null)
-                return;
-            activity.mLoginTask = null;
-            progressDialog.dismiss();
-        }
-
-        private LoginActivity getActivity() {
-            // get a reference to the activity if it is still there
-            LoginActivity activity = activityReference.get();
-            return activity == null || activity.isFinishing() ? null : activity;
+        else {
+            onLoginSuccess(user.get(0));
         }
     }
 
-    private void onLoginSuccess() {
-//        SharedPreferences mPrefs = getPreferences(MODE_PRIVATE);
-//        SharedPreferences.Editor prefsEditor = mPrefs.edit();
-//        Gson gson = new Gson();
-//        String json = gson.toJson(MyObject);
-//        prefsEditor.putString("MyObject", json);
-//        prefsEditor.commit();
+    private void onLoginSuccess(UserItem user) {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor prefsEditor = sharedPref.edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(user);
+        prefsEditor.putString(Constants.SIGNED_ACCOUNT_TAG, json);
+        prefsEditor.apply();
+
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }

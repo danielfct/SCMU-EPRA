@@ -5,8 +5,8 @@ public interface Constants {
     int REQUEST_SIGNUP = 0;
     int REQUEST_READ_CONTACTS = 1;
     int REQUEST_INTERNET_CONNECTION = 2;
-
     int DATA_UPDATE_FREQUENCY = 15000;
+    String SIGNED_ACCOUNT_TAG = "SignedAccount";
 
 
     interface Login {

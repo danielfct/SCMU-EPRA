@@ -25,7 +25,10 @@
         $user->telemovel = $data->telemovel;
         $user->email = $data->email;
         $user->password = $data->password;
-
+     //   $user->admin = $data->admin;
+     //   $user->privilegios = $data->privilegios;
+        $user->pin = $data->pin;
+        
         // create the user
         $stmt = $user->create();
         $error = $stmt->errorInfo();

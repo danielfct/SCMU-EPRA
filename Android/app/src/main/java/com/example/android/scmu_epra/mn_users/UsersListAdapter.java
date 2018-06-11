@@ -16,14 +16,16 @@ import android.widget.TextView;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
+import com.example.android.scmu_epra.Constants;
 import com.example.android.scmu_epra.MainActivity;
 import com.example.android.scmu_epra.R;
-import com.example.android.scmu_epra.auth.Account;
 import com.example.android.scmu_epra.connection.PostJsonData;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static android.content.Context.MODE_PRIVATE;
 
 public class UsersListAdapter extends ArrayAdapter<UserItem> {
 
@@ -66,21 +68,16 @@ public class UsersListAdapter extends ArrayAdapter<UserItem> {
 
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
         Gson gson = new Gson();
-        String json = sharedPref.getString("Account", "");
-        Account acc = gson.fromJson(json, Account.class);
+        String json = sharedPref.getString(Constants.SIGNED_ACCOUNT_TAG, "");
+        UserItem currentAccount = gson.fromJson(json, UserItem.class);
 
         AppCompatImageButton editPermissionsButton = v.findViewById(R.id.edit_permissions_button);
-        editPermissionsButton.setOnClickListener((view) -> {
-            showEditPermissionsDialog(permissions);
-        });
-        //TODO
-        //editPermissionsButton.setVisibility(acc != null && acc.isAdmin() && !isAdmin ? View.VISIBLE : View.INVISIBLE);
+        editPermissionsButton.setOnClickListener((view) -> showEditPermissionsDialog(permissions));
+        editPermissionsButton.setVisibility(currentAccount != null && currentAccount.isAdmin() ? View.VISIBLE : View.INVISIBLE);
+
         AppCompatImageButton deleteUserAccountButton = v.findViewById(R.id.delete_user_account_button);
-        deleteUserAccountButton.setOnClickListener((view) -> {
-            showDeleteUserConfirmation(item);
-        });
-        //TODO
-        //removeUserButton.setVisibility(acc != null && acc.isAdmin() && !isAdmin ? View.VISIBLE : View.INVISIBLE);
+        deleteUserAccountButton.setOnClickListener((view) -> showDeleteUserConfirmation(item));
+        deleteUserAccountButton.setVisibility(currentAccount != null && currentAccount.isAdmin() ? View.VISIBLE : View.INVISIBLE);
 
         return v;
     }

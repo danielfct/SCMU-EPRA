@@ -1,8 +1,10 @@
 package com.example.android.scmu_epra.connection;
 
+import android.app.ProgressDialog;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.ProgressBar;
 
 import com.example.android.scmu_epra.mn_users.UserItem;
 
@@ -21,19 +23,27 @@ public class GetUsersJsonData extends AsyncTask<String, Void, Void>
     private List<UserItem> mList;
     private String mBaseURL;
     private final GetUsersJsonData.OnDataAvailable mCallBack;
+    private ProgressDialog mProgressDialog;
 
     public interface OnDataAvailable {
         void onDataAvailable(List<UserItem> data, DownloadStatus status);
     }
 
-    public GetUsersJsonData(OnDataAvailable callBack, String baseURL) {
+    public GetUsersJsonData(OnDataAvailable callBack, String baseUrl) {
+        this(callBack, baseUrl, null);
+    }
+
+    public GetUsersJsonData(OnDataAvailable callBack, String baseUrl, ProgressDialog progressDialog) {
         mCallBack = callBack;
-        mBaseURL = baseURL;
+        mBaseURL = baseUrl;
         mList = new ArrayList<>();
+        mProgressDialog = progressDialog;
     }
 
     @Override
     protected void onPostExecute(Void aVoid) {
+        if (mProgressDialog != null)
+            mProgressDialog.dismiss();
         if (mCallBack != null) {
             mCallBack.onDataAvailable(mList, DownloadStatus.OK);
         }
@@ -65,15 +75,19 @@ public class GetUsersJsonData extends AsyncTask<String, Void, Void>
                 for (int i = 0; i < itemsArray.length(); i++) {
                     JSONObject jsonRow = itemsArray.getJSONObject(i);
                     String name = jsonRow.getString("nome");
+                    String mobileNr = jsonRow.getString("telemovel");
                     String email = jsonRow.getString("email");
+                    String password = jsonRow.getString("password");
+                    boolean isAdmin = jsonRow.getString("admin").equals("1");
                     String permissionsString = jsonRow.getString("privilegios");
                     ArrayList<Integer> permissions = new ArrayList<>();
                     for (String p : permissionsString.split(",")) {
                         permissions.add(Integer.parseInt(p));
                     }
-                    boolean isAdmin = jsonRow.getString("admin").equals("1");
+                    int pin = Integer.parseInt(jsonRow.getString("pin"));
 
-                    UserItem item = new UserItem(name, email, isAdmin, permissions);
+                    UserItem item = new UserItem(name, mobileNr, email, password,
+                            isAdmin, permissions, pin);
                     mList.add(item);
                 }
             } catch (JSONException e) {
@@ -84,5 +98,18 @@ public class GetUsersJsonData extends AsyncTask<String, Void, Void>
         }
 
         Log.d(TAG, "onDownloadComplete ends");
+    }
+
+    @Override
+    protected void onCancelled() {
+        if (mProgressDialog != null)
+            mProgressDialog.dismiss();
+    }
+
+    @Override
+    protected void onPreExecute() {
+        super.onPreExecute();
+        if (mProgressDialog != null)
+            mProgressDialog.show();
     }
 }
