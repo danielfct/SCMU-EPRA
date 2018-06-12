@@ -284,7 +284,7 @@ public class HomeFragment extends Fragment implements GetJsonData.OnDataAvailabl
         Gson gson = new Gson();
         String json = sharedPref.getString(Constants.SIGNED_ACCOUNT_TAG, "");
         UserItem currentAccount = gson.fromJson(json, UserItem.class);
-        String userPassword = UserItem.getPassword();
+        String userPassword = currentAccount.getPassword();
 
 
         uFingerprintImage = unlockView.findViewById(R.id.fingerprintImage);
@@ -305,7 +305,6 @@ public class HomeFragment extends Fragment implements GetJsonData.OnDataAvailabl
                     String pin1Text = uPin1EditText.getText().toString();
 
                     if (pin1Text.length() > 0) {
-                        // TODO: checkPin
                         if (pin1Text.equals(userPassword)) {
                             dialog.dismiss();
                             toggleAlarm();
