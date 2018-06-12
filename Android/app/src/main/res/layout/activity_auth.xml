@@ -10,7 +10,7 @@
         android:id="@+id/fingerprintImage"
         android:layout_width="175dp"
         android:layout_height="125dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="36dp"
         android:layout_gravity="center_horizontal"
         android:src="@mipmap/ic_fingerprint"
         android:contentDescription="@string/authentication_description"/>
@@ -78,35 +78,47 @@
         android:gravity="top|center_horizontal"
         android:orientation="horizontal">
 
-        <EditText
-            android:id="@+id/pin1"
-            android:layout_width="50dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:ems="10"
-            android:inputType="number"
-            android:maxLength="1"
-            android:textAlignment="center" />
 
         <EditText
-            android:id="@+id/pin2"
-            android:layout_width="50dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:ems="10"
-            android:inputType="number"
-            android:maxLength="1"
-            android:textAlignment="center" />
+        android:id="@+id/pin1"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:ems="10"
+        android:inputType="number"
+        android:maxLength="1"
+        android:textAlignment="center" />
 
-        <EditText
-            android:id="@+id/pin3"
-            android:layout_width="50dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:ems="10"
-            android:inputType="number"
-            android:maxLength="1"
-            android:textAlignment="center" />
+
+        <!--<EditText-->
+            <!--android:id="@+id/pin1"-->
+            <!--android:layout_width="50dp"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_gravity="center_horizontal"-->
+            <!--android:ems="10"-->
+            <!--android:inputType="number"-->
+            <!--android:maxLength="1"-->
+            <!--android:textAlignment="center" />-->
+
+        <!--<EditText-->
+            <!--android:id="@+id/pin2"-->
+            <!--android:layout_width="50dp"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_gravity="center_horizontal"-->
+            <!--android:ems="10"-->
+            <!--android:inputType="number"-->
+            <!--android:maxLength="1"-->
+            <!--android:textAlignment="center" />-->
+
+        <!--<EditText-->
+            <!--android:id="@+id/pin3"-->
+            <!--android:layout_width="50dp"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_gravity="center_horizontal"-->
+            <!--android:ems="10"-->
+            <!--android:inputType="number"-->
+            <!--android:maxLength="1"-->
+            <!--android:textAlignment="center" />-->
 
     </LinearLayout>
 

@@ -1,16 +1,20 @@
 package com.example.android.scmu_epra.mn_home;
 
 import android.Manifest;
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.KeyguardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Rect;
 import android.hardware.fingerprint.FingerprintManager;
 import android.os.Build;
+import android.os.CancellationSignal;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.CoordinatorLayout;
@@ -49,6 +53,8 @@ import com.example.android.scmu_epra.connection.DownloadStatus;
 import com.example.android.scmu_epra.connection.GetJsonData;
 import com.example.android.scmu_epra.connection.GetSimulatorJsonData;
 import com.example.android.scmu_epra.mn_history.AlarmHistoryFragment;
+import com.example.android.scmu_epra.mn_users.UserItem;
+import com.google.gson.Gson;
 
 
 import org.json.JSONException;
@@ -67,7 +73,7 @@ public class HomeFragment extends Fragment implements GetJsonData.OnDataAvailabl
     @BindView(R.id.show_history)
     Button btnShowHistory;
     @BindView(R.id.toggleOnOff)
-    ToggleButton toggleOnOff;
+    ToggleButtonMine toggleOnOff;
     @BindView(R.id.bottom_sheet)
     LinearLayout bottomListView;
     @BindView(R.id.backgroundOfButton)
@@ -134,6 +140,15 @@ public class HomeFragment extends Fragment implements GetJsonData.OnDataAvailabl
         });
 
 
+        toggleOnOff.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                return false;
+            }
+        });
+
+
+
         toggleOnOff.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -142,50 +157,13 @@ public class HomeFragment extends Fragment implements GetJsonData.OnDataAvailabl
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 unlockView = getLayoutInflater().from(getActivity()).inflate(R.layout.activity_auth, null);
                 builder.setView(unlockView);
-                builder.show();
+                processUnlockDialog(builder.show());
 
-                setupUnlockDialog();
-                if (!toggleOnOff.isChecked()){
-                    toggleOnOff.setChecked(false);
-                }
-                else{
-                    toggleOnOff.setChecked(true);
-                }
             }
         });
 
 
 
-
-
-
-
-
-
-
-//
-//        toggleOnOff.setOnToggleSwitchChangeListener(new ToggleSwitch.OnToggleSwitchChangeListener(){
-//
-//            @Override
-//            public void onToggleSwitchChangeListener(int position, boolean isChecked) {
-//                Log.d("ontoggleswitch","toggle");
-//
-//
-//                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-//                View unlockView = getLayoutInflater().inflate(R.layout.activity_auth, null);
-//
-//
-//                //setupUnlockDialog();
-//
-//                if (position == 0) {
-//                    //TODO: turn alarm off
-//                }
-//                else {
-//                    //TODO: turn alarm on
-//                }
-//            }
-//        });
-//
         BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(bottomListView);
 
         Rect baseRect = new Rect();
@@ -292,7 +270,7 @@ public class HomeFragment extends Fragment implements GetJsonData.OnDataAvailabl
 
 
 
-    private void setupUnlockDialog() {
+    private void processUnlockDialog(AlertDialog dialog) {
         TextView uHeadingLabel;
         ImageView uFingerprintImage;
         TextView uParagraphLabel;
@@ -303,13 +281,21 @@ public class HomeFragment extends Fragment implements GetJsonData.OnDataAvailabl
         EditText uPin3EditText;
 
 
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
+        Gson gson = new Gson();
+        String json = sharedPref.getString(Constants.SIGNED_ACCOUNT_TAG, "");
+        UserItem currentAccount = gson.fromJson(json, UserItem.class);
+        String userPassword = UserItem.getPassword();
+
+
         uFingerprintImage = unlockView.findViewById(R.id.fingerprintImage);
         uParagraphLabel = unlockView.findViewById(R.id.paragraphLabel);
         uPin1EditText = unlockView.findViewById(R.id.pin1);
-        uPin2EditText = unlockView.findViewById(R.id.pin2);
-        uPin3EditText = unlockView.findViewById(R.id.pin3);
+//        uPin2EditText = unlockView.findViewById(R.id.pin2);
+//        uPin3EditText = unlockView.findViewById(R.id.pin3);
 
-        if (uPin1EditText != null && uPin2EditText != null && uPin3EditText != null) {
+
+        if (uPin1EditText != null) {
             uPin1EditText.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -318,13 +304,13 @@ public class HomeFragment extends Fragment implements GetJsonData.OnDataAvailabl
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
                     String pin1Text = uPin1EditText.getText().toString();
-                    String pin2Text = uPin2EditText.getText().toString();
-                    String pin3Text = uPin3EditText.getText().toString();
 
-                    if (pin1Text.length() > 0 && pin2Text.length() > 0 && pin3Text.length() > 0) {
-                        // TODO: checkPin(pin1Text+pin2Text+pin3Text)
-                    } else if (pin1Text.length() > 0) {
-                        uPin2EditText.requestFocus();
+                    if (pin1Text.length() > 0) {
+                        // TODO: checkPin
+                        if (pin1Text.equals(userPassword)) {
+                            dialog.dismiss();
+                            toggleAlarm();
+                        }
                     }
                 }
 
@@ -333,49 +319,49 @@ public class HomeFragment extends Fragment implements GetJsonData.OnDataAvailabl
                 }
             });
 
-            uPin2EditText.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                }
-
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    String pin1Text = uPin1EditText.getText().toString();
-                    String pin2Text = uPin2EditText.getText().toString();
-                    String pin3Text = uPin3EditText.getText().toString();
-
-                    if (pin1Text.length() > 0 && pin2Text.length() > 0 && pin3Text.length() > 0) {
-                        // TODO: checkPin(pin1Text+pin2Text+pin3Text)
-                    } else if (pin2Text.length() > 0) {
-                        uPin3EditText.requestFocus();
-                    }
-                }
-
-                @Override
-                public void afterTextChanged(Editable s) {
-                }
-            });
-
-            uPin3EditText.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                }
-
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    String pin1Text = uPin1EditText.getText().toString();
-                    String pin2Text = uPin2EditText.getText().toString();
-                    String pin3Text = uPin3EditText.getText().toString();
-
-                    if (pin1Text.length() > 0 && pin2Text.length() > 0 && pin3Text.length() > 0) {
-                        // TODO: checkPin(pin1Text+pin2Text+pin3Text)
-                    }
-                }
-
-                @Override
-                public void afterTextChanged(Editable s) {
-                }
-            });
+//            uPin2EditText.addTextChangedListener(new TextWatcher() {
+//                @Override
+//                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+//                }
+//
+//                @Override
+//                public void onTextChanged(CharSequence s, int start, int before, int count) {
+//                    String pin1Text = uPin1EditText.getText().toString();
+//                    String pin2Text = uPin2EditText.getText().toString();
+//                    String pin3Text = uPin3EditText.getText().toString();
+//
+//                    if (pin1Text.length() > 0 && pin2Text.length() > 0 && pin3Text.length() > 0) {
+//                        // TODO: checkPin(pin1Text+pin2Text+pin3Text)
+//                    } else if (pin2Text.length() > 0) {
+//                        uPin3EditText.requestFocus();
+//                    }
+//                }
+//
+//                @Override
+//                public void afterTextChanged(Editable s) {
+//                }
+//            });
+//
+//            uPin3EditText.addTextChangedListener(new TextWatcher() {
+//                @Override
+//                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+//                }
+//
+//                @Override
+//                public void onTextChanged(CharSequence s, int start, int before, int count) {
+//                    String pin1Text = uPin1EditText.getText().toString();
+//                    String pin2Text = uPin2EditText.getText().toString();
+//                    String pin3Text = uPin3EditText.getText().toString();
+//
+//                    if (pin1Text.length() > 0 && pin2Text.length() > 0 && pin3Text.length() > 0) {
+//                        // TODO: checkPin(pin1Text+pin2Text+pin3Text)
+//                    }
+//                }
+//
+//                @Override
+//                public void afterTextChanged(Editable s) {
+//                }
+//            });
 
         }
 
@@ -402,9 +388,25 @@ public class HomeFragment extends Fragment implements GetJsonData.OnDataAvailabl
                 uParagraphLabel.setText("Place your finger on the scanner to access the system.");
 
 
-                FingerprintHandler fingerprintHandler = new FingerprintHandler(getActivity(), uParagraphLabel);
+                FingerprintHandler fingerprintHandler = new FingerprintHandler(this, getActivity(), uParagraphLabel, dialog);
                 fingerprintHandler.startAuth(uFingerprintManager, null);
             }
         }
     }
+
+    //TODO: Connect to the server
+    public void toggleAlarm() {
+        if (toggleOnOff.isChecked()){
+            toggleOnOff.setChecked(false);
+        }
+        else{
+            toggleOnOff.setChecked(true);
+        }
+    }
 }
+
+
+
+
+
+
