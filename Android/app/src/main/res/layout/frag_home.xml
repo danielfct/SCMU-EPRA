@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <android.support.design.widget.CoordinatorLayout
-    android:id="@+id/baseLayout"
+    android:id="@+id/home_baseLayout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -21,17 +22,13 @@
             android:layout_weight="1"
             android:orientation="vertical">
 
-
-
-            <belka.us.androidtoggleswitch.widgets.ToggleSwitch
+            <com.example.android.scmu_epra.mn_home.ToggleButtonMine
                 android:id="@+id/toggleOnOff"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="20dp"
-                custom:toggleWidth="90dp"
-                custom:textToggleLeft="OFF"
-                custom:textToggleRight="ON" />
-
+                android:layout_width="180dp"
+                android:layout_height="60dp"
+                android:disabledAlpha="1.5"
+                android:textOn="ALARM ON"
+                android:textOff="ALARM OFF"/>
 
             <TextView
                 android:layout_width="wrap_content"

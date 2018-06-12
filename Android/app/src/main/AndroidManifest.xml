@@ -53,11 +53,19 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".auth.LoginActivity" />
         </activity>
-        <activity
-            android:name=".auth.AuthActivity"
-            android:label="Authentication"
-            android:screenOrientation="portrait">
-        </activity>
+        <!--<activity-->
+            <!--android:name=".auth.AuthActivity"-->
+            <!--android:label="Authentication"-->
+            <!--android:theme="@android:style/Theme.Holo.Light.Dialog">-->
+
+
+            <!--&lt;!&ndash; <intent-filter> &ndash;&gt;-->
+            <!--&lt;!&ndash; <action android:name="android.intent.action.MAIN" /> &ndash;&gt;-->
+
+
+            <!--&lt;!&ndash; <category android:name="android.intent.category.LAUNCHER" /> &ndash;&gt;-->
+            <!--&lt;!&ndash; </intent-filter> &ndash;&gt;-->
+        <!--</activity>-->
     </application>
 
 </manifest>

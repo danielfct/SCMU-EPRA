@@ -1,7 +1,8 @@
-package com.example.android.scmu_epra.auth;
+package com.example.android.scmu_epra.mn_home;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.hardware.fingerprint.FingerprintManager;
 import android.os.Build;
@@ -14,10 +15,17 @@ import com.example.android.scmu_epra.R;
 @TargetApi(Build.VERSION_CODES.M)
 class FingerprintHandler extends FingerprintManager.AuthenticationCallback {
 
+    private HomeFragment origin;
     private Context context;
+    private TextView paragraphLabel;
+    private AlertDialog dialog;
 
-    public FingerprintHandler(Context context) {
+    public FingerprintHandler(HomeFragment origin, Context context, TextView paragraphLabel, AlertDialog dialog) {
+        this.origin = origin;
         this.context = context;
+        this.paragraphLabel = paragraphLabel;
+        this.dialog = dialog;
+
     }
 
     public void startAuth(FingerprintManager fingerprintManager, FingerprintManager.CryptoObject cryptoObject) {
@@ -43,10 +51,12 @@ class FingerprintHandler extends FingerprintManager.AuthenticationCallback {
     @Override
     public void onAuthenticationSucceeded(FingerprintManager.AuthenticationResult result) {
         this.update("You can now access the app!", true);
+        dialog.dismiss();
+        origin.toggleAlarm();
+
     }
 
     private void update(String s, boolean b) {
-        TextView paragraphLabel = (TextView) ((Activity)context).findViewById(R.id.paragraphLabel);
 
         paragraphLabel.setText(s);
 

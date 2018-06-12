@@ -1,16 +1,32 @@
 package com.example.android.scmu_epra.mn_home;
 
+import android.Manifest;
+import android.annotation.TargetApi;
+import android.app.AlertDialog;
+import android.app.KeyguardManager;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Rect;
+import android.hardware.fingerprint.FingerprintManager;
+import android.os.Build;
+import android.os.CancellationSignal;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.DragEvent;
 import android.view.LayoutInflater;
@@ -19,9 +35,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.Switch;
+import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.example.android.scmu_epra.BottomSheetListView;
 import com.example.android.scmu_epra.Constants;
@@ -31,6 +53,8 @@ import com.example.android.scmu_epra.connection.DownloadStatus;
 import com.example.android.scmu_epra.connection.GetJsonData;
 import com.example.android.scmu_epra.connection.GetSimulatorJsonData;
 import com.example.android.scmu_epra.mn_history.AlarmHistoryFragment;
+import com.example.android.scmu_epra.mn_users.UserItem;
+import com.google.gson.Gson;
 
 
 import org.json.JSONException;
@@ -49,7 +73,7 @@ public class HomeFragment extends Fragment implements GetJsonData.OnDataAvailabl
     @BindView(R.id.show_history)
     Button btnShowHistory;
     @BindView(R.id.toggleOnOff)
-    ToggleSwitch toggleOnOff;
+    ToggleButtonMine toggleOnOff;
     @BindView(R.id.bottom_sheet)
     LinearLayout bottomListView;
     @BindView(R.id.backgroundOfButton)
@@ -58,8 +82,12 @@ public class HomeFragment extends Fragment implements GetJsonData.OnDataAvailabl
     ProgressBar progressSpinner;
     @BindView(R.id.list_view)
     BottomSheetListView listView;
+    @BindView(R.id.home_baseLayout)
+    CoordinatorLayout coordinatorLayout;
 
 
+    private View thisView;
+    private View unlockView;
     private boolean alarmIsOn;
     private boolean bottomSheetIsSet = false;
     private Switch sw;
@@ -88,7 +116,6 @@ public class HomeFragment extends Fragment implements GetJsonData.OnDataAvailabl
 
         Log.d(TAG, "onViewCreated: sw = " + (sw != null));
 
-
         getData();
 
         mHandler = new Handler();
@@ -112,18 +139,30 @@ public class HomeFragment extends Fragment implements GetJsonData.OnDataAvailabl
             }
         });
 
-        toggleOnOff.setOnToggleSwitchChangeListener(new ToggleSwitch.OnToggleSwitchChangeListener(){
 
+        toggleOnOff.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public void onToggleSwitchChangeListener(int position, boolean isChecked) {
-                if (position == 0) {
-                    //TODO: turn alarm off
-                }
-                else {
-                    //TODO: turn alarm on
-                }
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                return false;
             }
         });
+
+
+
+        toggleOnOff.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d("onclick","toggle1");
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                unlockView = getLayoutInflater().from(getActivity()).inflate(R.layout.activity_auth, null);
+                builder.setView(unlockView);
+                processUnlockDialog(builder.show());
+
+            }
+        });
+
+
 
         BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(bottomListView);
 
@@ -143,7 +182,8 @@ public class HomeFragment extends Fragment implements GetJsonData.OnDataAvailabl
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        return getLayoutInflater().inflate(R.layout.frag_home, container, false);
+        thisView = getLayoutInflater().inflate(R.layout.frag_home, container, false);
+        return thisView;
     }
 
     @Override
@@ -176,7 +216,14 @@ public class HomeFragment extends Fragment implements GetJsonData.OnDataAvailabl
                     Log.d(TAG, "onDataAvailable: state = " + state + " sw is not null");
                     int stateInt = Integer.parseInt(state);
                     Log.d(TAG, "onDataAvailable: stateInt = " + stateInt);
-                    toggleOnOff.setCheckedTogglePosition(stateInt);
+                    if (stateInt == 1) {
+                        toggleOnOff.setChecked(true);
+                        //TODO:turn toggle on
+                    }
+                    else {
+                        toggleOnOff.setChecked(false);
+                        //TODO: turn toggle off
+                    }
                 }
             } catch (JSONException e) {
                 Log.e(TAG, "onDataAvailable: HomeFragment JSON GET error: " + e.getMessage() );
@@ -218,4 +265,147 @@ public class HomeFragment extends Fragment implements GetJsonData.OnDataAvailabl
 
         Log.d(TAG, "getData: data aqquired");
     }
+
+
+
+
+    private void processUnlockDialog(AlertDialog dialog) {
+        TextView uHeadingLabel;
+        ImageView uFingerprintImage;
+        TextView uParagraphLabel;
+        FingerprintManager uFingerprintManager;
+        KeyguardManager uKeyguardManager;
+        EditText uPin1EditText;
+        EditText uPin2EditText;
+        EditText uPin3EditText;
+
+
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
+        Gson gson = new Gson();
+        String json = sharedPref.getString(Constants.SIGNED_ACCOUNT_TAG, "");
+        UserItem currentAccount = gson.fromJson(json, UserItem.class);
+        String userPassword = UserItem.getPassword();
+
+
+        uFingerprintImage = unlockView.findViewById(R.id.fingerprintImage);
+        uParagraphLabel = unlockView.findViewById(R.id.paragraphLabel);
+        uPin1EditText = unlockView.findViewById(R.id.pin1);
+//        uPin2EditText = unlockView.findViewById(R.id.pin2);
+//        uPin3EditText = unlockView.findViewById(R.id.pin3);
+
+
+        if (uPin1EditText != null) {
+            uPin1EditText.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    String pin1Text = uPin1EditText.getText().toString();
+
+                    if (pin1Text.length() > 0) {
+                        // TODO: checkPin
+                        if (pin1Text.equals(userPassword)) {
+                            dialog.dismiss();
+                            toggleAlarm();
+                        }
+                    }
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                }
+            });
+
+//            uPin2EditText.addTextChangedListener(new TextWatcher() {
+//                @Override
+//                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+//                }
+//
+//                @Override
+//                public void onTextChanged(CharSequence s, int start, int before, int count) {
+//                    String pin1Text = uPin1EditText.getText().toString();
+//                    String pin2Text = uPin2EditText.getText().toString();
+//                    String pin3Text = uPin3EditText.getText().toString();
+//
+//                    if (pin1Text.length() > 0 && pin2Text.length() > 0 && pin3Text.length() > 0) {
+//                        // TODO: checkPin(pin1Text+pin2Text+pin3Text)
+//                    } else if (pin2Text.length() > 0) {
+//                        uPin3EditText.requestFocus();
+//                    }
+//                }
+//
+//                @Override
+//                public void afterTextChanged(Editable s) {
+//                }
+//            });
+//
+//            uPin3EditText.addTextChangedListener(new TextWatcher() {
+//                @Override
+//                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+//                }
+//
+//                @Override
+//                public void onTextChanged(CharSequence s, int start, int before, int count) {
+//                    String pin1Text = uPin1EditText.getText().toString();
+//                    String pin2Text = uPin2EditText.getText().toString();
+//                    String pin3Text = uPin3EditText.getText().toString();
+//
+//                    if (pin1Text.length() > 0 && pin2Text.length() > 0 && pin3Text.length() > 0) {
+//                        // TODO: checkPin(pin1Text+pin2Text+pin3Text)
+//                    }
+//                }
+//
+//                @Override
+//                public void afterTextChanged(Editable s) {
+//                }
+//            });
+
+        }
+
+
+        // Android version must be greater or equal to Marshmallow
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            uFingerprintManager = (FingerprintManager) getActivity().getSystemService(Context.FINGERPRINT_SERVICE);
+            uKeyguardManager = (KeyguardManager) getActivity().getSystemService(Context.KEYGUARD_SERVICE);
+
+
+            // Check if device has fingerprint scanner
+            if (!uFingerprintManager.isHardwareDetected()) {
+                uParagraphLabel.setText("Fingerprint scanner not detected in your device.");
+                // Check if permission to use fingerprint scanner has been granted
+            } else if(ContextCompat.checkSelfPermission(getActivity().getApplicationContext(), Manifest.permission.USE_FINGERPRINT) != PackageManager.PERMISSION_GRANTED) {
+                uParagraphLabel.setText("Permission not granted to use fingerprint scanner.");
+                // Check if lock screen is secured with at least one type of lock
+            } else if(!uKeyguardManager.isKeyguardSecure()) {
+                uParagraphLabel.setText("Add lock to your phone in settings.");
+                // Check if at least one fingerprint is registered
+            } else if(!uFingerprintManager.hasEnrolledFingerprints()) {
+                uParagraphLabel.setText("You should add at least one fingerprint to use this feature.");
+            } else {
+                uParagraphLabel.setText("Place your finger on the scanner to access the system.");
+
+
+                FingerprintHandler fingerprintHandler = new FingerprintHandler(this, getActivity(), uParagraphLabel, dialog);
+                fingerprintHandler.startAuth(uFingerprintManager, null);
+            }
+        }
+    }
+
+    //TODO: Connect to the server
+    public void toggleAlarm() {
+        if (toggleOnOff.isChecked()){
+            toggleOnOff.setChecked(false);
+        }
+        else{
+            toggleOnOff.setChecked(true);
+        }
+    }
 }
+
+
+
+
+
+

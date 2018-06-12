@@ -148,9 +148,9 @@
     <string name="ignore">Ignore</string>
     <string name="simulate">Simulate</string>
     <string name="authentication_title">Authentication</string>
-    <string name="authentication_description">Place your finger on the scanner to proceed.</string>
+    <string name="authentication_description">Place your finger on the scanner to proceed</string>
     <string name="authentication_divider">Or</string>
-    <string name="auth_pin">Put the alarm pin below</string>
+    <string name="auth_pin">Write your password below</string>
     <string name="auth_alert">Wrong pin!</string>
     <string name="users">Users</string>
     <string name="no_users">No users&#8230;</string>
