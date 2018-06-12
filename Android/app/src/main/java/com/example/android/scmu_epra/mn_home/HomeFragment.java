@@ -50,9 +50,12 @@ import com.example.android.scmu_epra.Constants;
 import com.example.android.scmu_epra.MainActivity;
 import com.example.android.scmu_epra.R;
 import com.example.android.scmu_epra.connection.DownloadStatus;
+import com.example.android.scmu_epra.connection.GetAreasJsonData;
 import com.example.android.scmu_epra.connection.GetJsonData;
 import com.example.android.scmu_epra.connection.GetSimulatorJsonData;
+import com.example.android.scmu_epra.connection.PostJsonData;
 import com.example.android.scmu_epra.mn_history.AlarmHistoryFragment;
+import com.example.android.scmu_epra.mn_users.AreaItem;
 import com.example.android.scmu_epra.mn_users.UserItem;
 import com.google.gson.Gson;
 
@@ -60,13 +63,16 @@ import com.google.gson.Gson;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import belka.us.androidtoggleswitch.widgets.ToggleSwitch;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class HomeFragment extends Fragment implements GetJsonData.OnDataAvailable, GetSimulatorJsonData.OnDataAvailable {
+public class HomeFragment extends Fragment implements GetJsonData.OnDataAvailable, GetAreasJsonData.OnDataAvailable, PostJsonData.OnStatusAvailable {
 
     public static final String TAG = "Home";
 
@@ -74,6 +80,8 @@ public class HomeFragment extends Fragment implements GetJsonData.OnDataAvailabl
     Button btnShowHistory;
     @BindView(R.id.toggleOnOff)
     ToggleButtonMine toggleOnOff;
+    @BindView(R.id.activeInfo)
+    TextView activeInfo;
     @BindView(R.id.bottom_sheet)
     LinearLayout bottomListView;
     @BindView(R.id.backgroundOfButton)
@@ -218,10 +226,35 @@ public class HomeFragment extends Fragment implements GetJsonData.OnDataAvailabl
                     Log.d(TAG, "onDataAvailable: stateInt = " + stateInt);
                     if (stateInt == 1) {
                         toggleOnOff.setChecked(true);
+                        String ativoDesde = data.getString("ativoDesde");
+                        String dataAtual = data.getString("dataAtual");
+                        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                        try {
+                            Date date1 = format.parse(ativoDesde);
+                            Date date2 = format.parse(dataAtual);
+                            long diff = date2.getTime() - date1.getTime();
+                            long seconds = diff / 1000;
+                            long minutes = seconds / 60;
+                            long hours = minutes / 60;
+                            long days = hours / 24;
+                            if (days >= 1) {
+                                activeInfo.setText("Alarm active for " + days + " day" + (days >= 2 ? "s" : ""));
+                            } else if (hours >= 1) {
+                                activeInfo.setText("Alarm active for " + hours + " hour" + (hours >= 2 ? "s" : ""));
+                            } else if (minutes >= 1) {
+                                activeInfo.setText("Alarm active for " + minutes + " minute" + (minutes >= 2 ? "s" : ""));
+                            } else {
+                                activeInfo.setText("Alarm active for " + seconds + " second" + (seconds >= 2 ? "s" : ""));
+                            }
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                        activeInfo.setVisibility(View.VISIBLE);
                         //TODO:turn toggle on
                     }
                     else {
                         toggleOnOff.setChecked(false);
+                        activeInfo.setText("Alarm is inactive.");
                         //TODO: turn toggle off
                     }
                 }
@@ -232,36 +265,12 @@ public class HomeFragment extends Fragment implements GetJsonData.OnDataAvailabl
         Log.d(TAG, "onDataAvailable HomeFragment: ends");
     }
 
-    @Override
-    public void onDataAvailable(List<HomeItem> data, DownloadStatus status) {
-        Log.d(TAG, "onDataAvailable: starts");
-        if(status == DownloadStatus.OK && data != null && data.size() > 0) {
-            HomeListAdapter listAdapter = new HomeListAdapter(mContext, 0, data);
-            listView = getView().findViewById(R.id.list_view);
-            listView.setAdapter(listAdapter);
-            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                    sw = view.findViewById(R.id.switch1);
-                    sw.setChecked(!sw.isChecked());
-                }
-            });
-        } else {
-            // download or processing failed
-            Log.e(TAG, "onDataAvailable failed with status or  " + status + " or it has no items");
-        }
-        if (progressSpinner.isEnabled()) {
-            progressSpinner.setVisibility(View.GONE);
-        }
-        Log.d(TAG, "onDataAvailable: ends");
-    }
-
     private void getData() {
         GetJsonData getJsonData = new GetJsonData(this, "https://test966996.000webhostapp.com/api/get_alarminfo.php");
         getJsonData.execute();
 
-        GetSimulatorJsonData getSimulatorJsonData = new GetSimulatorJsonData(this, "https://test966996.000webhostapp.com/api/get_simulators.php");
-        getSimulatorJsonData.execute("test");
+        GetAreasJsonData getAreasJsonData = new GetAreasJsonData(this, "https://test966996.000webhostapp.com/api/get_areas.php");
+        getAreasJsonData.execute("test");
 
         Log.d(TAG, "getData: data aqquired");
     }
@@ -396,10 +405,54 @@ public class HomeFragment extends Fragment implements GetJsonData.OnDataAvailabl
     public void toggleAlarm() {
         if (toggleOnOff.isChecked()){
             toggleOnOff.setChecked(false);
+            activeInfo.setText("Alarm is now inactive.");
         }
         else{
             toggleOnOff.setChecked(true);
+            activeInfo.setText("Alarm is now active.");
         }
+        executePostJson("https://test966996.000webhostapp.com/api/post_alarminfo.php", "estadoAtual="+(toggleOnOff.isChecked() ? "1" : "0"));
+    }
+
+    @Override
+    public void onDataAvailable(List<AreaItem> data, DownloadStatus status) {
+        Log.d(TAG, "onDataAvailable: starts");
+        if(status == DownloadStatus.OK && data != null && data.size() > 0) {
+            HomeListAdapter listAdapter = new HomeListAdapter(mContext, 0, data);
+            listView = getView().findViewById(R.id.list_view);
+            listView.setAdapter(listAdapter);
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                    sw = view.findViewById(R.id.switch1);
+                    AreaItem item = data.get(position);
+
+                    boolean newState = !sw.isChecked();
+
+                    executePostJson("https://test966996.000webhostapp.com/api/update_areas.php",
+                            "id="+item.getId(), "nome="+item.getName(), "alarmeLigado="+(newState ? "1" : "0"), "sensor="+item.getSensor());
+
+                    sw.setChecked(newState);
+                }
+            });
+        } else {
+            // download or processing failed
+            Log.e(TAG, "onDataAvailable failed with status or  " + status + " or it has no items");
+        }
+        if (progressSpinner.isEnabled()) {
+            progressSpinner.setVisibility(View.GONE);
+        }
+        Log.d(TAG, "onDataAvailable: ends");
+    }
+
+    private final void executePostJson(String url, String... params) {
+        PostJsonData postJsonData = new PostJsonData(this, url);
+        postJsonData.execute(params);
+    }
+
+    @Override
+    public void onStatusAvailable(Boolean status) {
+
     }
 }
 

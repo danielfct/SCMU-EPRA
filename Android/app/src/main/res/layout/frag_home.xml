@@ -31,14 +31,15 @@
                 android:textOff="ALARM OFF"/>
 
             <TextView
+                android:id="@+id/activeInfo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="13dp"
                 android:layout_marginBottom="10dp"
+                android:layout_marginTop="13dp"
+                android:text="Loading system info..."
                 android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
                 android:textStyle="bold"
-                android:text="Active for: x minutes"
-                />
+                android:visibility="visible" />
 
             <android.support.v7.widget.AppCompatButton
                 android:id="@+id/show_history"

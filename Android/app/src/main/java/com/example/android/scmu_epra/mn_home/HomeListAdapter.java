@@ -12,17 +12,18 @@ import android.widget.TextView;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.example.android.scmu_epra.R;
+import com.example.android.scmu_epra.mn_users.AreaItem;
 
 import java.util.List;
 
-public class HomeListAdapter extends ArrayAdapter<HomeItem> {
+public class HomeListAdapter extends ArrayAdapter<AreaItem> {
 
     private Context context;
-    private List<HomeItem> list;
+    private List<AreaItem> list;
     private TextDrawable.IBuilder builder;
     private ColorGenerator generator;
 
-    public HomeListAdapter(Context context, int resource, List<HomeItem> items) {
+    public HomeListAdapter(Context context, int resource, List<AreaItem> items) {
         super(context, 0, items);
         this.context = context;
         this.list = items;
@@ -42,7 +43,7 @@ public class HomeListAdapter extends ArrayAdapter<HomeItem> {
             v = LayoutInflater.from(this.context).inflate(R.layout.frag_home_list_item, parent, false);
         }
 
-        HomeItem item = this.list.get(position);
+        AreaItem item = this.list.get(position);
 
         TextView textView = v.findViewById(R.id.divisionName);
         textView.setText(item.getName());
@@ -53,7 +54,7 @@ public class HomeListAdapter extends ArrayAdapter<HomeItem> {
         imageView.setImageDrawable(textDrawable);
 
         Switch switch1 = v.findViewById(R.id.switch1);
-        switch1.setChecked(item.getEstadoAtual() == 1);
+        switch1.setChecked(item.isAlarmOn());
 
         return v;
     }
