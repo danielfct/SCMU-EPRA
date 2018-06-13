@@ -26,7 +26,6 @@
         </activity>
         <activity
             android:name=".auth.LoginActivity"
-            android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden"
             android:screenOrientation="portrait">
              <intent-filter>
@@ -46,7 +45,6 @@
         <activity
             android:name=".auth.SignupActivity"
             android:parentActivityName=".auth.LoginActivity"
-            android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden"
             android:screenOrientation="portrait">
             <meta-data

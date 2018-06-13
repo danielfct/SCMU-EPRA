@@ -8,7 +8,7 @@
     android:orientation="vertical"
     android:paddingLeft="24dp"
     android:paddingRight="24dp"
-    android:paddingTop="24dp"
+    android:paddingTop="44dp"
     android:background="@color/pink">
 
     <android.support.design.widget.FloatingActionButton

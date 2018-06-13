@@ -7,10 +7,10 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingTop="24dp"
+    android:paddingTop="94dp"
     android:paddingLeft="24dp"
     android:paddingRight="24dp"
-    android:background="@drawable/login_background">
+    android:background="@drawable/login_background2">
 
     <android.widget.TextView
         android:id="@+id/login_title"
@@ -101,6 +101,7 @@
         android:padding="10dp"
         android:textColor="@color/white"
         android:textSize="16sp"/>
+
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/signup_button"
