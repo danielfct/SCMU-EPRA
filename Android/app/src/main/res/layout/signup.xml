@@ -9,6 +9,7 @@
     android:paddingLeft="24dp"
     android:paddingRight="24dp"
     android:paddingTop="44dp"
+    android:paddingBottom="50dp"
     android:background="@color/pink">
 
     <android.support.design.widget.FloatingActionButton
@@ -38,6 +39,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginTop="8dp"
+        android:backgroundTint="@color/colorPrimary"
         app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout"
         app:errorTextAppearance="@style/SignupErrorAppearance"
         android:textColorHint="@color/white">

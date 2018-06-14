@@ -71,8 +71,6 @@ public class LoginActivity extends AppCompatActivity
     TextInputEditText mPasswordView;
     @BindView(R.id.login_button)
     AppCompatButton mLoginButton;
-    @BindView(R.id.signup_link)
-    TextView mSignupLink;
     @BindView(R.id.signup_button)
     FloatingActionButton mSignupButton;
 
@@ -105,7 +103,6 @@ public class LoginActivity extends AppCompatActivity
         });
 
         mLoginButton.setOnClickListener(view -> login());
-        mSignupLink.setOnClickListener(view -> { view.startAnimation(linkClick); signup(); });
         mSignupButton.setOnClickListener(view -> signup());
     }
 
