@@ -7,21 +7,32 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingTop="24dp"
     android:paddingLeft="24dp"
     android:paddingRight="24dp"
-    android:background="@drawable/login_background">
+    android:paddingBottom="16dp"
+    android:background="@drawable/login_background2">
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/epra_image"
+        android:layout_width="wrap_content"
+        android:layout_height="274dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:scaleX="0.6"
+        android:scaleY="0.6"
+        android:src="@drawable/epra_logo_blue" />
 
     <android.widget.TextView
         android:id="@+id/login_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
         android:text="@string/login"
         android:gravity="center"
+        android:layout_marginTop="-30dp"
         android:textColor="@color/white"
         android:textSize="25sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:layout_below="@id/epra_image"/>
 
     <!--  Email Label -->
     <android.support.design.widget.TextInputLayout
@@ -91,23 +102,13 @@
         android:textColor="@color/white"
         android:background="?android:attr/selectableItemBackground"/>
 
-    <TextView
-        android:id="@+id/signup_link"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/login_button"
-        android:text="@string/noAccountYet"
-        android:gravity="center"
-        android:padding="10dp"
-        android:textColor="@color/white"
-        android:textSize="16sp"/>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/signup_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
         app:useCompatPadding="true"
         android:layout_marginTop="5dp"
         android:layout_marginStart="5dp"
