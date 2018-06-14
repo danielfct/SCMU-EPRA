@@ -29,4 +29,7 @@ dependencies {
     implementation 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
     implementation 'us.belka:androidtoggleswitch:1.2.2'
     implementation 'com.google.code.gson:gson:2.8.4'
+    implementation 'com.google.firebase:firebase-core:16.0.0'
+    implementation 'com.google.firebase:firebase-messaging:17.0.0'
 }
+apply plugin: 'com.google.gms.google-services'

@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "1004637802400",
+    "firebase_url": "https://epra-e1a48.firebaseio.com",
+    "project_id": "epra-e1a48",
+    "storage_bucket": "epra-e1a48.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1004637802400:android:2d801968112e5460",
+        "android_client_info": {
+          "package_name": "pt.unl.fct.scmu.epra"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1004637802400-mua2lb5lrffhqj4i9g54cvpr4c5n59ah.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "1004637802400-mua2lb5lrffhqj4i9g54cvpr4c5n59ah.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBb3lWPYxzgtbE-kZTxm2xTPVho3xRA6Fs"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
