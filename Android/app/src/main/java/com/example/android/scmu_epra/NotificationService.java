@@ -33,17 +33,9 @@ public class NotificationService extends FirebaseMessagingService {
             Log.e("dataa", "Data Payload: " + remoteMessage.getData().toString());
             try {
                 JSONObject jsonObject = new JSONObject(remoteMessage.getData().toString());
-                JSONObject dataObject = jsonObject.getJSONObject("data");
-                String imageURL = dataObject.getString("image");
-                String title = dataObject.getString("title");
-                String message = dataObject.getString("message");
+                String id = jsonObject.getString("id");
 
-                if(imageURL.equals("no")){
-                    generateNotification( message);
-                }else {
-                    Bitmap bitmap = getBitmapFromURL(imageURL);
-                    notificationWithImage(bitmap, title, message);
-                }
+                generateNotification( id);
             } catch (Exception e) {
                 Log.e("exc", "Exception: " + e.getMessage());
             }
@@ -51,17 +43,18 @@ public class NotificationService extends FirebaseMessagingService {
 
     }
 
-    private void generateNotification( String message) {
+    private void generateNotification( String id) {
         Intent intent = new Intent(this, BurglaryManagementFragment.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.putExtra("id", id);
+        //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent,
-                PendingIntent.FLAG_ONE_SHOT);
-
+                PendingIntent.FLAG_UPDATE_CURRENT);
+// PendingIntent.FLAG_ONE_SHOT
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder mNotifyBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentTitle("Firebase Cloud or Push Notification")
-                .setContentText(message)
+                .setContentTitle("Warning")
+                .setContentText("A burglar broke into your house!")
                 .setAutoCancel(true)
                 .setSound(defaultSoundUri)
                 .setContentIntent(pendingIntent);
@@ -75,7 +68,7 @@ public class NotificationService extends FirebaseMessagingService {
         notificationManager.notify(NOTIFICATION_ID++ , mNotifyBuilder.build());
     }
 
-    private void notificationWithImage(Bitmap bitmap, String title, String message) {
+    /*private void notificationWithImage(Bitmap bitmap, String title, String message) {
 
         Intent intent = new Intent(this, BurglaryManagementFragment.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -120,5 +113,5 @@ public class NotificationService extends FirebaseMessagingService {
             e.printStackTrace();
             return null;
         }
-    }
+    }*/
 }
