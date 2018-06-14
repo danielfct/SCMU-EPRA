@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="500dp">
 
     <ImageView
         android:id="@+id/fingerprintImage"
@@ -58,68 +58,24 @@
     </RelativeLayout>
 
 
-
     <TextView
         android:id="@+id/paragraphLabel2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="183dp"
-        android:padding="16dp"
+        android:layout_marginTop="40dp"
         android:text="@string/auth_pin"
         android:textAlignment="center" />
 
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/paragraphLabel2"
-        android:layout_marginTop="-200dp"
-        android:gravity="top|center_horizontal"
-        android:orientation="horizontal">
-
-
-        <EditText
+    <EditText
         android:id="@+id/pin1"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="40dp"
         android:ems="10"
         android:inputType="textPassword"
         android:textAlignment="center" />
-
-
-        <!--<EditText-->
-            <!--android:id="@+id/pin1"-->
-            <!--android:layout_width="50dp"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_gravity="center_horizontal"-->
-            <!--android:ems="10"-->
-            <!--android:inputType="number"-->
-            <!--android:maxLength="1"-->
-            <!--android:textAlignment="center" />-->
-
-        <!--<EditText-->
-            <!--android:id="@+id/pin2"-->
-            <!--android:layout_width="50dp"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_gravity="center_horizontal"-->
-            <!--android:ems="10"-->
-            <!--android:inputType="number"-->
-            <!--android:maxLength="1"-->
-            <!--android:textAlignment="center" />-->
-
-        <!--<EditText-->
-            <!--android:id="@+id/pin3"-->
-            <!--android:layout_width="50dp"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_gravity="center_horizontal"-->
-            <!--android:ems="10"-->
-            <!--android:inputType="number"-->
-            <!--android:maxLength="1"-->
-            <!--android:textAlignment="center" />-->
-
-    </LinearLayout>
 
 
 </LinearLayout>

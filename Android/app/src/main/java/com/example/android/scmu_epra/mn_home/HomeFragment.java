@@ -165,6 +165,12 @@ public class HomeFragment extends Fragment implements GetJsonData.OnDataAvailabl
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 unlockView = getLayoutInflater().from(getActivity()).inflate(R.layout.activity_auth, null);
                 builder.setView(unlockView);
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                });
                 processUnlockDialog(builder.show());
 
             }
