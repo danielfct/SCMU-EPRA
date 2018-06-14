@@ -57,6 +57,8 @@ import com.example.android.scmu_epra.connection.PostJsonData;
 import com.example.android.scmu_epra.mn_history.AlarmHistoryFragment;
 import com.example.android.scmu_epra.mn_users.AreaItem;
 import com.example.android.scmu_epra.mn_users.UserItem;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.gson.Gson;
 
 
