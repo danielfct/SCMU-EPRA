@@ -224,18 +224,10 @@
             android:paddingTop="10dp"
             android:layout_gravity="center_horizontal"/>
 
-        <android.support.v4.widget.SwipeRefreshLayout
-            android:id="@+id/burglary_swipe_refresh"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <com.example.android.scmu_epra.BottomSheetListView
+        <com.example.android.scmu_epra.BottomSheetListView
             android:id="@+id/list_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
-
-        </android.support.v4.widget.SwipeRefreshLayout>
-
 
     </LinearLayout>
 

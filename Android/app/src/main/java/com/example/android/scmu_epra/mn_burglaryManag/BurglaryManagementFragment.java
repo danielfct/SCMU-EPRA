@@ -51,8 +51,6 @@ public class BurglaryManagementFragment extends Fragment
     AppCompatButton ignoreButton;
     @BindView(R.id.list_view)
     BottomSheetListView listView;
-    @BindView(R.id.burglary_swipe_refresh)
-    SwipeRefreshLayout swipeRefresh;
     @BindView(R.id.burglary_management_progress_spinner)
     ProgressBar progressSpinner;
 
@@ -137,25 +135,27 @@ public class BurglaryManagementFragment extends Fragment
         getJsonData.execute();
     }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_search, menu);
-        MenuItem item = menu.findItem(R.id.menu_Search);
-        SearchView searchView = (SearchView)item.getActionView();
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String s) {
-                return false;
-            }
 
-            @Override
-            public boolean onQueryTextChange(String s) {
-                mListAdapter.getFilter().filter(s);
-                return false;
-            }
-        });
-
-        super.onCreateOptionsMenu(menu, inflater);
-    }
+    // Unnecessary - for search in the toolbar
+//    @Override
+//    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+//        inflater.inflate(R.menu.menu_search, menu);
+//        MenuItem item = menu.findItem(R.id.menu_Search);
+//        SearchView searchView = (SearchView)item.getActionView();
+//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+//            @Override
+//            public boolean onQueryTextSubmit(String s) {
+//                return false;
+//            }
+//
+//            @Override
+//            public boolean onQueryTextChange(String s) {
+//                mListAdapter.getFilter().filter(s);
+//                return false;
+//            }
+//        });
+//
+//        super.onCreateOptionsMenu(menu, inflater);
+//    }
 
 }
