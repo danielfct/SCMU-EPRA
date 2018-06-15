@@ -1,6 +1,8 @@
 package com.example.android.scmu_epra;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -10,17 +12,21 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.example.android.scmu_epra.auth.LoginActivity;
 import com.example.android.scmu_epra.connection.PostJsonData;
 import com.example.android.scmu_epra.mn_users.UsersFragment;
 import com.example.android.scmu_epra.mn_burglaryManag.BurglaryManagementFragment;
 import com.example.android.scmu_epra.mn_devices.DevicesFragment;
 import com.example.android.scmu_epra.mn_history.AlarmHistoryFragment;
 import com.example.android.scmu_epra.mn_home.HomeFragment;
+
+import java.util.Map;
 
 
 public class MainActivity extends AppCompatActivity
@@ -91,6 +97,29 @@ public class MainActivity extends AppCompatActivity
             case R.id.nav_settings:
                 Intent intent = new Intent(this, com.example.android.scmu_epra.SettingsActivity.class);
                 startActivity(intent);
+                break;
+            case R.id.nav_logout:
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMessage("Are you sure you want to logout?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+                                SharedPreferences.Editor editor = sharedPref.edit();
+                                editor.remove(Constants.SIGNED_ACCOUNT_TAG);
+                                editor.commit();
+                                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                                finish();
+                                startActivity(intent);
+                            }
+                        })
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // User cancelled the dialog
+                            }
+                        });
+                // Create the AlertDialog object and return it
+                builder.create();
+                builder.show();
                 break;
         }
 
