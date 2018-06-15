@@ -10,9 +10,7 @@ TO DO:
 
 - Fazer sistema de notificação de nova intrusão
 
-- Tirar a opção de pesquisa do BurglaryManagement
-
-- Fazer activity de settings
+- Fazer activity de settings: ligação com o servidor
 
 - No ecrã Home, permitir editar Areas
 
@@ -20,6 +18,6 @@ TO DO:
 
 - Tirar o BurglaryManagement das opções de menu
 
-- Janela de introduzir pin deve ter botão de voltar para trás
-
 - Introduzir mensagens de feedback em todas as ações
+
+- Logout
