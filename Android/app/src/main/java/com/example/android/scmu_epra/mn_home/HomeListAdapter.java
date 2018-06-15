@@ -1,6 +1,8 @@
 package com.example.android.scmu_epra.mn_home;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,8 +13,11 @@ import android.widget.TextView;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
+import com.example.android.scmu_epra.Constants;
 import com.example.android.scmu_epra.R;
 import com.example.android.scmu_epra.mn_users.AreaItem;
+import com.example.android.scmu_epra.mn_users.UserItem;
+import com.google.gson.Gson;
 
 import java.util.List;
 
@@ -55,6 +60,13 @@ public class HomeListAdapter extends ArrayAdapter<AreaItem> {
 
         Switch switch1 = v.findViewById(R.id.switch1);
         switch1.setChecked(item.isAlarmOn());
+
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
+        Gson gson = new Gson();
+        String json = sharedPref.getString(Constants.SIGNED_ACCOUNT_TAG, "");
+        UserItem currentAccount = gson.fromJson(json, UserItem.class);
+
+        switch1.setEnabled(currentAccount != null && currentAccount.getPermissions().contains(item.getId()));
 
         return v;
     }
