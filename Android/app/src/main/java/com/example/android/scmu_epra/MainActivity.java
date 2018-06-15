@@ -86,10 +86,10 @@ public class MainActivity extends AppCompatActivity
                 fragment = new DevicesFragment();
                 ft.replace(R.id.screen_area, fragment, DevicesFragment.TAG);
                 break;
-//            case R.id.nav_burglaryManag:
-//                fragment = new BurglaryManagementFragment();
-//                ft.replace(R.id.screen_area, fragment, BurglaryManagementFragment.TAG);
-//                break;
+            case R.id.nav_burglaryManag:
+                fragment = new BurglaryManagementFragment();
+                ft.replace(R.id.screen_area, fragment, BurglaryManagementFragment.TAG);
+                break;
             case R.id.nav_contacts:
                 fragment = new UsersFragment();
                 ft.replace(R.id.screen_area, fragment, UsersFragment.TAG);
