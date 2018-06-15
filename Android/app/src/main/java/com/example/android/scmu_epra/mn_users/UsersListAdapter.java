@@ -73,11 +73,11 @@ public class UsersListAdapter extends ArrayAdapter<UserItem> {
 
         AppCompatImageButton editPermissionsButton = v.findViewById(R.id.edit_permissions_button);
         editPermissionsButton.setOnClickListener((view) -> showEditPermissionsDialog(permissions));
-        editPermissionsButton.setVisibility(currentAccount != null && currentAccount.isAdmin() ? View.VISIBLE : View.INVISIBLE);
+        editPermissionsButton.setEnabled(currentAccount != null && currentAccount.isAdmin());
 
         AppCompatImageButton deleteUserAccountButton = v.findViewById(R.id.delete_user_account_button);
         deleteUserAccountButton.setOnClickListener((view) -> showDeleteUserConfirmation(item));
-        deleteUserAccountButton.setVisibility(currentAccount != null && currentAccount.isAdmin() ? View.VISIBLE : View.INVISIBLE);
+        deleteUserAccountButton.setEnabled(currentAccount != null && currentAccount.isAdmin());
 
         return v;
     }
