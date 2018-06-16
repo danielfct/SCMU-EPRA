@@ -10,7 +10,7 @@ TO DO:
 
 - Fazer sistema de notificação de nova intrusão
 
-- Fazer activity de settings
+- Ligar settings ao servidor
 
 - No ecrã Home, permitir editar Areas
 
