@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -47,8 +46,6 @@ public class DevicesFragment extends Fragment
 
     @BindView(R.id.list_devices)
     ListView listView;
-    @BindView(R.id.devices_swipe_refresh)
-    SwipeRefreshLayout swipeRefresh;
     @BindView(R.id.devices_progress_spinner)
     ProgressBar progressSpinner;
 
