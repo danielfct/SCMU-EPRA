@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.SearchView;
+import android.widget.TextView;
 
 import com.example.android.scmu_epra.BottomSheetListView;
 import com.example.android.scmu_epra.Constants;
@@ -26,6 +27,10 @@ import com.example.android.scmu_epra.R;
 import com.example.android.scmu_epra.connection.DownloadStatus;
 import com.example.android.scmu_epra.connection.GetBurglaryHistoryJsonData;
 import com.example.android.scmu_epra.connection.GetHistoryJsonData;
+import com.example.android.scmu_epra.connection.GetJsonData;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.List;
 
@@ -33,7 +38,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class BurglaryManagementFragment extends Fragment
-        implements GetBurglaryHistoryJsonData.OnDataAvailable {
+        implements GetBurglaryHistoryJsonData.OnDataAvailable, GetJsonData.OnDataAvailable {
 
     public static final String TAG = "BurglaryManagement";
 
@@ -53,6 +58,12 @@ public class BurglaryManagementFragment extends Fragment
     BottomSheetListView listView;
     @BindView(R.id.burglary_management_progress_spinner)
     ProgressBar progressSpinner;
+    @BindView(R.id.entry_point_text)
+    TextView entryPointText;
+    @BindView(R.id.current_room_text)
+    TextView currentRoomText;
+    @BindView(R.id.users_notified_text)
+    TextView usersNotifiedText;
 
     private boolean bottomSheetIsSet = false;
     private Context mContext;
@@ -68,6 +79,9 @@ public class BurglaryManagementFragment extends Fragment
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+        GetJsonData getJsonData = new GetJsonData(this, "https://test966996.000webhostapp.com/api/get_tracking.php?id=1");
+        getJsonData.execute();
+
         View view = inflater.inflate(R.layout.frag_burglary_manag, container, false);
         ButterKnife.bind(this, view);
         return view;
@@ -133,6 +147,24 @@ public class BurglaryManagementFragment extends Fragment
         GetBurglaryHistoryJsonData getJsonData = new GetBurglaryHistoryJsonData(this,
                 "https://test966996.000webhostapp.com/api/get_historicoTracking.php");
         getJsonData.execute();
+    }
+
+    @Override
+    public void onDataAvailable(JSONObject data) {
+        try {
+            String areaAtual = data.getString("atual");
+            String areaEntrada = data.getString("entrada");
+            String pessoasNotificadas = data.getString("pessoasNotificadas");
+            currentRoomText.setText(areaAtual);
+            entryPointText.setText(areaEntrada);
+            usersNotifiedText.setText(pessoasNotificadas);
+
+            GetJsonData getJsonData = new GetJsonData(this, "https://test966996.000webhostapp.com/api/get_tracking.php?id=1");
+            getJsonData.execute();
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
 

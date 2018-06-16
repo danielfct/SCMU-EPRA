@@ -39,21 +39,15 @@ if($num>0){
         extract($row);
 
         $tracking_item=array(
-            "id" => $id,
-            "areaAtual" => $areaAtual,
-            "areaEntrada" => $areaEntrada,
+            "entrada" => $entrada,
+            "atual" => $atual,
             "pessoasNotificadas" => $pessoasNotificadas,
-            "area" => $area,
-            "duracao" => $duracao,
-            "trackingId" => $trackingId
         );
+        
+        echo json_encode($tracking_item);
+        return; 
 
-        if ($num == 1) {
-          echo json_encode($tracking_item);
-          return;
-        }
-
-        array_push($tracking_arr, $tracking_item);
+        //array_push($tracking_arr, $tracking_item);
     }
 
     echo json_encode($tracking_arr);

@@ -11,10 +11,6 @@ class Tracking {
     public $areaEntrada;
     public $pessoasNotificadas;
 
-    public $area;
-    public $duracao;
-    public $trackingid;
-
     // constructor with $db as database connection
     public function __construct($db){
         $this->conn = $db;
@@ -22,7 +18,7 @@ class Tracking {
 
     // read simulators
     function read(){
-      $query = "SELECT * FROM tracking INNER JOIN historicotracking ON id=trackingId WHERE id=$this->id";
+      $query = "SELECT a1.nome as 'entrada', areas.nome as 'atual', pessoasNotificadas FROM tracking inner join areas as a1 on tracking.areaEntrada = a1.id inner join areas on tracking.areaAtual = areas.id WHERE tracking.id=$this->id";
 
       // prepare query statement
       $stmt = $this->conn->prepare($query);

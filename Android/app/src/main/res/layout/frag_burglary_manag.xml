@@ -54,7 +54,7 @@
                         android:textStyle="bold"/>
 
                     <TextView
-                        android:text="asoua sp jks"
+                        android:text=""
                         android:id="@+id/current_room_text"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -85,7 +85,7 @@
                         android:textStyle="bold"/>
 
                     <TextView
-                        android:text="asdiasnjoadsdfs"
+                        android:text=""
                         android:id="@+id/entry_point_text"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -116,7 +116,7 @@
                         android:textStyle="bold"/>
 
                     <TextView
-                        android:text="asadn"
+                        android:text=""
                         android:id="@+id/users_notified_text"
                         android:gravity="right"
                         android:layout_width="match_parent"
