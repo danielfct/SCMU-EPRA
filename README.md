@@ -18,4 +18,6 @@ TO DO:
 
 - Introduzir mensagens de feedback em todas as ações
 
+- Guardar as principais acções para serem apresentadas no histórico
+
 - Último: Remover BurgManag do menu
