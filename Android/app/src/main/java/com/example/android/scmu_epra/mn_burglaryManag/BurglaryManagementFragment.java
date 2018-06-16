@@ -78,6 +78,7 @@ public class BurglaryManagementFragment extends Fragment
     private Handler mHandler;
     private Runnable mRunnable;
     private BurglaryManagementListAdapter mListAdapter;
+    private String trackingId = "-1";
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -87,7 +88,13 @@ public class BurglaryManagementFragment extends Fragment
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        GetJsonData getJsonData = new GetJsonData(this, "https://test966996.000webhostapp.com/api/get_tracking.php?id=1");
+        Log.d(TAG, "onCreateView: BURGLARY ENTROU NO ONCERATEVIEW");
+
+        if (getArguments() != null) {
+            trackingId = getArguments().getString("id");
+        }
+
+        GetJsonData getJsonData = new GetJsonData(this, "https://test966996.000webhostapp.com/api/get_tracking.php?id="+trackingId);
         getJsonData.execute();
 
         View view = inflater.inflate(R.layout.frag_burglary_manag, container, false);
@@ -177,7 +184,7 @@ public class BurglaryManagementFragment extends Fragment
 
     private void getData() {
         GetBurglaryHistoryJsonData getJsonData = new GetBurglaryHistoryJsonData(this,
-                "https://test966996.000webhostapp.com/api/get_historicoTracking.php");
+                "https://test966996.000webhostapp.com/api/get_historicoTracking.php?id="+trackingId);
         getJsonData.execute();
     }
 
@@ -192,9 +199,6 @@ public class BurglaryManagementFragment extends Fragment
                 entryPointText.setText(areaEntrada);
                 usersNotifiedText.setText(pessoasNotificadas);
             }
-
-            GetJsonData getJsonData = new GetJsonData(this, "https://test966996.000webhostapp.com/api/get_tracking.php?id=1");
-            getJsonData.execute();
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -241,6 +245,16 @@ public class BurglaryManagementFragment extends Fragment
             // other 'case' lines to check for other
             // permissions this app might request
         }
+    }
+
+    public static BurglaryManagementFragment newInstance(String arg) {
+        Bundle b = new Bundle();
+        b.putString("id", arg);
+
+        BurglaryManagementFragment fragment = new BurglaryManagementFragment();
+        fragment.setArguments(b);
+
+        return fragment;
     }
 
 
