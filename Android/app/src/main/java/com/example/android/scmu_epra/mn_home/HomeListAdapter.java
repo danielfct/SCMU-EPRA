@@ -66,6 +66,7 @@ public class HomeListAdapter extends ArrayAdapter<AreaItem> {
         String json = sharedPref.getString(Constants.SIGNED_ACCOUNT_TAG, "");
         UserItem currentAccount = gson.fromJson(json, UserItem.class);
 
+        //TODO: corrigir problema: está a mudar o switch qdo nao devia. Desactivar o ontouch ou algo do género
         switch1.setEnabled(currentAccount != null && currentAccount.getPermissions().contains(item.getId()));
 
         return v;
