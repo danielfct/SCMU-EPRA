@@ -21,15 +21,16 @@ $row = $stmt->fetch(PDO::FETCH_ASSOC);
         echo "alarme=".$alarmState." ";
 
 
-$query = "SELECT nome, estadoAtual FROM simuladores";
+$query = "SELECT nome, ligado FROM devices";
 
 $stmt = $conn->prepare($query);
 
 // execute query
 $stmt->execute();
-
+$counter = 1;
 while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {;
-  $state = $row["estadoAtual"] == 0 ? "off" : "on";
-  echo $row["nome"]."=".$state." ";
+  $state = $row["ligado"] == 0 ? "off" : "on";
+  echo ($counter <= 2 ? "led".$counter : $row["nome"])."=".$state." ";
+  $counter++;
 }
 ?>

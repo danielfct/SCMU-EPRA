@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,6 +26,7 @@ import com.example.android.scmu_epra.connection.GetDevicesJsonData;
 import com.example.android.scmu_epra.connection.GetHistoryJsonData;
 import com.example.android.scmu_epra.connection.GetJsonData;
 import com.example.android.scmu_epra.connection.GetSimulatorJsonData;
+import com.example.android.scmu_epra.connection.PostJsonData;
 import com.example.android.scmu_epra.connection.Row;
 import com.example.android.scmu_epra.mn_history.AlarmHistoryListAdapter;
 import com.example.android.scmu_epra.mn_users.AreaItem;
@@ -40,7 +42,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class DevicesFragment extends Fragment
-        implements GetDevicesJsonData.OnDataAvailable {
+        implements GetDevicesJsonData.OnDataAvailable, PostJsonData.OnStatusAvailable {
 
     public static final String TAG = "DevicesFragment";
 
@@ -99,9 +101,21 @@ public class DevicesFragment extends Fragment
         if(status == DownloadStatus.OK && data != null && data.size() > 0) {
             mListAdapter = new DevicesListAdapter(mContext, 0, data);
             listView.setAdapter(mListAdapter);
-            listView.setOnItemClickListener((adapterView, view, position, id) -> {
-                sw = view.findViewById(R.id.device_switch);
-                sw.setChecked(!sw.isChecked());
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                    sw = view.findViewById(R.id.device_switch);
+                    DeviceItem item = data.get(position);
+
+                    boolean newState = !sw.isChecked();
+
+                    executePostJson("https://test966996.000webhostapp.com/api/update_devices.php",
+                            "nome="+data.get(position).getName(),
+                            "ligado="+(sw.isChecked() ? "1" : "0")
+                    );
+
+                    sw.setChecked(newState);
+                }
             });
         } else {
             // download or processing failed
@@ -111,6 +125,11 @@ public class DevicesFragment extends Fragment
             progressSpinner.setVisibility(View.GONE);
         }
         Log.d(TAG, "onDataAvailable: ends");
+    }
+
+    private final void executePostJson(String url, String... params) {
+        PostJsonData postJsonData = new PostJsonData(this, url);
+        postJsonData.execute(params);
     }
 
     @Override
@@ -140,4 +159,12 @@ public class DevicesFragment extends Fragment
         getJsonData.execute();
     }
 
+    @Override
+    public void onStatusAvailable(Boolean status) {
+        if (status) {
+            Snackbar.make(getView(), "Device status changed.", Snackbar.LENGTH_SHORT).show();
+        } else {
+            Snackbar.make(getView(), "Unable to connect to the server.", Snackbar.LENGTH_SHORT).show();
+        }
+    }
 }
