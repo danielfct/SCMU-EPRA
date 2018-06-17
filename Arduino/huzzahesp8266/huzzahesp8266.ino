@@ -1,4 +1,5 @@
 #include <ESP8266WiFi.h>
+#include <ESP8266HTTPClient.h>
 
 const char* ssid     = "SSID";
 const char* password = "PASSWORD";
@@ -12,6 +13,7 @@ const int buzzer = 12; //buzzer to arduino pin 12
 
 boolean isAlarmOn;
 boolean isPlaying;
+boolean notified;
 
 void setup() {
   Serial.begin(115200);
@@ -30,6 +32,7 @@ void setup() {
 
   isAlarmOn = false;
   isPlaying = false;
+  notified = false;
   
   WiFi.begin(ssid, password);
   
@@ -66,7 +69,7 @@ void loop() {
   }
   
   // We now create a URI for the request
-  String url = "/";
+  String url = "/api/arduino.php";
   Serial.print("Requesting URL: ");
   Serial.println(url);
   
@@ -94,9 +97,15 @@ void loop() {
     }
 
     
-   if (line.indexOf("alarm=on") > 0 && !isAlarmOn) {
+   if (line.indexOf("alarme=on") > 0 && !isAlarmOn) {
+      if (!isAlarmOn) {
+        notified = false;  
+      }
       isAlarmOn = true;
-    } else if (line.indexOf("alarm=off") > 0 && isAlarmOn) {
+    } else if (line.indexOf("alarme=off") > 0 && isAlarmOn) {
+      if (isAlarmOn) {
+        notified = false;  
+      }
       isAlarmOn = false;
       isPlaying = false;
     }
@@ -105,11 +114,30 @@ void loop() {
 
   int arduinoValue = digitalRead(communicationWithArduinoPin);
   if (arduinoValue == HIGH) {
+    Serial.println("GOT HIGH FROM ARDUINO");
     isPlaying = true;  
   }
+
+  if(isPlaying)
+  Serial.println("isPlaying=true");
+  else Serial.println("isPlaying=false");
+
+  if(isAlarmOn)
+  Serial.println("isAlarmOn=true");
+  else Serial.println("isAlarmOn=false");
   
   if (isPlaying && isAlarmOn) { // check if arduino detected something and alarm is activated
-    playBipSound(5,1000);
+      if (!notified) {
+        HTTPClient http;
+        http.begin("http://test966996.000webhostapp.com/api/notifications.php?areaEntrada=1");
+        http.addHeader("Content-Type", "application/x-www-form-urlencoded");
+        http.POST("mtd=secure");
+        http.writeToStream(&Serial);
+        http.end();  
+        notified = true;
+      }
+      
+      playBipSound(3, 1000);
   }
   
   Serial.println();
