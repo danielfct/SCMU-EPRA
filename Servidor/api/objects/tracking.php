@@ -18,7 +18,7 @@ class Tracking {
 
     // read simulators
     function read(){
-      $query = "SELECT a1.nome as 'entrada', areas.nome as 'atual', pessoasNotificadas FROM tracking inner join areas as a1 on tracking.areaEntrada = a1.id inner join areas on tracking.areaAtual = areas.id WHERE tracking.id=$this->id";
+      $query = "SELECT tracking.id as tid, a1.nome as 'entrada', areas.nome as 'atual', pessoasNotificadas FROM tracking inner join areas as a1 on tracking.areaEntrada = a1.id inner join areas on tracking.areaAtual = areas.id WHERE tracking.id=$this->id";
 
       // prepare query statement
       $stmt = $this->conn->prepare($query);

@@ -42,7 +42,7 @@ public class PostJsonData extends AsyncTask<String,Void, Boolean> {
     }
 
     @Override
-    protected Boolean doInBackground(String... strings) {
+    public Boolean doInBackground(String... strings) {
         HttpURLConnection connection = null;
 
         if(strings == null || strings.length == 0) {

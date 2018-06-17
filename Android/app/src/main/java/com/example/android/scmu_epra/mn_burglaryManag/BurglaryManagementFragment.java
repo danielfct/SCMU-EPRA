@@ -88,10 +88,9 @@ public class BurglaryManagementFragment extends Fragment
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        Log.d(TAG, "onCreateView: BURGLARY ENTROU NO ONCERATEVIEW");
-
         if (getArguments() != null) {
             trackingId = getArguments().getString("id");
+            Log.d(TAG, "onCreateView: Burglary got id = " + trackingId);
         }
 
         GetJsonData getJsonData = new GetJsonData(this, "https://test966996.000webhostapp.com/api/get_tracking.php?id="+trackingId);

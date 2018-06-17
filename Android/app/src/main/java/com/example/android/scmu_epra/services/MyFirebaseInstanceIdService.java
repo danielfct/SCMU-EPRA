@@ -15,6 +15,8 @@ import com.google.gson.GsonBuilder;
 
 public class MyFirebaseInstanceIdService extends FirebaseInstanceIdService implements PostJsonData.OnStatusAvailable {
 
+    private static final String TAG = "MyFirebaseInstanceIdSer";
+
     @Override
     public void onTokenRefresh() {
         super.onTokenRefresh();
@@ -31,10 +33,16 @@ public class MyFirebaseInstanceIdService extends FirebaseInstanceIdService imple
 
     private void sendNewTokenToServer(String token) {
         Log.d("TOKEN", token);
+        PostJsonData postJsonData = new PostJsonData(this, "https://test966996.000webhostapp.com/api/post_token.php");
+        postJsonData.doInBackground("token="+token);
     }
 
     @Override
     public void onStatusAvailable(Boolean status) {
-
+        if (status) {
+            Log.d(TAG, "onStatusAvailable: SERVER GOT DEVICE TOKEN");
+        } else {
+            Log.e(TAG, "onStatusAvailable: SERVER UNABLE TO GET DEVICE TOKEN");
+        }
     }
 }

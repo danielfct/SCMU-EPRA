@@ -77,4 +77,10 @@ CREATE TABLE IF NOT EXISTS historicoTracking
 	FOREIGN KEY (trackingId) REFERENCES tracking(id)
 );
 
+CREATE TABLE IF NOT EXISTS device_tokens
+(
+	token VARCHAR(255) NOT NULL,
+	PRIMARY KEY (token)
+);
+
 /* insert into utilizador(email, password) values("admin", "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918"); */

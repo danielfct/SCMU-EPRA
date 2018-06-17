@@ -58,12 +58,14 @@ public class MainActivity extends AppCompatActivity
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        if (getIntent().getStringExtra("id") != null) {
+        String id = getIntent().getStringExtra("id");
+
+        if (id != null) {
             FragmentManager fm = getSupportFragmentManager();
             Fragment fragment = fm.findFragmentById(R.id.screen_area);
 
             if (fragment == null) {
-                fragment = BurglaryManagementFragment.newInstance("2");
+                fragment = BurglaryManagementFragment.newInstance(id);
                 fm.beginTransaction().add(R.id.screen_area, fragment).commit();
             }
         } else {
