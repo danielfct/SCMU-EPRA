@@ -103,7 +103,9 @@ public class MainActivity extends AppCompatActivity
                 ft.replace(R.id.screen_area, fragment, DevicesFragment.TAG);
                 break;
             case R.id.nav_burglaryManag:
-                fragment = new BurglaryManagementFragment();
+                BurglaryManagementFragment b = new BurglaryManagementFragment();
+                b.setNavigationView(navigationView);
+                fragment = b;
                 ft.replace(R.id.screen_area, fragment, BurglaryManagementFragment.TAG);
                 break;
             case R.id.nav_contacts:

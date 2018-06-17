@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -54,6 +55,9 @@ public class DevicesFragment extends Fragment
     private Runnable mRunnable;
     private Switch sw;
     private DevicesListAdapter mListAdapter;
+
+    private NavigationView navigationView;
+
 
     @Nullable
     @Override
@@ -139,5 +143,12 @@ public class DevicesFragment extends Fragment
                 "https://test966996.000webhostapp.com/api/get_devices.php");
         getJsonData.execute();
     }
+
+    public void setNavigationView(NavigationView n) {
+        if (navigationView == null) {
+            navigationView = n;
+        }
+    }
+
 
 }

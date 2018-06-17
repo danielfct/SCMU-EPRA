@@ -10,9 +10,11 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.AppCompatButton;
 import android.util.Log;
@@ -35,6 +37,9 @@ import com.example.android.scmu_epra.connection.GetBurglaryHistoryJsonData;
 import com.example.android.scmu_epra.connection.GetHistoryJsonData;
 import com.example.android.scmu_epra.connection.GetJsonData;
 import com.example.android.scmu_epra.connection.PostJsonData;
+import com.example.android.scmu_epra.mn_devices.DevicesFragment;
+import com.example.android.scmu_epra.mn_history.AlarmHistoryFragment;
+import com.example.android.scmu_epra.mn_home.HomeFragment;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -80,6 +85,9 @@ public class BurglaryManagementFragment extends Fragment
     private BurglaryManagementListAdapter mListAdapter;
     private String trackingId = "-1";
 
+    private NavigationView navigationView;
+
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -113,8 +121,22 @@ public class BurglaryManagementFragment extends Fragment
 
         mHandler.postDelayed(mRunnable, Constants.DATA_UPDATE_FREQUENCY);
 
-        ignoreButton.setOnClickListener(v -> {});
-        simulateButton.setOnClickListener(v -> {});
+        ignoreButton.setOnClickListener(v -> {
+            navigationView.getMenu().getItem(0).setChecked(true);
+            HomeFragment f = new HomeFragment();
+            f.setNavigationView(navigationView);
+            FragmentTransaction ft = getFragmentManager().beginTransaction();
+            ft.replace(R.id.screen_area, f);
+            ft.commit();
+        });
+        simulateButton.setOnClickListener(v -> {
+            navigationView.getMenu().getItem(2).setChecked(true);
+            DevicesFragment f = new DevicesFragment();
+            f.setNavigationView(navigationView);
+            FragmentTransaction ft = getFragmentManager().beginTransaction();
+            ft.replace(R.id.screen_area, f);
+            ft.commit();
+        });
         turnOffAlarmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -254,6 +276,12 @@ public class BurglaryManagementFragment extends Fragment
         fragment.setArguments(b);
 
         return fragment;
+    }
+
+    public void setNavigationView(NavigationView n) {
+        if (navigationView == null) {
+            navigationView = n;
+        }
     }
 
 
