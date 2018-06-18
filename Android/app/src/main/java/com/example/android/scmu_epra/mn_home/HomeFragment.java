@@ -400,6 +400,8 @@ public class HomeFragment extends Fragment implements GetJsonData.OnDataAvailabl
                             "alarmeLigado=" + (newState ? "1" : "0"),
                             "sensor=" + item.getSensor());
                     sw.setChecked(newState);
+                    UserItem user = Utils.getCurrentUser(mContext);
+                    executePostJson("https://test966996.000webhostapp.com/api/post_history.php", "evento="+user.getName()+" turned "+item.getName()+" "+ (newState? "on." : "off."));
                 }
 
 
