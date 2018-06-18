@@ -5,13 +5,11 @@ public class AreaItem {
     private int id;
     private String name;
     private boolean isAlarmOn;
-    private String sensor;
 
-    public AreaItem(int id, String name, boolean isAlarmOn, String sensor) {
+    public AreaItem(int id, String name, boolean isAlarmOn) {
         this.id = id;
         this.name = name;
         this.isAlarmOn = isAlarmOn;
-        this.sensor = sensor;
     }
 
     public int getId() {
@@ -36,14 +34,6 @@ public class AreaItem {
 
     public void setAlarmOn(boolean alarmOn) {
         isAlarmOn = alarmOn;
-    }
-
-    public String getSensor() {
-        return sensor;
-    }
-
-    public void setSensor(String sensor) {
-        this.sensor = sensor;
     }
 
     @Override

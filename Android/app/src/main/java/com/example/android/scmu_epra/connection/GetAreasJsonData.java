@@ -64,9 +64,8 @@ public class GetAreasJsonData  extends AsyncTask<String, Void, Void>
                     int id = Integer.parseInt(jsonRow.getString("id"));
                     String name = jsonRow.getString("nome");
                     boolean isAlarmOn = jsonRow.getString("alarmeLigado").equals("1");
-                    String sensor = jsonRow.getString("sensor");
 
-                    AreaItem item = new AreaItem(id, name, isAlarmOn, sensor);
+                    AreaItem item = new AreaItem(id, name, isAlarmOn);
                     mList.add(item);
                 }
             } catch (JSONException e) {

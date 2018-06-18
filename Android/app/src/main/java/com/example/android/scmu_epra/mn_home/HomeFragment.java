@@ -437,8 +437,8 @@ public class HomeFragment extends Fragment implements
 
     private boolean showAddNewAreaDialog() {
         FragmentManager fm = ((Activity)mContext).getFragmentManager();
-        EditAreaDialog dialog = new EditAreaDialog();
-        dialog.show(fm, "add_area_dialog");
+        NewAreaDialog dialog = new NewAreaDialog();
+        dialog.show(fm, "dialog_edit_area");
         return true;
     }
 

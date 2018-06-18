@@ -104,7 +104,6 @@ public class EditAreaDialog extends DialogFragment implements GetDevicesJsonData
             };
             mDevicesList.setAdapter(arrayAdapter);
 
-
         } else {
             // download or processing failed
         }

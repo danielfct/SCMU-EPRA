@@ -190,6 +190,7 @@
     <string name="failed_to_delete_area">Failed to delete area</string>
     <string name="menu_edit_area">Edit area</string>
     <string name="menu_delete_area">Delete area</string>
+    <string name="areas_name">Area\'s name</string>
     <plurals
         name="burglary_management_time">
         <item quantity="zero">%d minutes</item>
