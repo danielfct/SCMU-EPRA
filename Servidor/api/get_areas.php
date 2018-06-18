@@ -35,8 +35,7 @@ if($num>0){
         $area_item=array(
             "id" => $id,
             "nome" => $nome,
-            "alarmeLigado" => $alarmeLigado,
-            "sensor" => $sensor,
+            "alarmeLigado" => $alarmeLigado
         );
 
         array_push($area_arr, $area_item);

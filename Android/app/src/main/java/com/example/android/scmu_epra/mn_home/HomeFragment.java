@@ -372,8 +372,7 @@ public class HomeFragment extends Fragment implements
                     executePostJson(Constants.Status.UPDATE_AREA,"https://test966996.000webhostapp.com/api/update_areas.php",
                             "id=" + item.getId(),
                             "nome=" + item.getName(),
-                            "alarmeLigado=" + (newState ? "1" : "0"),
-                            "sensor=" + item.getSensor());
+                            "alarmeLigado=" + (newState ? "1" : "0"));
                     sw.setChecked(newState);
                     UserItem user = Utils.getCurrentUser(mContext);
                     executePostJson(Constants.Status.UPDATE_HISTORY,"https://test966996.000webhostapp.com/api/post_history.php", "evento="+user.getName()+" turned "+item.getName()+" "+ (newState? "on." : "off."));

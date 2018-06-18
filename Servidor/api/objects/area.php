@@ -9,7 +9,6 @@ class Area {
     public $id;
     public $nome;
     public $alarmeLigado;
-    public $sensor;
 
     // constructor with $db as database connection
     public function __construct($db){
@@ -42,7 +41,7 @@ class Area {
         $query = "INSERT INTO
                     " . $this->table_name . "
                 SET
-                    nome=:nome, alarmeLigado=:alarmeLigado, sensor=:sensor";
+                    nome=:nome, alarmeLigado=:alarmeLigado";
 
         // prepare query
         $stmt = $this->conn->prepare($query);
@@ -50,12 +49,10 @@ class Area {
         // sanitize
         $this->nome=htmlspecialchars(strip_tags($this->nome));
         $this->alarmeLigado=htmlspecialchars(strip_tags($this->alarmeLigado));
-        $this->sensor=htmlspecialchars(strip_tags($this->sensor));
 
         // bind values
         $stmt->bindParam(":nome", $this->nome);
         $stmt->bindParam(":alarmeLigado", $this->alarmeLigado);
-        $stmt->bindParam(":sensor", $this->sensor);
 
         // execute query
         try {
@@ -76,8 +73,7 @@ class Area {
                   " . $this->table_name . "
               SET
                   nome = :nome,
-                  alarmeLigado = :alarmeLigado,
-                  sensor = :sensor
+                  alarmeLigado = :alarmeLigado
               WHERE
                   id = :id";
 
@@ -88,13 +84,11 @@ class Area {
         $this->id=htmlspecialchars(strip_tags($this->id));
         $this->nome=htmlspecialchars(strip_tags($this->nome));
         $this->alarmeLigado=htmlspecialchars(strip_tags($this->alarmeLigado));
-        $this->sensor=htmlspecialchars(strip_tags($this->sensor));
 
         // bind new values
         $stmt->bindParam(':id', $this->id);
         $stmt->bindParam(':nome', $this->nome);
         $stmt->bindParam(':alarmeLigado', $this->alarmeLigado);
-        $stmt->bindParam(':sensor', $this->sensor);
 
         // execute the query
         try {

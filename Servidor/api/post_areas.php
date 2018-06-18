@@ -21,7 +21,6 @@ $data = json_decode(file_get_contents("php://input"));
 
 $area->nome = $data->nome;
 $area->alarmeLigado = $data->alarmeLigado;
-$area->sensor = $data->sensor;
 
 if($area->create()){
     echo '{';
