@@ -2,7 +2,6 @@ package com.example.android.scmu_epra.mn_history;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;

@@ -21,7 +21,9 @@ import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.example.android.scmu_epra.Constants;
 import com.example.android.scmu_epra.R;
+import com.example.android.scmu_epra.Utils;
 import com.example.android.scmu_epra.connection.PostJsonData;
+import com.example.android.scmu_epra.mn_users.UserItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -93,6 +95,9 @@ public class DevicesListAdapter extends ArrayAdapter<DeviceItem>
             executePostJson("https://test966996.000webhostapp.com/api/update_devices.php",
                     "nome=" + item.getName(),
                     "ligado=" + (isChecked ? "1" : "0"));
+
+            UserItem user = Utils.getCurrentUser(context);
+            executePostJson("https://test966996.000webhostapp.com/api/post_history.php", "evento="+user.getName()+" turned "+item.getName()+" "+ (isChecked? "on." : "off."));
         });
         return v;
     }
