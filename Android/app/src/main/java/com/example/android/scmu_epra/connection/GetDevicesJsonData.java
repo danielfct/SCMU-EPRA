@@ -64,7 +64,8 @@ public class GetDevicesJsonData extends AsyncTask<String, Void, Void>
                     String name = jsonRow.getString("nome");
                     DeviceItem.DeviceType type = DeviceItem.DeviceType.valueOf(jsonRow.getString("tipo"));
                     boolean isOn = jsonRow.getString("ligado").equals("1");
-                    DeviceItem item = new DeviceItem(name, type, isOn);
+                    int areaId = Integer.parseInt(jsonRow.getString("areaId"));
+                    DeviceItem item = new DeviceItem(name, type, isOn, areaId);
                     mList.add(item);
                 }
             } catch (JSONException e) {

@@ -20,7 +20,8 @@ if ($num > 0) {
         $device_item = array(
             "nome" => $nome,
             "tipo" => $tipo,
-            "ligado" => $ligado
+            "ligado" => $ligado,
+            "areaId" => $areaId
         );
         array_push($device_arr, $device_item);
     }

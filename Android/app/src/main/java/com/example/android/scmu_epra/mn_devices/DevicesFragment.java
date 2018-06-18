@@ -1,15 +1,16 @@
 package com.example.android.scmu_epra.mn_devices;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -17,30 +18,18 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.SearchView;
 import android.widget.Switch;
 
 import com.example.android.scmu_epra.Constants;
+import com.example.android.scmu_epra.MainActivity;
 import com.example.android.scmu_epra.R;
 import com.example.android.scmu_epra.connection.DownloadStatus;
 import com.example.android.scmu_epra.connection.GetDevicesJsonData;
-import com.example.android.scmu_epra.connection.GetHistoryJsonData;
-import com.example.android.scmu_epra.connection.GetJsonData;
-import com.example.android.scmu_epra.connection.GetSimulatorJsonData;
 import com.example.android.scmu_epra.connection.PostJsonData;
-import com.example.android.scmu_epra.connection.Row;
-import com.example.android.scmu_epra.mn_history.AlarmHistoryListAdapter;
-import com.example.android.scmu_epra.mn_users.AreaItem;
-import com.example.android.scmu_epra.mn_users.EditUserPermissionsDialog;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.Arrays;
 import java.util.List;
 
 import butterknife.BindView;
@@ -109,10 +98,11 @@ public class DevicesFragment extends Fragment
         if (status == DownloadStatus.OK && data != null && data.size() > 0) {
             mListAdapter = new DevicesListAdapter(mContext, 0, data, getView());
             listView.setAdapter(mListAdapter);
-            listView.setOnItemClickListener((adapterView, view, position, id) -> {
-                sw = view.findViewById(R.id.device_switch);
-                sw.setChecked(!sw.isChecked());
-            });
+//            listView.setOnItemClickListener((adapterView, view, position, id) -> {
+//                sw = view.findViewById(R.id.device_switch);
+//                sw.setChecked(!sw.isChecked());
+//            });
+            registerForContextMenu(listView);
         } else {
             // download or processing failed
             Log.e(TAG, "onDataAvailable failed with status " + status);
@@ -151,9 +141,15 @@ public class DevicesFragment extends Fragment
 
     private boolean showAddNewDeviceDialog() {
         FragmentManager fm = ((Activity)mContext).getFragmentManager();
-        AddNewDeviceDialog dialog = new AddNewDeviceDialog();
-        dialog.show(fm, "fragment_add_new_device");
+        EditDeviceDialog dialog = new EditDeviceDialog();
+        dialog.show(fm, "fragment_edit_device");
         return true;
+    }
+
+    private void showEditDeviceDialog(DeviceItem device) {
+        FragmentManager fm = ((Activity)mContext).getFragmentManager();
+        EditDeviceDialog dialog = EditDeviceDialog.newInstance(device);
+        dialog.show(fm, "fragment_edit_device");
     }
 
     private void getData() {
@@ -168,6 +164,44 @@ public class DevicesFragment extends Fragment
         }
     }
 
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        getActivity().getMenuInflater().inflate(R.menu.menu_list, menu);
+    }
+
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        DeviceItem device = (DeviceItem)listView.getAdapter().getItem(info.position);
+        switch(item.getItemId()) {
+            case R.id.edit:
+                showEditDeviceDialog(device);
+                return true;
+            case R.id.delete:
+                showDeleteDeviceConfirmation(device);
+                return true;
+            default:
+                return super.onContextItemSelected(item);
+        }
+    }
+
+    private void showDeleteDeviceConfirmation(DeviceItem device) {
+        new AlertDialog.Builder(mContext)
+                .setIcon(R.drawable.ic_delete_forever_red)
+                .setTitle(mContext.getString(R.string.delete_device_confirmation_title))
+                .setMessage(mContext.getString(R.string.delete_device_confirmation, device.getName()))
+                .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> removeDevice(device))
+                .setNegativeButton(android.R.string.no, null)
+                .show();
+    }
+
+    private void removeDevice(DeviceItem device) {
+        PostJsonData postJsonData = new PostJsonData((MainActivity) mContext,
+                "https://test966996.000webhostapp.com/api/delete_devices.php", Constants.Status.DELETE_DEVICE);
+        postJsonData.execute("nome=" + device.getName());
+    }
 
 
 }

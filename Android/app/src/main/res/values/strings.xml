@@ -173,6 +173,14 @@
     <string name="devices_name">Device\'s name</string>
     <string name="new_device_added">New device added successfully</string>
     <string name="new_device_add_failed">Failed to add new device</string>
+    <string name="menu_edit">Edit device</string>
+    <string name="menu_delete">Remove device</string>
+    <string name="delete_device_confirmation_title">Delete device</string>
+    <string name="delete_device_confirmation">Do you really want to delete %1$s\?</string>
+    <string name="device_updated">Device updated</string>
+    <string name="failed_to_update_device">Failed to update device</string>
+    <string name="device_deleted">Device deleted successfully</string>
+    <string name="failed_to_delete_device">Failed to delete device</string>
     <plurals
         name="burglary_management_time">
         <item quantity="zero">%d minutes</item>

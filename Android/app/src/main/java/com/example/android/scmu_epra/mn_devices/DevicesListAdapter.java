@@ -4,9 +4,11 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
@@ -123,7 +125,8 @@ public class DevicesListAdapter extends ArrayAdapter<DeviceItem>
                         DeviceItem item = new DeviceItem(
                                 listOriginal.get(i).getName(),
                                 listOriginal.get(i).getType(),
-                                listOriginal.get(i).isOn());
+                                listOriginal.get(i).isOn(),
+                                listOriginal.get(i).getAreaId());
                         filterList.add(item);
                     }
                 }

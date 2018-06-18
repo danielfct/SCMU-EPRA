@@ -35,7 +35,9 @@ public interface Constants {
         int DELETE_USER = 4;
         int MY_FIREBASE_INSTANCE_ID_SERVICE = 5;
         int ADD_NEW_DEVICE = 6;
-        int BURG_ALARM_OFF = 7;
+        int DELETE_DEVICE = 7;
+        int UPDATE_DEVICE = 8;
+        int BURG_ALARM_OFF = 9;
     }
 
     interface Bundle {

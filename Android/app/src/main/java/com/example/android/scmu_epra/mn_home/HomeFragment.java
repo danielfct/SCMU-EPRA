@@ -167,8 +167,6 @@ public class HomeFragment extends Fragment implements GetJsonData.OnDataAvailabl
             }
         });
 
-
-
         toggleOnOff.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -214,8 +212,7 @@ public class HomeFragment extends Fragment implements GetJsonData.OnDataAvailabl
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        thisView = getLayoutInflater().inflate(R.layout.frag_home, container, false);
-        return thisView;
+        return getLayoutInflater().inflate(R.layout.frag_home, container, false);
     }
 
     @Override
@@ -292,7 +289,7 @@ public class HomeFragment extends Fragment implements GetJsonData.OnDataAvailabl
         getJsonData.execute();
 
         GetAreasJsonData getAreasJsonData = new GetAreasJsonData(this, "https://test966996.000webhostapp.com/api/get_areas.php");
-        getAreasJsonData.execute("test");
+        getAreasJsonData.execute();
 
         Log.d(TAG, "getData: data aqquired");
     }
@@ -387,8 +384,7 @@ public class HomeFragment extends Fragment implements GetJsonData.OnDataAvailabl
         Log.d(TAG, "onDataAvailable: starts");
         if(status == DownloadStatus.OK && data != null && data.size() > 0) {
             HomeListAdapter listAdapter = new HomeListAdapter(mContext, 0, data);
-            listView = getView().findViewById(R.id.list_view);
-            listView.setAdapter(listAdapter); //TODO
+            listView.setAdapter(listAdapter);
             listView.setOnItemClickListener((adapterView, view, position, id) -> {
                 UserItem currentAccount = Utils.getCurrentUser(mContext);
 
