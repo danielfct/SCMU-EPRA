@@ -219,7 +219,7 @@ public class BurglaryManagementFragment extends Fragment
 
     private void getData() {
         GetBurglaryHistoryJsonData getJsonData = new GetBurglaryHistoryJsonData(this,
-                "https://test966996.000webhostapp.com/api/get_historicoTracking.php?id="+trackingId);
+                "https://test966996.000webhostapp.com/api/get_historicoTracking.php?trackingId="+trackingId);
         getJsonData.execute();
     }
 
