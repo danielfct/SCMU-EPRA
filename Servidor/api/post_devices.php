@@ -21,14 +21,15 @@ $data = json_decode(file_get_contents("php://input"));
   $device->nome = $data->nome;
   $device->tipo = $data->tipo;
   $device->ligado = $data->ligado;
+  $device->areaId = $data->areaId;
 
-if($device->create()){
+if ($device->create()) {
     echo '{';
         echo '"message": "Device created!", "success": "1"';
     echo '}';
 }
 
-else{
+else {
     http_response_code(404);
     echo '{';
         echo '"message": "Unable to create device.", "success": "0"';

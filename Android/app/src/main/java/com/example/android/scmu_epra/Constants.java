@@ -36,6 +36,7 @@ public interface Constants {
         int MY_FIREBASE_INSTANCE_ID_SERVICE = 5;
         int ADD_NEW_DEVICE = 6;
         int DELETE_DEVICE = 7;
+        int UPDATE_DEVICE = 8;
     }
 
     interface Bundle {

@@ -46,4 +46,8 @@ public class AreaItem {
         this.sensor = sensor;
     }
 
+    @Override
+    public String toString() {
+        return getName();
+    }
 }

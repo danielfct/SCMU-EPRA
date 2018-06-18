@@ -36,6 +36,7 @@ import static com.example.android.scmu_epra.Constants.Status.ADD_NEW_DEVICE;
 import static com.example.android.scmu_epra.Constants.Status.DELETE_DEVICE;
 import static com.example.android.scmu_epra.Constants.Status.DELETE_USER;
 import static com.example.android.scmu_epra.Constants.Status.EDIT_USER_PERMISSIONS_DIALOG;
+import static com.example.android.scmu_epra.Constants.Status.UPDATE_DEVICE;
 
 
 public class MainActivity extends AppCompatActivity
@@ -196,6 +197,13 @@ public class MainActivity extends AppCompatActivity
                 Snackbar.make(v, R.string.new_device_add_failed, Snackbar.LENGTH_LONG).show();
             }
         } else if (statusId == DELETE_DEVICE) {
+            if (status) {
+                Snackbar.make(v, R.string.device_deleted, Snackbar.LENGTH_LONG).show();
+                fragment = getSupportFragmentManager().findFragmentByTag(DevicesFragment.TAG);
+            } else {
+                Snackbar.make(v, R.string.failed_to_delete_device, Snackbar.LENGTH_LONG).show();
+            }
+        } else if (statusId == UPDATE_DEVICE) {
             if (status) {
                 Snackbar.make(v, R.string.device_updated, Snackbar.LENGTH_LONG).show();
                 fragment = getSupportFragmentManager().findFragmentByTag(DevicesFragment.TAG);

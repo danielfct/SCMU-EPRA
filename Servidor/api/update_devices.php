@@ -30,14 +30,17 @@ if (property_exists($data, 'tipo')) {
 if (property_exists($data, 'ligado')) {
   $device->ligado = $data->ligado;
 }
+if (property_exists($data, 'areaId')) {
+  $device->areaId = $data->areaId;
+}
 
-if($check && $device->update()){
+if($check && $device->update()) {
     echo '{';
         echo '"message": "Device updated successfully!", "success": "1"';
     echo '}';
 }
 
-else{
+else {
     http_response_code(404);
     echo '{';
         echo '"message": "Unable to update device.", "success": "0"';

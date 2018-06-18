@@ -9,11 +9,13 @@ public class DeviceItem {
     private String name;
     private DeviceType type;
     private boolean isOn;
+    private int areaId;
 
-    public DeviceItem(String name, DeviceType type, boolean isOn) {
+    public DeviceItem(String name, DeviceType type, boolean isOn, int areaId) {
         this.name = name;
         this.type = type;
         this.isOn = isOn;
+        this.areaId = areaId;
     }
 
     public String getName() {
@@ -38,5 +40,13 @@ public class DeviceItem {
 
     public void setOn(boolean on) {
         isOn = on;
+    }
+
+    public int getAreaId() {
+        return areaId;
+    }
+
+    public void setAreaId(int areaId) {
+        this.areaId = areaId;
     }
 }

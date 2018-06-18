@@ -125,7 +125,8 @@ public class DevicesListAdapter extends ArrayAdapter<DeviceItem>
                         DeviceItem item = new DeviceItem(
                                 listOriginal.get(i).getName(),
                                 listOriginal.get(i).getType(),
-                                listOriginal.get(i).isOn());
+                                listOriginal.get(i).isOn(),
+                                listOriginal.get(i).getAreaId());
                         filterList.add(item);
                     }
                 }
