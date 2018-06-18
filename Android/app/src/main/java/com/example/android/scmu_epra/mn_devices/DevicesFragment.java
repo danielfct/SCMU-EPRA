@@ -1,5 +1,7 @@
 package com.example.android.scmu_epra.mn_devices;
 
+import android.app.Activity;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
@@ -32,6 +34,7 @@ import com.example.android.scmu_epra.connection.PostJsonData;
 import com.example.android.scmu_epra.connection.Row;
 import com.example.android.scmu_epra.mn_history.AlarmHistoryListAdapter;
 import com.example.android.scmu_epra.mn_users.AreaItem;
+import com.example.android.scmu_epra.mn_users.EditUserPermissionsDialog;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -125,8 +128,8 @@ public class DevicesFragment extends Fragment
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_search, menu);
-        MenuItem item = menu.findItem(R.id.menu_Search);
-        SearchView searchView = (SearchView) item.getActionView();
+        MenuItem searchItem = menu.findItem(R.id.menu_Search);
+        SearchView searchView = (SearchView) searchItem.getActionView();
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
@@ -140,7 +143,17 @@ public class DevicesFragment extends Fragment
             }
         });
 
+        MenuItem addItem = menu.findItem(R.id.menu_new_device);
+        addItem.setOnMenuItemClickListener((item) -> showAddNewDeviceDialog());
+
         super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    private boolean showAddNewDeviceDialog() {
+        FragmentManager fm = ((Activity)mContext).getFragmentManager();
+        AddNewDeviceDialog dialog = new AddNewDeviceDialog();
+        dialog.show(fm, "fragment_add_new_device");
+        return true;
     }
 
     private void getData() {

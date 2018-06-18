@@ -34,6 +34,7 @@ public interface Constants {
         int EDIT_USER_PERMISSIONS_DIALOG = 3;
         int DELETE_USER = 4;
         int MY_FIREBASE_INSTANCE_ID_SERVICE = 5;
+        int ADD_NEW_DEVICE = 6;
     }
 
     interface Bundle {

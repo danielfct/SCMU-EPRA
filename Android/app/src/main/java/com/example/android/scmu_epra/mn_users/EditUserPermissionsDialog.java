@@ -134,7 +134,7 @@ public class EditUserPermissionsDialog extends DialogFragment implements GetArea
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         ViewGroup.LayoutParams layoutParams = mPermissionsList.getLayoutParams();
         layoutParams.width = SwipeRefreshLayout.LayoutParams.MATCH_PARENT;
-        layoutParams.height = (int) (displayMetrics.heightPixels*0.75f);
+        layoutParams.height = (int) (displayMetrics.heightPixels*0.5f);
         v.setLayoutParams(layoutParams);
 
         b.setView(v);
@@ -145,14 +145,5 @@ public class EditUserPermissionsDialog extends DialogFragment implements GetArea
 
         return b.create();
     }
-
-    private int getListItemHeight() {
-        TypedValue typedValue = new TypedValue();
-        getActivity().getTheme().resolveAttribute(R.attr.listPreferredItemHeight, typedValue, true);
-        DisplayMetrics metrics = new android.util.DisplayMetrics();
-        getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
-        return (int) typedValue.getDimension(metrics);
-    }
-
 
 }

@@ -77,10 +77,6 @@ public class SignupActivity extends AppCompatActivity implements LoaderManager.L
     TextInputLayout mReEnterPasswordLayout;
     @BindView(R.id.input_re_enter_password)
     TextInputEditText mReEnterPasswordView;
-    @BindView(R.id.pin_layout)
-    TextInputLayout mPinLayout;
-    @BindView(R.id.input_pin)
-    TextInputEditText mPinView;
     @BindView(R.id.signup_button)
     AppCompatButton mSignupButton;
     @BindView(R.id.login_link)
@@ -203,7 +199,6 @@ public class SignupActivity extends AppCompatActivity implements LoaderManager.L
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
         String rePassword = mReEnterPasswordView.getText().toString();
-        String pin = mPinView.getText().toString();
 
         // Check for a valid mobile
         if (!TextUtils.isEmpty(mobile) && !isMobileValid(mobile)) {
@@ -235,10 +230,6 @@ public class SignupActivity extends AppCompatActivity implements LoaderManager.L
         } else if (!password.equals(rePassword)) {
             mPasswordLayout.setError(getString(R.string.error_nonmatching_password));
             focusView = mPasswordLayout;
-            cancel = true;
-        } else if (TextUtils.isEmpty(pin)) {
-            mPinLayout.setError(getString(R.string.error_field_required));
-            focusView = mPinLayout;
             cancel = true;
         }
 

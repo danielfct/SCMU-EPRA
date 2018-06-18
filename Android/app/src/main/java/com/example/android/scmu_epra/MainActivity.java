@@ -18,6 +18,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
@@ -30,6 +31,10 @@ import com.example.android.scmu_epra.mn_history.AlarmHistoryFragment;
 import com.example.android.scmu_epra.mn_home.HomeFragment;
 
 import java.util.Map;
+
+import static com.example.android.scmu_epra.Constants.Status.ADD_NEW_DEVICE;
+import static com.example.android.scmu_epra.Constants.Status.DELETE_USER;
+import static com.example.android.scmu_epra.Constants.Status.EDIT_USER_PERMISSIONS_DIALOG;
 
 
 public class MainActivity extends AppCompatActivity
@@ -166,39 +171,38 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onStatusAvailable(Boolean status, Integer statusId) {
-        // TODO adicionar id ao statusAvailable para saber de onde veio
-//        //if (id == whatever) {
-//            if (status) {
-//                Toast.makeText(this, R.string.permissions_saved, Toast.LENGTH_LONG).show();
-//            } else {
-//                Toast.makeText(this, R.string.permissions_not_saved, Toast.LENGTH_LONG).show();
-//            }
-//        //} else if (id == whatever) {
-        if (statusId == Constants.Status.EDIT_USER_PERMISSIONS_DIALOG) {
+        Fragment fragment = null;
+        View v = getWindow().getDecorView().getRootView();
+        if (statusId == EDIT_USER_PERMISSIONS_DIALOG) {
             if (status) {
-                Snackbar.make(getWindow().getDecorView().getRootView(), R.string.edit_permission_saved, Snackbar.LENGTH_LONG).show();
-                // Update fragment
-                UsersFragment fragment = (UsersFragment) getSupportFragmentManager().findFragmentByTag(UsersFragment.TAG);
-                final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                ft.detach(fragment);
-                ft.attach(fragment);
-                ft.commit();
+                Snackbar.make(v, R.string.edit_permission_saved, Snackbar.LENGTH_LONG).show();
+                fragment = getSupportFragmentManager().findFragmentByTag(UsersFragment.TAG);
             } else {
-                Toast.makeText(this, R.string.edit_permission_failed, Toast.LENGTH_LONG).show();
+                Snackbar.make(v, R.string.edit_permission_failed, Snackbar.LENGTH_LONG).show();
             }
-        } else if (statusId == Constants.Status.DELETE_USER) {
+        } else if (statusId == DELETE_USER) {
             if (status) {
-                Snackbar.make(getWindow().getDecorView().getRootView(), R.string.account_deleted, Snackbar.LENGTH_LONG).show();
-                // Update fragment
-                UsersFragment fragment = (UsersFragment) getSupportFragmentManager().findFragmentByTag(UsersFragment.TAG);
-                final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                ft.detach(fragment);
-                ft.attach(fragment);
-                ft.commit();
+                Snackbar.make(v, R.string.account_deleted, Snackbar.LENGTH_LONG).show();
+                fragment = getSupportFragmentManager().findFragmentByTag(UsersFragment.TAG);
             } else {
-                Toast.makeText(this, R.string.account_delete_failed, Toast.LENGTH_LONG).show();
+                Snackbar.make(v, R.string.account_delete_failed, Snackbar.LENGTH_LONG).show();
+            }
+        } else if (statusId == ADD_NEW_DEVICE){
+            if (status) {
+                Snackbar.make(v, R.string.new_device_added, Snackbar.LENGTH_LONG).show();
+                fragment = getSupportFragmentManager().findFragmentByTag(DevicesFragment.TAG);
+            } else {
+                Snackbar.make(v, R.string.new_device_add_failed, Snackbar.LENGTH_LONG).show();
             }
         }
+        if (fragment != null) {
+            // Update fragment
+            final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.detach(fragment);
+            ft.attach(fragment);
+            ft.commit();
+        }
+
     }
 
 }

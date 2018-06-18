@@ -170,6 +170,9 @@
     <string name="Logout">Logout</string>
     <string name="edit_permission_failed">Failed to save edited permissions</string>
     <string name="edit_permission_saved">Permissions saved</string>
+    <string name="devices_name">Device\'s name</string>
+    <string name="new_device_added">New device added successfully</string>
+    <string name="new_device_add_failed">Failed to add new device</string>
     <plurals
         name="burglary_management_time">
         <item quantity="zero">%d minutes</item>
