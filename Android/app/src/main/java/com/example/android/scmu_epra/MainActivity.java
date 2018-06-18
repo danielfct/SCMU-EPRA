@@ -134,12 +134,12 @@ public class MainActivity extends AppCompatActivity
                 fragment = new DevicesFragment();
                 ft.replace(R.id.screen_area, fragment, DevicesFragment.TAG);
                 break;
-            case R.id.nav_burglaryManag:
+            /*case R.id.nav_burglaryManag:
                 BurglaryManagementFragment b = new BurglaryManagementFragment();
                 b.setNavigationView(navigationView);
                 fragment = b;
                 ft.replace(R.id.screen_area, fragment, BurglaryManagementFragment.TAG);
-                break;
+                break;*/
             case R.id.nav_contacts:
                 fragment = new UsersFragment();
                 ft.replace(R.id.screen_area, fragment, UsersFragment.TAG);

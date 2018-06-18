@@ -350,8 +350,8 @@ public class HomeFragment extends Fragment implements
         }
 
         UserItem user = Utils.getCurrentUser(mContext);
-        executePostJson("https://test966996.000webhostapp.com/api/post_alarminfo.php", "estadoAtual=" + (toggleOnOff.isChecked() ? "1" : "0"));
-        executePostJson("https://test966996.000webhostapp.com/api/post_history.php", "evento=" + user.getName() + (toggleOnOff.isChecked() ? " turned the alarm on." : " turned the alarm off."));
+        executePostJson(Constants.Status.UPDATE_ALARM_STATUS,"https://test966996.000webhostapp.com/api/post_alarminfo.php", "estadoAtual=" + (toggleOnOff.isChecked() ? "1" : "0"));
+        executePostJson(Constants.Status.UPDATE_HISTORY,"https://test966996.000webhostapp.com/api/post_history.php", "evento=" + user.getName() + (toggleOnOff.isChecked() ? " turned the alarm on." : " turned the alarm off."));
     }
 
     @Override
@@ -369,14 +369,14 @@ public class HomeFragment extends Fragment implements
                     sw = view.findViewById(R.id.switch1);
 
                     boolean newState = !sw.isChecked();
-                    executePostJson("https://test966996.000webhostapp.com/api/update_areas.php",
+                    executePostJson(Constants.Status.UPDATE_AREA,"https://test966996.000webhostapp.com/api/update_areas.php",
                             "id=" + item.getId(),
                             "nome=" + item.getName(),
                             "alarmeLigado=" + (newState ? "1" : "0"),
                             "sensor=" + item.getSensor());
                     sw.setChecked(newState);
                     UserItem user = Utils.getCurrentUser(mContext);
-                    executePostJson("https://test966996.000webhostapp.com/api/post_history.php", "evento="+user.getName()+" turned "+item.getName()+" "+ (newState? "on." : "off."));
+                    executePostJson(Constants.Status.UPDATE_HISTORY,"https://test966996.000webhostapp.com/api/post_history.php", "evento="+user.getName()+" turned "+item.getName()+" "+ (newState? "on." : "off."));
                 }
 
                 registerForContextMenu(listView);
@@ -392,8 +392,8 @@ public class HomeFragment extends Fragment implements
         Log.d(TAG, "onDataAvailable: ends");
     }
 
-    private void executePostJson(String url, String... params) {
-        PostJsonData postJsonData = new PostJsonData(this, url, Constants.Status.HOME_FRAGMENT);
+    private void executePostJson(int id, String url, String... params) {
+        PostJsonData postJsonData = new PostJsonData(this, url, id);
         postJsonData.execute(params);
     }
 
@@ -401,9 +401,24 @@ public class HomeFragment extends Fragment implements
     @Override
     public void onStatusAvailable(Boolean status, Integer statusId) {
         if (status) {
-            Snackbar.make(getView(), "Alarm status changed.", Snackbar.LENGTH_SHORT).show();
+            String feedback = "Updated successfully!";
+            boolean showFeedback = false;
+            switch (statusId) {
+                case Constants.Status.UPDATE_ALARM_STATUS:
+                    feedback = "Alarm status updated successfully!";
+                    showFeedback = true;
+                    break;
+                case Constants.Status.UPDATE_AREA:
+                    feedback = "Area status updated successfully!";
+                    showFeedback = true;
+                    break;
+                default: break;
+            }
+            if (showFeedback)
+                Snackbar.make(getView(), feedback, Snackbar.LENGTH_SHORT).show();
         } else {
-            Snackbar.make(getView(), "Unable to connect to the server.", Snackbar.LENGTH_SHORT).show();
+            if (statusId != Constants.Status.UPDATE_HISTORY)
+                Snackbar.make(getView(), "Unable to connect to the server.", Snackbar.LENGTH_SHORT).show();
         }
     }
 
