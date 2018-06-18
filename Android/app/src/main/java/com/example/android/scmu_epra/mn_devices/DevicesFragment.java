@@ -106,8 +106,10 @@ public class DevicesFragment extends Fragment
         if (status == DownloadStatus.OK && data != null && data.size() > 0) {
             mListAdapter = new DevicesListAdapter(mContext, 0, data);
             listView.setAdapter(mListAdapter);
-            listView.setOnItemClickListener((adapterView, view, position, id) ->
-                    sw.setChecked(!sw.isChecked()));
+            listView.setOnItemClickListener((adapterView, view, position, id) -> {
+                sw = view.findViewById(R.id.device_switch);
+                sw.setChecked(!sw.isChecked());
+            });
         } else {
             // download or processing failed
             Log.e(TAG, "onDataAvailable failed with status " + status);
