@@ -25,4 +25,13 @@
         android:gravity="center"
         android:textAppearance="@android:style/TextAppearance.DeviceDefault" />
 
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/image_is_admin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_security_black"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:backgroundTint="@android:color/transparent"/>
+
 </RelativeLayout>

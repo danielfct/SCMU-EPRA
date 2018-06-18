@@ -107,7 +107,9 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="outputName" value="ic_security" />
+                            <entry key="color" value="bfbfbf" />
+                            <entry key="outputName" value="ic_security_black" />
+                            <entry key="overrideSize" value="true" />
                             <entry key="sourceFile" value="C:\Users\ASUS" />
                           </map>
                         </option>

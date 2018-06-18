@@ -183,6 +183,7 @@
     <string name="failed_to_delete_device">Failed to delete device</string>
     <string name="menu_edit_user">Edit permissions</string>
     <string name="menu_delete_user">Remove account</string>
+    <string name="no_devices">No devices&#8230;</string>
     <plurals
         name="burglary_management_time">
         <item quantity="zero">%d minutes</item>

@@ -22,6 +22,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.SearchView;
 import android.widget.Switch;
+import android.widget.TextView;
 
 import com.example.android.scmu_epra.Constants;
 import com.example.android.scmu_epra.MainActivity;
@@ -44,6 +45,8 @@ public class DevicesFragment extends Fragment
     ListView listView;
     @BindView(R.id.devices_progress_spinner)
     ProgressBar progressSpinner;
+    @BindView(android.R.id.empty)
+    TextView emptyView;
 
     private Context mContext;
     private Handler mHandler;
@@ -76,7 +79,7 @@ public class DevicesFragment extends Fragment
         getData();
 
         mHandler = new Handler();
-        mRunnable = () -> getData();
+        mRunnable = this::getData;
         mHandler.postDelayed(mRunnable, Constants.DATA_UPDATE_FREQUENCY);
     }
 
@@ -111,13 +114,14 @@ public class DevicesFragment extends Fragment
             progressSpinner.setVisibility(View.GONE);
         }
         Log.d(TAG, "onDataAvailable: ends");
+        emptyView.setVisibility(data == null || data.size() == 0 ? View.VISIBLE : View.INVISIBLE);
     }
 
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_search, menu);
-        MenuItem searchItem = menu.findItem(R.id.menu_Search);
+        inflater.inflate(R.menu.menu_devices, menu);
+        MenuItem searchItem = menu.findItem(R.id.menu_search);
         SearchView searchView = (SearchView) searchItem.getActionView();
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
