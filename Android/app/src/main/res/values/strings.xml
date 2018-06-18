@@ -181,6 +181,8 @@
     <string name="failed_to_update_device">Failed to update device</string>
     <string name="device_deleted">Device deleted successfully</string>
     <string name="failed_to_delete_device">Failed to delete device</string>
+    <string name="menu_edit_user">Edit permissions</string>
+    <string name="menu_delete_user">Remove account</string>
     <plurals
         name="burglary_management_time">
         <item quantity="zero">%d minutes</item>
