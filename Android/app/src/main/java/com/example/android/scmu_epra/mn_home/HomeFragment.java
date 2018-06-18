@@ -117,6 +117,7 @@ public class HomeFragment extends Fragment implements
     private Context mContext;
     private Handler mHandler;
     private Runnable mRunnable;
+    private HomeListAdapter listAdapter;
 
     private NavigationView navigationView;
 
@@ -358,7 +359,7 @@ public class HomeFragment extends Fragment implements
     public void onDataAvailable(List<AreaItem> data, DownloadStatus status) {
         Log.d(TAG, "onDataAvailable: starts");
         if (status == DownloadStatus.OK && data != null && data.size() > 0) {
-            HomeListAdapter listAdapter = new HomeListAdapter(mContext, 0, data);
+            listAdapter = new HomeListAdapter(mContext, 0, data);
             listView.setAdapter(listAdapter);
             listView.setOnItemClickListener((adapterView, view, position, id) -> {
                 UserItem currentAccount = Utils.getCurrentUser(mContext);
@@ -424,7 +425,19 @@ public class HomeFragment extends Fragment implements
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
-        getActivity().getMenuInflater().inflate(R.menu.menu_list_home, menu);
+
+        UserItem currentAccount = Utils.getCurrentUser(mContext);
+        AdapterView.AdapterContextMenuInfo info = ( AdapterView.AdapterContextMenuInfo) menuInfo;
+        int position = info.position;
+
+        boolean isAbleTo = (currentAccount != null && currentAccount.getPermissions()
+                .contains( listAdapter.getItem(position).getId()));
+        if (isAbleTo) {
+            getActivity().getMenuInflater().inflate(R.menu.menu_list_home, menu);
+        }
+        else {
+            Snackbar.make(getView(), "Not enough permission to edit this area", Snackbar.LENGTH_LONG).show();
+        }
     }
 
     @Override
