@@ -193,6 +193,8 @@
     <string name="areas_name">Area\'s name</string>
     <string name="new_area">New area added successfully</string>
     <string name="failed_to_add_new_area">Failed to add new area</string>
+    <string name="devices_updated">Area\'s devices updated</string>
+    <string name="failed_to_update_devices">Failed to update area\'s devices</string>
     <plurals
         name="burglary_management_time">
         <item quantity="zero">%d minutes</item>

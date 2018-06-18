@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.CheckedTextView;
+import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -66,10 +67,20 @@ public class EditAreaDialog extends DialogFragment implements GetDevicesJsonData
     }
 
     private void saveData() {
-//        PostJsonData postJsonData = new PostJsonData((MainActivity) getActivity(),
-//                "https://test966996.000webhostapp.com/api/post_user.php", Constants.Status.EDIT_USER_PERMISSIONS_DIALOG);
-//        postJsonData.execute("privilegios=" + TextUtils.join(",", mUser.getPermissions()),
-//                "email=" + mUser.getEmail());
+
+        for (int i = 0; i < mDevicesList.getAdapter().getCount() ; i++) {
+            DeviceItem device = (DeviceItem) mDevicesList.getAdapter().getItem(i);
+
+            int id = i == mDevicesList.getAdapter().getCount()-1 ?
+                    Constants.Status.UPDATE_LAST_AREA_DEVICE :
+                    Constants.Status.UPDATE_AREA_DEVICE;
+            PostJsonData postJsonData = new PostJsonData((MainActivity) getActivity(),
+                    "https://test966996.000webhostapp.com/api/update_devices.php", id);
+            postJsonData.execute("nome=" + device.getName(),
+                    "tipo=" + device.getType(),
+                    "ligado=" + (device.isOn() ? "1" : "0"),
+                    "areaId=" +  device.getAreaId());
+        }
     }
 
     @Override
@@ -98,11 +109,22 @@ public class EditAreaDialog extends DialogFragment implements GetDevicesJsonData
                     deviceName.setText(item.getName());
                     Switch deviceSwitch = v.findViewById(R.id.device_switch);
                     deviceSwitch.setChecked(item.isOn());
+                    deviceSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                        @Override
+                        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                            deviceSwitch.setChecked(isChecked);
+                            item.setOn(isChecked);
+                        }
+                    });
 
                     return v;
                 }
             };
             mDevicesList.setAdapter(arrayAdapter);
+            mDevicesList.setOnItemClickListener((adapterView, view, position, id) -> {
+                Switch deviceSwitch = view.findViewById(R.id.device_switch);
+                deviceSwitch.setChecked(!deviceSwitch.isChecked());
+            });
 
         } else {
             // download or processing failed

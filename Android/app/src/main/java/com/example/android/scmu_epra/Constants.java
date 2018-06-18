@@ -43,6 +43,8 @@ public interface Constants {
         int UPDATE_ALARM_STATUS = 12;
         int UPDATE_AREA = 13;
         int NEW_AREA = 14;
+        int UPDATE_AREA_DEVICE = 15;
+        int UPDATE_LAST_AREA_DEVICE = 16;
     }
 
     interface Bundle {

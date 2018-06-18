@@ -47,6 +47,7 @@ import static com.example.android.scmu_epra.Constants.Status.DELETE_USER;
 import static com.example.android.scmu_epra.Constants.Status.EDIT_USER_PERMISSIONS_DIALOG;
 import static com.example.android.scmu_epra.Constants.Status.NEW_AREA;
 import static com.example.android.scmu_epra.Constants.Status.UPDATE_DEVICE;
+import static com.example.android.scmu_epra.Constants.Status.UPDATE_LAST_AREA_DEVICE;
 
 
 public class MainActivity extends AppCompatActivity
@@ -248,6 +249,13 @@ public class MainActivity extends AppCompatActivity
                 fragment = getSupportFragmentManager().findFragmentByTag(HomeFragment.TAG);
             } else {
                 Snackbar.make(v, R.string.failed_to_add_new_area, Snackbar.LENGTH_LONG).show();
+            }
+        } else if (statusId == UPDATE_LAST_AREA_DEVICE) {
+            if (status) {
+                Snackbar.make(v, R.string.devices_updated, Snackbar.LENGTH_LONG).show();
+                fragment = getSupportFragmentManager().findFragmentByTag(HomeFragment.TAG);
+            } else {
+                Snackbar.make(v, R.string.failed_to_update_devices, Snackbar.LENGTH_LONG).show();
             }
         }
         if (fragment != null) {
