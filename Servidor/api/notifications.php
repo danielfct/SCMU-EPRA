@@ -2,6 +2,8 @@
 include_once './config/database.php';
 include_once './objects/notification.php';
 include_once './objects/tracking.php';
+include_once './objects/history.php';
+include_once './objects/historyTracking.php';
 
 $database = new Database();
 $db = $database->getConnection();
@@ -37,6 +39,16 @@ if ($_GET['areaEntrada']) {
             
             $stmt = $device_tokens->read();
             $num = $stmt->rowCount();
+            
+            $history = new History($db);
+            $history->evento = "An intrusion was detected!";
+            $history->create();
+            
+            $historyTracking = new HistoryTracking($db);
+            $historyTracking->area = $areaEntrada;
+            $historyTracking->duracao = rand(1,20);
+            $historyTracking->trackingId = $id;
+            $historyTracking->create();
             
             if ($num > 0) {
                 $device_arr = array();

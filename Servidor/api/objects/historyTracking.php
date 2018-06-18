@@ -17,11 +17,10 @@ class HistoryTracking {
 
     // read history
     function read($id){
-        echo $id;
          if ($id == NULL) {
           $query = "SELECT * FROM $this->table_name INNER JOIN areas on $this->table_name.area = areas.id";
         } else {
-          $query = "SELECT * FROM $this->table_name WHERE trackingId = :trackingId INNER JOIN areas on $this->table_name.area = areas.id";
+          $query = "SELECT * FROM $this->table_name INNER JOIN areas on $this->table_name.area = areas.id WHERE trackingId = :trackingId";
         }
         // select all query
         
