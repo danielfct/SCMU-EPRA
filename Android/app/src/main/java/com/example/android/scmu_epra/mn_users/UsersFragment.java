@@ -83,7 +83,6 @@ public class UsersFragment extends Fragment
         super.onDestroy();
     }
 
-
     @Override
     public void onDataAvailable(List<UserItem> data, DownloadStatus status) {
         if (status == DownloadStatus.OK) {

@@ -28,6 +28,8 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.OnClick;
+
 import static android.content.Context.MODE_PRIVATE;
 
 public class UsersListAdapter extends ArrayAdapter<UserItem> {

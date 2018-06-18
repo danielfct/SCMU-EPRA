@@ -86,5 +86,31 @@ class Device {
 
         return false;
     }
+    
+        function delete() {
+
+        // delete query
+        $query = "DELETE FROM $this->table_name WHERE nome = ?";
+
+        // prepare query
+        $stmt = $this->conn->prepare($query);
+
+        // sanitize
+        $this->nome=htmlspecialchars(strip_tags($this->nome));
+
+        // bind id of record to delete
+        $stmt->bindParam(1, $this->nome);
+
+        try {
+          // execute query
+          if($stmt->execute()){
+              return true;
+          }
+        } catch(PDOException $e) {
+        }
+
+        return false;
+
+    }
 
 }
