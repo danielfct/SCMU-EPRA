@@ -42,5 +42,6 @@ public interface Constants {
 
     interface Bundle {
         String USER = "USER";
+        String DEVICE = "DEVICE";
     }
 }

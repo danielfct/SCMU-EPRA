@@ -134,6 +134,8 @@ public class BurglaryManagementFragment extends Fragment
             FragmentTransaction ft = getFragmentManager().beginTransaction();
             ft.replace(R.id.screen_area, f);
             ft.commit();
+            UserItem userItem = Utils.getCurrentUser(mContext);
+            executePostJson("https://test966996.000webhostapp.com/api/post_history.php", Constants.Status.BURGLARY_MANAGEMENT_FRAGMENT,"evento="+userItem.getName()+" ignored the intrusion alarm.");
         });
         simulateButton.setOnClickListener(v -> {
             navigationView.getMenu().getItem(2).setChecked(true);
@@ -142,11 +144,15 @@ public class BurglaryManagementFragment extends Fragment
             FragmentTransaction ft = getFragmentManager().beginTransaction();
             ft.replace(R.id.screen_area, f);
             ft.commit();
+            UserItem userItem = Utils.getCurrentUser(mContext);
+            executePostJson("https://test966996.000webhostapp.com/api/post_history.php", Constants.Status.BURGLARY_MANAGEMENT_FRAGMENT,"evento="+userItem.getName()+" simulated home activity.");
         });
         turnOffAlarmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                UserItem userItem = Utils.getCurrentUser(mContext);
                 executePostJson("https://test966996.000webhostapp.com/api/post_alarminfo.php", Constants.Status.BURG_ALARM_OFF,"estadoAtual=0");
+                executePostJson("https://test966996.000webhostapp.com/api/post_history.php", Constants.Status.BURGLARY_MANAGEMENT_FRAGMENT,"evento="+userItem.getName()+" turned off the alarm.");
             }
         });
         notifyPoliceButton.setOnClickListener(new View.OnClickListener() {
@@ -167,6 +173,8 @@ public class BurglaryManagementFragment extends Fragment
 
                 Log.d(TAG, "onClick: PERMISSION GRANTED!!");
                 startActivity(callIntent);
+                UserItem user = Utils.getCurrentUser(mContext);
+                executePostJson("https://test966996.000webhostapp.com/api/post_history.php", Constants.Status.BURGLARY_MANAGEMENT_FRAGMENT,"evento="+user.getName()+" called the Police!");
             }
         });
 
