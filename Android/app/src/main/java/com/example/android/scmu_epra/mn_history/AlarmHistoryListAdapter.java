@@ -2,6 +2,7 @@ package com.example.android.scmu_epra.mn_history;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
@@ -76,14 +77,24 @@ public class AlarmHistoryListAdapter extends ArrayAdapter<Row> implements Filter
         messageView.setText(evento);
 
         ImageView imageView = v.findViewById(R.id.image);
-        //if (type == AlarmHistoryItem.AlarmHistoryType.AlarmTrigger) {
-            Drawable d = ContextCompat.getDrawable(context, R.drawable.ic_error_outline);
-            imageView.setImageDrawable(d);
-        /*} else {
-            char ch = message.charAt(0);
-            TextDrawable textDrawable = builder.build(String.valueOf(ch), generator.getColor(ch));
-            imageView.setImageDrawable(textDrawable);
-        }*/
+        Drawable d;
+        if (evento.contains("intrusion was detected")){
+            d = ContextCompat.getDrawable(context, R.drawable.ic_error_outline);
+        }
+        else if (evento.contains("turned the alarm")) {
+            d = ContextCompat.getDrawable(context, R.drawable.ic_menu_home);
+        }
+        else if (evento.contains(" simulated ")){
+            d = ContextCompat.getDrawable(context, R.drawable.ic_simulation);
+        }
+        else if (evento.contains("called the Police")) {
+            d = ContextCompat.getDrawable(context, R.drawable.ic_call);
+        }
+        else {
+            d = ContextCompat.getDrawable(context, R.drawable.ic_history);
+        }
+        imageView.setImageDrawable(d);
+
 
         TextView time = v.findViewById(R.id.date);
         time.setText(date);
