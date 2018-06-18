@@ -93,8 +93,8 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
+    protected void onStart() {
+        super.onStart();
 
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
         Gson gson = new Gson();
@@ -106,6 +106,13 @@ public class MainActivity extends AppCompatActivity
         TextView tEmail = header.findViewById(R.id.user_email_drawer);
         tName.setText(currentAccount.getName());
         tEmail.setText(currentAccount.getEmail());
+    }
+
+    @Override
+    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+
+
     }
 
     @Override
@@ -239,21 +246,42 @@ public class MainActivity extends AppCompatActivity
         } else if (statusId == DELETE_AREA) {
             if (status) {
                 Snackbar.make(v, R.string.area_deleted, Snackbar.LENGTH_LONG).show();
-                fragment = getSupportFragmentManager().findFragmentByTag(HomeFragment.TAG);
+                fragment = null;
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                HomeFragment h = new HomeFragment();
+                h.setNavigationView(navigationView);
+                fragment = h;
+                ft.replace(R.id.screen_area, fragment, HomeFragment.TAG);
+                ft.commit();
+                return;
             } else {
                 Snackbar.make(v, R.string.failed_to_delete_area, Snackbar.LENGTH_LONG).show();
             }
         } else if (statusId == NEW_AREA) {
             if (status) {
                 Snackbar.make(v, R.string.new_area, Snackbar.LENGTH_LONG).show();
-                fragment = getSupportFragmentManager().findFragmentByTag(HomeFragment.TAG);
+                fragment = null;
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                HomeFragment h = new HomeFragment();
+                h.setNavigationView(navigationView);
+                fragment = h;
+                ft.replace(R.id.screen_area, fragment, HomeFragment.TAG);
+                ft.commit();
+                return;
             } else {
                 Snackbar.make(v, R.string.failed_to_add_new_area, Snackbar.LENGTH_LONG).show();
             }
         } else if (statusId == UPDATE_LAST_AREA_DEVICE) {
             if (status) {
                 Snackbar.make(v, R.string.devices_updated, Snackbar.LENGTH_LONG).show();
-                fragment = getSupportFragmentManager().findFragmentByTag(HomeFragment.TAG);
+                fragment = null;
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                HomeFragment h = new HomeFragment();
+                h.setNavigationView(navigationView);
+                fragment = h;
+                ft.replace(R.id.screen_area, fragment, HomeFragment.TAG);
+                ft.commit();
+                return;
             } else {
                 Snackbar.make(v, R.string.failed_to_update_devices, Snackbar.LENGTH_LONG).show();
             }
