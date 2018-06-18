@@ -14,6 +14,7 @@ import android.hardware.fingerprint.FingerprintManager;
 import android.os.Build;
 import android.os.CancellationSignal;
 import android.os.Handler;
+import android.os.Message;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
@@ -118,7 +119,7 @@ public class HomeFragment extends Fragment implements GetJsonData.OnDataAvailabl
         ArrayList<Integer> permissions = new ArrayList<>();
         permissions.add(1); permissions.add(7); permissions.add(8); permissions.add(9);
         UserItem user = new UserItem("Daniel", "912345677", "daniel@gmail.com",
-                "daniel", true, permissions);
+                "daniel", false, permissions);
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
         SharedPreferences.Editor prefsEditor = sharedPref.edit();
         Gson gson = new Gson();
@@ -272,12 +273,10 @@ public class HomeFragment extends Fragment implements GetJsonData.OnDataAvailabl
                             e.printStackTrace();
                         }
                         activeInfo.setVisibility(View.VISIBLE);
-                        //TODO:turn toggle on
                     }
                     else {
                         toggleOnOff.setChecked(false);
                         activeInfo.setText("Alarm is inactive.");
-                        //TODO: turn toggle off
                     }
                 }
             } catch (JSONException e) {
@@ -444,8 +443,16 @@ public class HomeFragment extends Fragment implements GetJsonData.OnDataAvailabl
             listView = getView().findViewById(R.id.list_view);
             listView.setAdapter(listAdapter); //TODO
             listView.setOnItemClickListener((adapterView, view, position, id) -> {
+                SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
+                Gson gson = new Gson();
+                String json = sharedPref.getString(Constants.SIGNED_ACCOUNT_TAG, "");
+                UserItem currentAccount = gson.fromJson(json, UserItem.class);
+
+                AreaItem item = data.get(position);
+                boolean b = (currentAccount != null && currentAccount.getPermissions().contains(item.getId()));
+                if (b) {
                     sw = view.findViewById(R.id.switch1);
-                    AreaItem item = data.get(position);
+
                     boolean newState = !sw.isChecked();
                     executePostJson("https://test966996.000webhostapp.com/api/update_areas.php",
                             "id=" + item.getId(),
@@ -453,6 +460,9 @@ public class HomeFragment extends Fragment implements GetJsonData.OnDataAvailabl
                             "alarmeLigado=" + (newState ? "1" : "0"),
                             "sensor=" + item.getSensor());
                     sw.setChecked(newState);
+                }
+
+
                 });
         } else {
             // download or processing failed
