@@ -95,7 +95,7 @@ public class BurglaryManagementFragment extends Fragment
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        
+
 //        UserItem user = Utils.getCurrentUser(mContext);
 //        executePostJson("https://test966996.000webhostapp.com/api/post_history.php", Constants.Status.BURGLARY_MANAGEMENT_FRAGMENT,"evento=An intrusion was detected!");
     }
@@ -219,7 +219,7 @@ public class BurglaryManagementFragment extends Fragment
 
     private void getData() {
         GetBurglaryHistoryJsonData getJsonData = new GetBurglaryHistoryJsonData(this,
-                "https://test966996.000webhostapp.com/api/get_historicoTracking.php?id="+trackingId);
+                "https://test966996.000webhostapp.com/api/get_historicoTracking.php?trackingId="+trackingId);
         getJsonData.execute();
     }
 

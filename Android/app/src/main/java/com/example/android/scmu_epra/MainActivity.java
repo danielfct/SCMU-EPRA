@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -74,35 +75,6 @@ public class MainActivity extends AppCompatActivity
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-
-
-
-        //TODO apagar
-        ArrayList<Integer> permissions = new ArrayList<>();
-        permissions.add(1);
-        permissions.add(7);
-        permissions.add(8);
-        permissions.add(9);
-        UserItem user = new UserItem("Daniel", "912345677", "daniel@gmail.com",
-                "daniel", true, permissions);
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        SharedPreferences.Editor prefsEditor = sharedPref.edit();
-        Gson gson = new Gson();
-        String json = gson.toJson(user);
-        prefsEditor.putString(Constants.SIGNED_ACCOUNT_TAG, json);
-        prefsEditor.apply();
-        // TODO apagar
-
-
-
-        UserItem currentAccount = Utils.getCurrentUser(this);
-
-        View header = navigationView.getHeaderView(0);
-        TextView tName = header.findViewById(R.id.user_name_drawer);
-        TextView tEmail = header.findViewById(R.id.user_email_drawer);
-        tName.setText(currentAccount.getName());
-        tEmail.setText(currentAccount.getEmail());
-
         String id = getIntent().getStringExtra("id");
 
         if (id != null) {
@@ -118,6 +90,21 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    @Override
+    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+        Gson gson = new Gson();
+        String json = sharedPref.getString(Constants.SIGNED_ACCOUNT_TAG, "");
+        UserItem currentAccount = gson.fromJson(json, UserItem.class);
+
+        View header = navigationView.getHeaderView(0);
+        TextView tName = header.findViewById(R.id.user_name_drawer);
+        TextView tEmail = header.findViewById(R.id.user_email_drawer);
+        tName.setText(currentAccount.getName());
+        tEmail.setText(currentAccount.getEmail());
+    }
 
     @Override
     public void onBackPressed() {

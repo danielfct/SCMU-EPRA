@@ -63,7 +63,7 @@ public class EditUserPermissionsDialog extends DialogFragment implements GetArea
 
     private void saveData() {
         PostJsonData postJsonData = new PostJsonData((MainActivity) getActivity(),
-                "https://test966996.000webhostapp.com/api/post_user.php", Constants.Status.EDIT_USER_PERMISSIONS_DIALOG);
+                "https://test966996.000webhostapp.com/api/update_users.php", Constants.Status.EDIT_USER_PERMISSIONS_DIALOG);
         postJsonData.execute("privilegios=" + TextUtils.join(",", mUser.getPermissions()),
                 "email=" + mUser.getEmail());
     }
