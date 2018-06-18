@@ -10,7 +10,9 @@ import android.graphics.PorterDuff;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.ImageViewCompat;
 import android.support.v7.widget.AppCompatImageButton;
+import android.support.v7.widget.AppCompatImageView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -92,6 +94,9 @@ public class UsersListAdapter extends ArrayAdapter<UserItem> implements Filterab
 
         TextView nameView = v.findViewById(R.id.name);
         nameView.setText(name);
+
+        AppCompatImageView isAdminImage = v.findViewById(R.id.image_is_admin);
+        isAdminImage.setVisibility(user.isAdmin() ? View.VISIBLE : View.INVISIBLE);
 
         return v;
     }

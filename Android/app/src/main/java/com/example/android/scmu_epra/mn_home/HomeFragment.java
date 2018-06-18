@@ -77,7 +77,10 @@ import belka.us.androidtoggleswitch.widgets.ToggleSwitch;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class HomeFragment extends Fragment implements GetJsonData.OnDataAvailable, GetAreasJsonData.OnDataAvailable, PostJsonData.OnStatusAvailable {
+public class HomeFragment extends Fragment implements
+        GetJsonData.OnDataAvailable,
+        GetAreasJsonData.OnDataAvailable,
+        PostJsonData.OnStatusAvailable {
 
     public static final String TAG = "Home";
 
@@ -118,7 +121,10 @@ public class HomeFragment extends Fragment implements GetJsonData.OnDataAvailabl
 
         //TODO apagar
         ArrayList<Integer> permissions = new ArrayList<>();
-        permissions.add(1); permissions.add(7); permissions.add(8); permissions.add(9);
+        permissions.add(1);
+        permissions.add(7);
+        permissions.add(8);
+        permissions.add(9);
         UserItem user = new UserItem("Daniel", "912345677", "daniel@gmail.com",
                 "daniel", true, permissions);
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
@@ -133,32 +139,22 @@ public class HomeFragment extends Fragment implements GetJsonData.OnDataAvailabl
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
-
         getActivity().setTitle(TAG);
 
-        Log.d(TAG, "onViewCreated: sw = " + (sw != null));
+        getData();
 
         mHandler = new Handler();
-        mRunnable = new Runnable() {
-            @Override
-            public void run() {
-                getData();
-            }
-        };
+        mRunnable = this::getData;
         mHandler.postDelayed(mRunnable, Constants.DATA_UPDATE_FREQUENCY);
 
-        btnShowHistory.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                navigationView.getMenu().getItem(1).setChecked(true);
+        btnShowHistory.setOnClickListener((v) -> {
+            navigationView.getMenu().getItem(1).setChecked(true);
 
-                Fragment f = new AlarmHistoryFragment();
-                FragmentTransaction ft = getFragmentManager().beginTransaction();
-                ft.replace(R.id.screen_area, f);
-                ft.commit();
-            }
+            Fragment f = new AlarmHistoryFragment();
+            FragmentTransaction ft = getFragmentManager().beginTransaction();
+            ft.replace(R.id.screen_area, f);
+            ft.commit();
         });
-
 
         toggleOnOff.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -170,7 +166,7 @@ public class HomeFragment extends Fragment implements GetJsonData.OnDataAvailabl
         toggleOnOff.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d("onclick","toggle1");
+                Log.d("onclick", "toggle1");
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 unlockView = getLayoutInflater().from(getActivity()).inflate(R.layout.activity_auth, null);
@@ -185,28 +181,20 @@ public class HomeFragment extends Fragment implements GetJsonData.OnDataAvailabl
 
             }
         });
-
-
-
+        
         BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(bottomListView);
 
         Rect baseRect = new Rect();
         baseLayout.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
             @Override
             public void onLayoutChange(View view, int i, int i1, int i2, int i3, int i4, int i5, int i6, int i7) {
-                if (!bottomSheetIsSet && Math.abs(i1-i3) > 0) {
-                    bottomSheetBehavior.setPeekHeight(Math.abs(i1-i3));
+                if (!bottomSheetIsSet && Math.abs(i1 - i3) > 0) {
+                    bottomSheetBehavior.setPeekHeight(Math.abs(i1 - i3));
                     bottomSheetIsSet = true;
                 }
             }
         });
         int rH = baseRect.height();
-    }
-
-    @Override
-    public void onAttachFragment(Fragment childFragment) {
-        super.onAttachFragment(childFragment);
-        getData();
     }
 
     @Nullable
@@ -271,14 +259,13 @@ public class HomeFragment extends Fragment implements GetJsonData.OnDataAvailabl
                             e.printStackTrace();
                         }
                         activeInfo.setVisibility(View.VISIBLE);
-                    }
-                    else {
+                    } else {
                         toggleOnOff.setChecked(false);
                         activeInfo.setText("Alarm is inactive.");
                     }
                 }
             } catch (JSONException e) {
-                Log.e(TAG, "onDataAvailable: HomeFragment JSON GET error: " + e.getMessage() );
+                Log.e(TAG, "onDataAvailable: HomeFragment JSON GET error: " + e.getMessage());
             }
         }
         Log.d(TAG, "onDataAvailable HomeFragment: ends");
@@ -293,8 +280,6 @@ public class HomeFragment extends Fragment implements GetJsonData.OnDataAvailabl
 
         Log.d(TAG, "getData: data aqquired");
     }
-
-
 
 
     private void processUnlockDialog(AlertDialog dialog) {
@@ -345,13 +330,13 @@ public class HomeFragment extends Fragment implements GetJsonData.OnDataAvailabl
             if (!uFingerprintManager.isHardwareDetected()) {
                 uParagraphLabel.setText("Fingerprint scanner not detected in your device.");
                 // Check if permission to use fingerprint scanner has been granted
-            } else if(ContextCompat.checkSelfPermission(getActivity().getApplicationContext(), Manifest.permission.USE_FINGERPRINT) != PackageManager.PERMISSION_GRANTED) {
+            } else if (ContextCompat.checkSelfPermission(getActivity().getApplicationContext(), Manifest.permission.USE_FINGERPRINT) != PackageManager.PERMISSION_GRANTED) {
                 uParagraphLabel.setText("Permission not granted to use fingerprint scanner.");
                 // Check if lock screen is secured with at least one type of lock
-            } else if(!uKeyguardManager.isKeyguardSecure()) {
+            } else if (!uKeyguardManager.isKeyguardSecure()) {
                 uParagraphLabel.setText("Add lock to your phone in settings.");
                 // Check if at least one fingerprint is registered
-            } else if(!uFingerprintManager.hasEnrolledFingerprints()) {
+            } else if (!uFingerprintManager.hasEnrolledFingerprints()) {
                 uParagraphLabel.setText("You should add at least one fingerprint to use this feature.");
             } else {
                 uParagraphLabel.setText("Place your finger on the scanner to access the system.");
@@ -365,24 +350,23 @@ public class HomeFragment extends Fragment implements GetJsonData.OnDataAvailabl
 
     //TODO: Connect to the server
     public void toggleAlarm() {
-        if (toggleOnOff.isChecked()){
+        if (toggleOnOff.isChecked()) {
             toggleOnOff.setChecked(false);
             activeInfo.setText("Alarm is now inactive.");
-        }
-        else{
+        } else {
             toggleOnOff.setChecked(true);
             activeInfo.setText("Alarm is now active.");
         }
 
         UserItem user = Utils.getCurrentUser(mContext);
-        executePostJson("https://test966996.000webhostapp.com/api/post_alarminfo.php", "estadoAtual="+(toggleOnOff.isChecked() ? "1" : "0"));
-        executePostJson("https://test966996.000webhostapp.com/api/post_history.php", "evento="+user.getName()+(toggleOnOff.isChecked() ? " turned the alarm on." : " turned the alarm off."));
+        executePostJson("https://test966996.000webhostapp.com/api/post_alarminfo.php", "estadoAtual=" + (toggleOnOff.isChecked() ? "1" : "0"));
+        executePostJson("https://test966996.000webhostapp.com/api/post_history.php", "evento=" + user.getName() + (toggleOnOff.isChecked() ? " turned the alarm on." : " turned the alarm off."));
     }
 
     @Override
     public void onDataAvailable(List<AreaItem> data, DownloadStatus status) {
         Log.d(TAG, "onDataAvailable: starts");
-        if(status == DownloadStatus.OK && data != null && data.size() > 0) {
+        if (status == DownloadStatus.OK && data != null && data.size() > 0) {
             HomeListAdapter listAdapter = new HomeListAdapter(mContext, 0, data);
             listView.setAdapter(listAdapter);
             listView.setOnItemClickListener((adapterView, view, position, id) -> {
@@ -405,7 +389,7 @@ public class HomeFragment extends Fragment implements GetJsonData.OnDataAvailabl
                 }
 
 
-                });
+            });
         } else {
             // download or processing failed
             Log.e(TAG, "onDataAvailable failed with status or  " + status + " or it has no items");
