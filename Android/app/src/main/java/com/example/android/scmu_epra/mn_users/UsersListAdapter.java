@@ -5,7 +5,10 @@ import android.app.AlertDialog;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.preference.PreferenceManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatImageButton;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -69,13 +72,22 @@ public class UsersListAdapter extends ArrayAdapter<UserItem> {
         String json = sharedPref.getString(Constants.SIGNED_ACCOUNT_TAG, "");
         UserItem currentAccount = gson.fromJson(json, UserItem.class);
 
+        boolean isAdmin = currentAccount != null && currentAccount.isAdmin();
+
         AppCompatImageButton editPermissionsButton = v.findViewById(R.id.edit_permissions_button);
         editPermissionsButton.setOnClickListener((view) -> showEditPermissionsDialog(user));
-        editPermissionsButton.setEnabled(currentAccount != null && currentAccount.isAdmin());
+        if (!isAdmin) {
+            editPermissionsButton.setEnabled(false);
+            editPermissionsButton.setColorFilter(ContextCompat.getColor(context, R.color.gray_very_light), android.graphics.PorterDuff.Mode.SRC_IN);
+        }
 
         AppCompatImageButton deleteUserAccountButton = v.findViewById(R.id.delete_user_account_button);
         deleteUserAccountButton.setOnClickListener((view) -> showDeleteUserConfirmation(user));
-        deleteUserAccountButton.setEnabled(currentAccount != null && currentAccount.isAdmin());
+        if (!isAdmin) {
+            deleteUserAccountButton.setEnabled(false);
+            deleteUserAccountButton.setColorFilter(ContextCompat.getColor(context, R.color.gray_very_light), android.graphics.PorterDuff.Mode.SRC_IN);
+        }
+
 
         return v;
     }

@@ -107,7 +107,7 @@ public class DevicesFragment extends Fragment
     public void onDataAvailable(List<DeviceItem> data, DownloadStatus status) {
         Log.d(TAG, "onDataAvailable: starts");
         if (status == DownloadStatus.OK && data != null && data.size() > 0) {
-            mListAdapter = new DevicesListAdapter(mContext, 0, data);
+            mListAdapter = new DevicesListAdapter(mContext, 0, data, getView());
             listView.setAdapter(mListAdapter);
             listView.setOnItemClickListener((adapterView, view, position, id) -> {
                 sw = view.findViewById(R.id.device_switch);
