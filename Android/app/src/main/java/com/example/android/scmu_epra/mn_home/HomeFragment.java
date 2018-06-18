@@ -19,6 +19,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -66,6 +67,7 @@ import org.json.JSONObject;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -106,14 +108,23 @@ public class HomeFragment extends Fragment implements GetJsonData.OnDataAvailabl
 
     private NavigationView navigationView;
 
-
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         alarmIsOn = false;
 
+        //TODO apagar
+        ArrayList<Integer> permissions = new ArrayList<>();
+        permissions.add(1); permissions.add(7); permissions.add(8); permissions.add(9);
+        UserItem user = new UserItem("Daniel", "912345677", "daniel@gmail.com",
+                "daniel", true, permissions);
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
+        SharedPreferences.Editor prefsEditor = sharedPref.edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(user);
+        prefsEditor.putString(Constants.SIGNED_ACCOUNT_TAG, json);
+        prefsEditor.apply();
     }
 
     @Override
@@ -124,8 +135,6 @@ public class HomeFragment extends Fragment implements GetJsonData.OnDataAvailabl
         getActivity().setTitle(TAG);
 
         Log.d(TAG, "onViewCreated: sw = " + (sw != null));
-
-        getData();
 
         mHandler = new Handler();
         mRunnable = new Runnable() {
@@ -192,6 +201,12 @@ public class HomeFragment extends Fragment implements GetJsonData.OnDataAvailabl
             }
         });
         int rH = baseRect.height();
+    }
+
+    @Override
+    public void onAttachFragment(Fragment childFragment) {
+        super.onAttachFragment(childFragment);
+        getData();
     }
 
     @Nullable
@@ -427,21 +442,18 @@ public class HomeFragment extends Fragment implements GetJsonData.OnDataAvailabl
         if(status == DownloadStatus.OK && data != null && data.size() > 0) {
             HomeListAdapter listAdapter = new HomeListAdapter(mContext, 0, data);
             listView = getView().findViewById(R.id.list_view);
-            listView.setAdapter(listAdapter);
-            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+            listView.setAdapter(listAdapter); //TODO
+            listView.setOnItemClickListener((adapterView, view, position, id) -> {
                     sw = view.findViewById(R.id.switch1);
                     AreaItem item = data.get(position);
-
                     boolean newState = !sw.isChecked();
-
                     executePostJson("https://test966996.000webhostapp.com/api/update_areas.php",
-                            "id="+item.getId(), "nome="+item.getName(), "alarmeLigado="+(newState ? "1" : "0"), "sensor="+item.getSensor());
-
+                            "id=" + item.getId(),
+                            "nome=" + item.getName(),
+                            "alarmeLigado=" + (newState ? "1" : "0"),
+                            "sensor=" + item.getSensor());
                     sw.setChecked(newState);
-                }
-            });
+                });
         } else {
             // download or processing failed
             Log.e(TAG, "onDataAvailable failed with status or  " + status + " or it has no items");
@@ -452,14 +464,19 @@ public class HomeFragment extends Fragment implements GetJsonData.OnDataAvailabl
         Log.d(TAG, "onDataAvailable: ends");
     }
 
-    private final void executePostJson(String url, String... params) {
-        PostJsonData postJsonData = new PostJsonData(this, url);
+    private void executePostJson(String url, String... params) {
+        PostJsonData postJsonData = new PostJsonData(this, url, Constants.Status.HOME_FRAGMENT);
         postJsonData.execute(params);
     }
 
-    @Override
-    public void onStatusAvailable(Boolean status) {
 
+    @Override
+    public void onStatusAvailable(Boolean status, Integer statusId) {
+        if (status) {
+            Snackbar.make(getView(), "Alarm status changed.", Snackbar.LENGTH_SHORT).show();
+        } else {
+            Snackbar.make(getView(), "Unable to connect to the server.", Snackbar.LENGTH_SHORT).show();
+        }
     }
 }
 

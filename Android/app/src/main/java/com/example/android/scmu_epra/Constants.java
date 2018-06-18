@@ -26,4 +26,17 @@ public interface Constants {
         String PASSWORD = "com.example.android.scmu_epra.auth.password";
 
     }
+
+    interface Status {
+        int HOME_FRAGMENT = 0;
+        int BURGLARY_MANAGEMENT_FRAGMENT = 1;
+        int DEVICES_FRAGMENT = 2;
+        int EDIT_USER_PERMISSIONS_DIALOG = 3;
+        int DELETE_USER = 4;
+        int MY_FIREBASE_INSTANCE_ID_SERVICE = 5;
+    }
+
+    interface Bundle {
+        String USER = "USER";
+    }
 }

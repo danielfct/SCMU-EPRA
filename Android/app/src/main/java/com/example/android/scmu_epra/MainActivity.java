@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
@@ -164,7 +165,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onStatusAvailable(Boolean status) {
+    public void onStatusAvailable(Boolean status, Integer statusId) {
         // TODO adicionar id ao statusAvailable para saber de onde veio
 //        //if (id == whatever) {
 //            if (status) {
@@ -173,9 +174,21 @@ public class MainActivity extends AppCompatActivity
 //                Toast.makeText(this, R.string.permissions_not_saved, Toast.LENGTH_LONG).show();
 //            }
 //        //} else if (id == whatever) {
+        if (statusId == Constants.Status.EDIT_USER_PERMISSIONS_DIALOG) {
             if (status) {
-                Toast.makeText(this, R.string.account_deleted, Toast.LENGTH_LONG).show();
-
+                Snackbar.make(getWindow().getDecorView().getRootView(), R.string.edit_permission_saved, Snackbar.LENGTH_LONG).show();
+                // Update fragment
+                UsersFragment fragment = (UsersFragment) getSupportFragmentManager().findFragmentByTag(UsersFragment.TAG);
+                final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                ft.detach(fragment);
+                ft.attach(fragment);
+                ft.commit();
+            } else {
+                Toast.makeText(this, R.string.edit_permission_failed, Toast.LENGTH_LONG).show();
+            }
+        } else if (statusId == Constants.Status.DELETE_USER) {
+            if (status) {
+                Snackbar.make(getWindow().getDecorView().getRootView(), R.string.account_deleted, Snackbar.LENGTH_LONG).show();
                 // Update fragment
                 UsersFragment fragment = (UsersFragment) getSupportFragmentManager().findFragmentByTag(UsersFragment.TAG);
                 final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
@@ -185,6 +198,7 @@ public class MainActivity extends AppCompatActivity
             } else {
                 Toast.makeText(this, R.string.account_delete_failed, Toast.LENGTH_LONG).show();
             }
+        }
     }
 
 }

@@ -12,7 +12,6 @@ class User {
     public $password;
     public $admin;
     public $privilegios;
-    public $pin;
 
     // constructor with $db as database connection
     public function __construct($db) {
@@ -52,8 +51,7 @@ class User {
                     email=:email,
                     password=:password,
                     admin=:admin,
-                    privilegios=:privilegios,
-                    pin=:pin";
+                    privilegios=:privilegios";
 
         // prepare query
         $stmt = $this->conn->prepare($query);
@@ -65,7 +63,6 @@ class User {
         $this->password=htmlspecialchars(strip_tags($this->password));
         $this->admin=htmlspecialchars(strip_tags($this->admin));
         $this->privilegios=htmlspecialchars(strip_tags($this->privilegios));
-        $this->pin=htmlspecialchars(strip_tags($this->pin));
 
         // bind values
         $stmt->bindParam(":nome", $this->nome);
@@ -74,7 +71,6 @@ class User {
         $stmt->bindParam(":password", $this->password);
         $stmt->bindParam(":admin", $this->admin);
         $stmt->bindParam(":privilegios", $this->privilegios);
-        $stmt->bindParam(":pin", $this->pin);
 
         // execute query
         $stmt->execute();
@@ -117,28 +113,24 @@ class User {
 
     function buildQueryAttributes() {
       $res = "";
-      if($this->nome) {
+      if(isset($this->nome)) {
         $res .= "nome = :nome";
       }
-      if($this->telemovel) {
+      if(isset($this->telemovel)) {
         $res = $this->addComma($res);
         $res .= "telemovel = :telemovel";
       }
-      if($this->password) {
+      if(isset($this->password)) {
         $res = $this->addComma($res);
         $res .= "password = :password";
       }
-      if($this->admin) {
+      if(isset($this->admin)) {
         $res = $this->addComma($res);
         $res .= "admin = :admin";
       }
-      if($this->privilegios) {
+      if(isset($this->privilegios)) {
         $res = $this->addComma($res);
         $res .= "privilegios = :privilegios";
-      }
-      if($this->pin) {
-        $res = $this->addComma($res);
-        $res .= "pin = :pin";
       }
 
       return $res;
@@ -146,44 +138,42 @@ class User {
 
     function update() {
 
-      $query = "UPDATE $this->table_name SET " . $this->buildQueryAttributes() . " WHERE email = ?";
+        $query = "UPDATE $this->table_name SET " . $this->buildQueryAttributes() . " WHERE email = :email";
 
         // prepare query statement
         $stmt = $this->conn->prepare($query);
 
-        if($this->nome) {
+        if(isset($this->nome)) {
           $this->nome=htmlspecialchars(strip_tags($this->nome));
           $stmt->bindParam(':nome', $this->nome);
         }
-        if($this->telemovel) {
+        if(isset($this->telemovel)) {
           $this->telemovel=htmlspecialchars(strip_tags($this->telemovel));
           $stmt->bindParam(':telemovel', $this->telemovel);
         }
-        if($this->email) {
+        if(isset($this->email)) {
           $this->email=htmlspecialchars(strip_tags($this->email));
           $stmt->bindParam(':email', $this->email);
         }
-        if($this->password) {
+        if(isset($this->password)) {
           $this->password=htmlspecialchars(strip_tags($this->password));
           $stmt->bindParam(':password', $this->password);
         }
-        if($this->admin) {
+        if(isset($this->admin)) {
           $this->admin=htmlspecialchars(strip_tags($this->admin));
           $stmt->bindParam(':admin', $this->admin);
         }
-        if($this->privilegios) {
+        if(isset($this->privilegios)) {
           $this->privilegios=htmlspecialchars(strip_tags($this->privilegios));
-          $stmt->bindParam(':privilegios', $this->privilegios);
+          if (empty($this->privilegios)) {
+              $aNull = NULL;
+              $stmt->bindParam(':privilegios', $aNull, PDO::PARAM_NULL);
+          } else {
+              $stmt->bindParam(':privilegios', $this->privilegios);
+          }
         }
-        if($this->pin) {
-          $this->pin=htmlspecialchars(strip_tags($this->pin));
-          $stmt->bindParam(':pin', $this->pin);
-        }
-
-        $stmt->bindParam(1, $this->email);
 
         // execute the query
-
           try {
             return $stmt->execute();
           } catch(PDOException $e) {

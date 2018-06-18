@@ -33,12 +33,13 @@ public class MyFirebaseInstanceIdService extends FirebaseInstanceIdService imple
 
     private void sendNewTokenToServer(String token) {
         Log.d("TOKEN", token);
-        PostJsonData postJsonData = new PostJsonData(this, "https://test966996.000webhostapp.com/api/post_token.php");
+        PostJsonData postJsonData = new PostJsonData(this,
+                "https://test966996.000webhostapp.com/api/post_token.php", Constants.Status.MY_FIREBASE_INSTANCE_ID_SERVICE);
         postJsonData.doInBackground("token="+token);
     }
 
     @Override
-    public void onStatusAvailable(Boolean status) {
+    public void onStatusAvailable(Boolean status, Integer statusId) {
         if (status) {
             Log.d(TAG, "onStatusAvailable: SERVER GOT DEVICE TOKEN");
         } else {

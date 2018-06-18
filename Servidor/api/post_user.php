@@ -16,9 +16,11 @@ $db = $database->getConnection();
 
 $user = new User($db);
 
+// get posted data
 $data = json_decode(file_get_contents("php://input"));
 
 $user->privilegios = $data->privilegios;
+$user->email = $data->email;
 
 if ($user->update()) {
     echo '{';

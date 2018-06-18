@@ -10,17 +10,15 @@ public class UserItem {
     private String password;
     private boolean isAdmin;
     private ArrayList<Integer> permissions;
-    private int pin;
 
     public UserItem(String name, String mobileNr, String email, String password,
-                    boolean isAdmin, ArrayList<Integer> permissions, int pin) {
+                    boolean isAdmin, ArrayList<Integer> permissions) {
         this.name = name;
         this.mobileNr = mobileNr;
         this.email = email;
         this.password = password;
         this.isAdmin = isAdmin;
         this.permissions = permissions;
-        this.pin = pin;
     }
 
     public String getName() {
@@ -71,11 +69,12 @@ public class UserItem {
         this.permissions = permissions;
     }
 
-    public int getPin() {
-        return pin;
+    public void addPermission(Integer permission) {
+        this.permissions.add(permission);
     }
 
-    public void setPin(int pin) {
-        this.pin = pin;
+    public void removePermission(Integer permission) {
+        this.permissions.remove(permission);
     }
+
 }

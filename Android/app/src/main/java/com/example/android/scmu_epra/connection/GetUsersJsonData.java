@@ -3,6 +3,7 @@ package com.example.android.scmu_epra.connection;
 import android.app.ProgressDialog;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.text.TextUtils;
 import android.util.Log;
 import android.widget.ProgressBar;
 
@@ -82,12 +83,13 @@ public class GetUsersJsonData extends AsyncTask<String, Void, Void>
                     String permissionsString = jsonRow.getString("privilegios");
                     ArrayList<Integer> permissions = new ArrayList<>();
                     for (String p : permissionsString.split(",")) {
-                        permissions.add(Integer.parseInt(p));
+                        if (TextUtils.isDigitsOnly(p)) {
+                            permissions.add(Integer.parseInt(p));
+                        }
                     }
-                    int pin = Integer.parseInt(jsonRow.getString("pin"));
 
                     UserItem item = new UserItem(name, mobileNr, email, password,
-                            isAdmin, permissions, pin);
+                            isAdmin, permissions);
                     mList.add(item);
                 }
             } catch (JSONException e) {

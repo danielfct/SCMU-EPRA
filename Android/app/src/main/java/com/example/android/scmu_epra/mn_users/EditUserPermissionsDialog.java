@@ -14,7 +14,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckedTextView;
 import android.widget.ListView;
@@ -22,13 +21,14 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.example.android.scmu_epra.Constants;
 import com.example.android.scmu_epra.MainActivity;
 import com.example.android.scmu_epra.R;
 import com.example.android.scmu_epra.connection.DownloadStatus;
 import com.example.android.scmu_epra.connection.GetAreasJsonData;
 import com.example.android.scmu_epra.connection.PostJsonData;
+import com.google.gson.Gson;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class EditUserPermissionsDialog extends DialogFragment implements GetAreasJsonData.OnDataAvailable {
@@ -36,7 +36,7 @@ public class EditUserPermissionsDialog extends DialogFragment implements GetArea
     private ProgressBar mSpinner;
     private ListView mPermissionsList;
     private TextView mEmptyView;
-    private ArrayList<Integer> mPermissions;
+    private UserItem mUser;
 
     public EditUserPermissionsDialog() {
         // Empty constructor is required for DialogFragment
@@ -44,10 +44,12 @@ public class EditUserPermissionsDialog extends DialogFragment implements GetArea
         // Use `newInstance` instead as shown below
     }
 
-    public static EditUserPermissionsDialog newInstance(ArrayList<Integer> permissions) {
+    public static EditUserPermissionsDialog newInstance(UserItem user) {
         EditUserPermissionsDialog frag = new EditUserPermissionsDialog();
         Bundle args = new Bundle();
-        args.putIntegerArrayList("permissions", permissions);
+        Gson gson = new Gson();
+        String jsonUser = gson.toJson(user);
+        args.putString(Constants.Bundle.USER, jsonUser);
         frag.setArguments(args);
         return frag;
     }
@@ -61,8 +63,9 @@ public class EditUserPermissionsDialog extends DialogFragment implements GetArea
 
     private void saveData() {
         PostJsonData postJsonData = new PostJsonData((MainActivity) getActivity(),
-                "https://test966996.000webhostapp.com/api/post_user.php");
-        postJsonData.execute("privilegios=" + TextUtils.join(", ", mPermissions));
+                "https://test966996.000webhostapp.com/api/post_user.php", Constants.Status.EDIT_USER_PERMISSIONS_DIALOG);
+        postJsonData.execute("privilegios=" + TextUtils.join(",", mUser.getPermissions()),
+                "email=" + mUser.getEmail());
     }
 
     @Override
@@ -88,7 +91,17 @@ public class EditUserPermissionsDialog extends DialogFragment implements GetArea
                     AreaItem item = data.get(position);
                     CheckedTextView checkedText = v.findViewById(android.R.id.text1);
                     checkedText.setText(item.getName());
-                    checkedText.setChecked(mPermissions.contains(item.getId()));
+                    checkedText.setChecked(mUser.getPermissions().contains(item.getId()));
+                    checkedText.setOnClickListener(view -> {
+                        boolean isChecked = checkedText.isChecked();
+                        if (isChecked) {
+                            mUser.removePermission(item.getId());
+                        }
+                        else {
+                            mUser.addPermission(item.getId());
+                        }
+                        checkedText.setChecked(!isChecked);
+                    });
                     return v;
                 }
             };
@@ -112,29 +125,16 @@ public class EditUserPermissionsDialog extends DialogFragment implements GetArea
 
         mSpinner = v.findViewById(R.id.progress_bar);
         mPermissionsList = v.findViewById(R.id.permissions);
-        mPermissionsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                AreaItem item = (AreaItem)mPermissionsList.getItemAtPosition(position);
-                CheckedTextView checkedText = view.findViewById(android.R.id.text1);
-                Log.d("text", checkedText.getText().toString());
-                if (checkedText.isChecked()) {
-                    checkedText.setChecked(false);
-                    mPermissions.add(item.getId());
-                }
-                else {
-                    checkedText.setChecked(true);
-                    mPermissions.remove((Integer)item.getId());
-                }
-            }
-        });
         mEmptyView = v.findViewById(android.R.id.empty);
-        mPermissions = getArguments().getIntegerArrayList("permissions");
-
+        String stringUser = getArguments().getString(Constants.Bundle.USER);
+        Gson gson = new Gson();
+        mUser = gson.fromJson(stringUser, UserItem.class);
         // Here's the LayoutParams setup
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         ViewGroup.LayoutParams layoutParams = mPermissionsList.getLayoutParams();
         layoutParams.width = SwipeRefreshLayout.LayoutParams.MATCH_PARENT;
-        layoutParams.height = getListItemHeight() * (mPermissions.size() + 1);
+        layoutParams.height = (int) (displayMetrics.heightPixels*0.75f);
         v.setLayoutParams(layoutParams);
 
         b.setView(v);

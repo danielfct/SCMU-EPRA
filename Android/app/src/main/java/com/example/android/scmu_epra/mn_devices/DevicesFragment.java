@@ -105,22 +105,15 @@ public class DevicesFragment extends Fragment
         if(status == DownloadStatus.OK && data != null && data.size() > 0) {
             mListAdapter = new DevicesListAdapter(mContext, 0, data);
             listView.setAdapter(mListAdapter);
-            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+            listView.setOnItemClickListener((adapterView, view, position, id) -> {
                     sw = view.findViewById(R.id.device_switch);
                     DeviceItem item = data.get(position);
-
                     boolean newState = !sw.isChecked();
-
                     executePostJson("https://test966996.000webhostapp.com/api/update_devices.php",
-                            "nome="+data.get(position).getName(),
-                            "ligado="+(sw.isChecked() ? "1" : "0")
-                    );
-
+                            "nome=" + item.getName(),
+                            "ligado=" + (newState ? "1" : "0"));
                     sw.setChecked(newState);
-                }
-            });
+                });
         } else {
             // download or processing failed
             Log.e(TAG, "onDataAvailable failed with status " + status);
@@ -132,7 +125,7 @@ public class DevicesFragment extends Fragment
     }
 
     private final void executePostJson(String url, String... params) {
-        PostJsonData postJsonData = new PostJsonData(this, url);
+        PostJsonData postJsonData = new PostJsonData(this, url, Constants.Status.DEVICES_FRAGMENT);
         postJsonData.execute(params);
     }
 
@@ -171,7 +164,7 @@ public class DevicesFragment extends Fragment
 
 
     @Override
-    public void onStatusAvailable(Boolean status) {
+    public void onStatusAvailable(Boolean status, Integer statusId) {
         if (status) {
             Snackbar.make(getView(), "Device status changed.", Snackbar.LENGTH_SHORT).show();
         } else {

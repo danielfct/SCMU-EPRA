@@ -227,12 +227,12 @@ public class BurglaryManagementFragment extends Fragment
     }
 
     private final void executePostJson(String url, String... params) {
-        PostJsonData postJsonData = new PostJsonData(this, url);
+        PostJsonData postJsonData = new PostJsonData(this, url, Constants.Status.BURGLARY_MANAGEMENT_FRAGMENT);
         postJsonData.execute(params);
     }
 
     @Override
-    public void onStatusAvailable(Boolean status) {
+    public void onStatusAvailable(Boolean status, Integer statusId) {
         if (status) {
             Snackbar.make(getView(), "Alarm turned off.", Snackbar.LENGTH_SHORT).show();
         } else {

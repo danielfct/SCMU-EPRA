@@ -39,8 +39,7 @@ if($num>0){
             "email" => $email,
             "password" => $password,
             "admin" => $admin,
-            "privilegios" => $privilegios,
-            "pin" => $pin
+            "privilegios" => $privilegios
         );
 
         array_push($user_arr, $user_item);

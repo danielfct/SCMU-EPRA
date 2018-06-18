@@ -6,6 +6,7 @@ import android.util.Log;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -20,23 +21,25 @@ public class PostJsonData extends AsyncTask<String,Void, Boolean> {
 
     private String mBaseURL;
     private final OnStatusAvailable mCallBack;
+    private final int statusId;
 
     public interface OnStatusAvailable {
-        void onStatusAvailable(Boolean status);
+        void onStatusAvailable(Boolean status, Integer statusId);
     }
 
-    public PostJsonData(OnStatusAvailable mCallBack, String baseURL) {
+    public PostJsonData(OnStatusAvailable mCallBack, String baseURL, int statusId) {
         Log.d(TAG, "PostJsonData: called");
         this.mBaseURL = baseURL;
         this.mCallBack = mCallBack;
+        this.statusId = statusId;
     }
 
     @Override
     protected void onPostExecute(Boolean status) {
         Log.d(TAG, "onPostExecute starts");
 
-        if(mCallBack != null) {
-            mCallBack.onStatusAvailable(status);
+        if (mCallBack != null) {
+            mCallBack.onStatusAvailable(status, statusId);
         }
         Log.d(TAG, "onPostExecute ends");
     }
@@ -64,6 +67,8 @@ public class PostJsonData extends AsyncTask<String,Void, Boolean> {
                 String[] paramSplit = param.split("=");
                 if (paramSplit.length >= 2) {
                     jsonParam.put(paramSplit[0], paramSplit[1]);
+                } else {
+                    jsonParam.put(paramSplit[0], "");
                 }
             }
 
@@ -77,6 +82,11 @@ public class PostJsonData extends AsyncTask<String,Void, Boolean> {
             int responseCode = connection.getResponseCode();
             String responseMsg = connection.getResponseMessage();
 
+            DataInputStream is = new DataInputStream(connection.getInputStream());
+            byte[] d = new byte[500]; //TODO apagar
+            is.read(d);
+
+            Log.d(TAG, "doInBackground: Got message = " + new String(d).trim());
             Log.d(TAG, "doInBackground: Got responseCode = " + responseCode);
             Log.d(TAG, "doInBackground: Got responseMsg = " + responseMsg);
 

@@ -168,6 +168,8 @@
     <string name="burglary_management_fragment_title">Burglary Management</string>
     <string name="pin">Pin</string>
     <string name="Logout">Logout</string>
+    <string name="edit_permission_failed">Failed to save edited permissions</string>
+    <string name="edit_permission_saved">Permissions saved</string>
     <plurals
         name="burglary_management_time">
         <item quantity="zero">%d minutes</item>

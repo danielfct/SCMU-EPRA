@@ -53,10 +53,8 @@ public class UsersListAdapter extends ArrayAdapter<UserItem> {
             v = LayoutInflater.from(this.context).inflate(R.layout.frag_users_list_item, parent, false);
         }
 
-        UserItem item = this.list.get(position);
-        String name = item.getName();
-        ArrayList<Integer> permissions = item.getPermissions();
-        boolean isAdmin = item.isAdmin();
+        UserItem user = this.list.get(position);
+        String name = user.getName();
 
         ImageView imageView = v.findViewById(R.id.image);
         char ch = name.charAt(0);
@@ -72,19 +70,19 @@ public class UsersListAdapter extends ArrayAdapter<UserItem> {
         UserItem currentAccount = gson.fromJson(json, UserItem.class);
 
         AppCompatImageButton editPermissionsButton = v.findViewById(R.id.edit_permissions_button);
-        editPermissionsButton.setOnClickListener((view) -> showEditPermissionsDialog(permissions));
+        editPermissionsButton.setOnClickListener((view) -> showEditPermissionsDialog(user));
         editPermissionsButton.setEnabled(currentAccount != null && currentAccount.isAdmin());
 
         AppCompatImageButton deleteUserAccountButton = v.findViewById(R.id.delete_user_account_button);
-        deleteUserAccountButton.setOnClickListener((view) -> showDeleteUserConfirmation(item));
+        deleteUserAccountButton.setOnClickListener((view) -> showDeleteUserConfirmation(user));
         deleteUserAccountButton.setEnabled(currentAccount != null && currentAccount.isAdmin());
 
         return v;
     }
 
-    private void showEditPermissionsDialog(ArrayList<Integer> permissions) {
+    private void showEditPermissionsDialog(UserItem user) {
         FragmentManager fm = ((Activity)context).getFragmentManager();
-        EditUserPermissionsDialog dialog = EditUserPermissionsDialog.newInstance(permissions);
+        EditUserPermissionsDialog dialog = EditUserPermissionsDialog.newInstance(user);
         dialog.show(fm, "fragment_edit_permissions");
     }
 
@@ -100,7 +98,7 @@ public class UsersListAdapter extends ArrayAdapter<UserItem> {
 
     private void removeUser(UserItem user) {
         PostJsonData postJsonData = new PostJsonData((MainActivity) context,
-                "https://test966996.000webhostapp.com/api/delete_contacts.php");
+                "https://test966996.000webhostapp.com/api/delete_contacts.php", Constants.Status.DELETE_USER);
         postJsonData.execute("email=" + user.getEmail());
     }
 
