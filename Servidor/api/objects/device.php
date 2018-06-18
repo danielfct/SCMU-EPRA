@@ -17,15 +17,20 @@ class Device {
         $this->table_name = "devices";
     }
 
-    // read history
-    function read() {
-
-        // select all query
+    // read 
+    function read($areaId) {
         $query = "SELECT * FROM $this->table_name";
-
+        if (isset($areaId)) {
+            $areaId = htmlspecialchars(strip_tags($areaId));
+            $query .= " WHERE areaId =:areaId";
+        }
+        
         // prepare query statement
         $stmt = $this->conn->prepare($query);
-
+        if (isset($areaId)) {
+            $stmt->bindParam(":areaId", $areaId);
+        }    
+    
         // execute query
         $stmt->execute();
 

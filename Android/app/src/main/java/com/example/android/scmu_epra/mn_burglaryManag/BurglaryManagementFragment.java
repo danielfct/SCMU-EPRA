@@ -55,7 +55,7 @@ import okhttp3.internal.Util;
 public class BurglaryManagementFragment extends Fragment
         implements GetBurglaryHistoryJsonData.OnDataAvailable, GetJsonData.OnDataAvailable, PostJsonData.OnStatusAvailable {
 
-    public static final String TAG = "BurglaryManagement";
+    public static final String TAG = "Burglary Management";
     private static final int REQUEST_LOCATION = 1;
 
     @BindView(R.id.bottom_sheet)

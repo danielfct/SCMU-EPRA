@@ -36,9 +36,11 @@ import com.google.gson.Gson;
 
 import org.w3c.dom.Text;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 import static com.example.android.scmu_epra.Constants.Status.ADD_NEW_DEVICE;
+import static com.example.android.scmu_epra.Constants.Status.DELETE_AREA;
 import static com.example.android.scmu_epra.Constants.Status.DELETE_DEVICE;
 import static com.example.android.scmu_epra.Constants.Status.DELETE_USER;
 import static com.example.android.scmu_epra.Constants.Status.EDIT_USER_PERMISSIONS_DIALOG;
@@ -72,10 +74,28 @@ public class MainActivity extends AppCompatActivity
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+
+
+
+        //TODO apagar
+        ArrayList<Integer> permissions = new ArrayList<>();
+        permissions.add(1);
+        permissions.add(7);
+        permissions.add(8);
+        permissions.add(9);
+        UserItem user = new UserItem("Daniel", "912345677", "daniel@gmail.com",
+                "daniel", true, permissions);
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor prefsEditor = sharedPref.edit();
         Gson gson = new Gson();
-        String json = sharedPref.getString(Constants.SIGNED_ACCOUNT_TAG, "");
-        UserItem currentAccount = gson.fromJson(json, UserItem.class);
+        String json = gson.toJson(user);
+        prefsEditor.putString(Constants.SIGNED_ACCOUNT_TAG, json);
+        prefsEditor.apply();
+        // TODO apagar
+
+
+
+        UserItem currentAccount = Utils.getCurrentUser(this);
 
         View header = navigationView.getHeaderView(0);
         TextView tName = header.findViewById(R.id.user_name_drawer);
@@ -226,6 +246,13 @@ public class MainActivity extends AppCompatActivity
                 fragment = getSupportFragmentManager().findFragmentByTag(DevicesFragment.TAG);
             } else {
                 Snackbar.make(v, R.string.failed_to_update_device, Snackbar.LENGTH_LONG).show();
+            }
+        } else if (statusId == DELETE_AREA) {
+            if (status) {
+                Snackbar.make(v, R.string.area_deleted, Snackbar.LENGTH_LONG).show();
+                fragment = getSupportFragmentManager().findFragmentByTag(HomeFragment.TAG);
+            } else {
+                Snackbar.make(v, R.string.failed_to_delete_area, Snackbar.LENGTH_LONG).show();
             }
         }
         if (fragment != null) {

@@ -10,7 +10,9 @@ $database = new Database();
 $db = $database->getConnection();
 $device = new Device($db);
 
-$stmt = $device->read();
+$areaId = filter_input(INPUT_GET, 'areaId');
+
+$stmt = $device->read($areaId);
 $num = $stmt->rowCount();
 
 if ($num > 0) {

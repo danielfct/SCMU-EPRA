@@ -8,28 +8,18 @@
     android:id="@+id/itemLayout">
 
 
-    <ImageView
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_alignParentTop="true"
-        android:id="@+id/imgLetter"/>
-
     <TextView
-        android:id="@+id/divisionName"
+        android:id="@+id/device_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/imgLetter"
-        android:paddingLeft="16dp"
         android:layout_centerVertical="true"
-        android:text="APIaskja f p: "
         android:textColor="@android:color/black"
-        android:textAppearance="@android:style/TextAppearance.DeviceDefault"
-        />
+        android:textAppearance="@android:style/TextAppearance.DeviceDefault" />
 
     <Switch
+        android:id="@+id/device_switch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/switch1"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true" />

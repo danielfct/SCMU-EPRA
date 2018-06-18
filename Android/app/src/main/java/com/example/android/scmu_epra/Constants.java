@@ -38,10 +38,12 @@ public interface Constants {
         int DELETE_DEVICE = 7;
         int UPDATE_DEVICE = 8;
         int BURG_ALARM_OFF = 9;
+        int DELETE_AREA = 10;
     }
 
     interface Bundle {
         String USER = "USER";
         String DEVICE = "DEVICE";
+        String AREA = "AREA";
     }
 }

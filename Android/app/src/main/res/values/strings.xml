@@ -184,6 +184,12 @@
     <string name="menu_edit_user">Edit permissions</string>
     <string name="menu_delete_user">Remove account</string>
     <string name="no_devices">No devices&#8230;</string>
+    <string name="delete_area_confirmation_title">Delete area</string>
+    <string name="delete_area_confirmation">Do you really want to delete %1$s\?</string>
+    <string name="area_deleted">Area and all the associated devices were deleted</string>
+    <string name="failed_to_delete_area">Failed to delete area</string>
+    <string name="menu_edit_area">Edit area</string>
+    <string name="menu_delete_area">Delete area</string>
     <plurals
         name="burglary_management_time">
         <item quantity="zero">%d minutes</item>

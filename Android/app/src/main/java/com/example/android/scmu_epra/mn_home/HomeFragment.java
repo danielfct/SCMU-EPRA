@@ -2,7 +2,9 @@ package com.example.android.scmu_epra.mn_home;
 
 import android.Manifest;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.FragmentManager;
 import android.app.KeyguardManager;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -29,8 +31,12 @@ import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.DragEvent;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,6 +47,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.SearchView;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -116,23 +123,8 @@ public class HomeFragment extends Fragment implements
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        setHasOptionsMenu(true);
         alarmIsOn = false;
-
-        //TODO apagar
-        ArrayList<Integer> permissions = new ArrayList<>();
-        permissions.add(1);
-        permissions.add(7);
-        permissions.add(8);
-        permissions.add(9);
-        UserItem user = new UserItem("Daniel", "912345677", "daniel@gmail.com",
-                "daniel", true, permissions);
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
-        SharedPreferences.Editor prefsEditor = sharedPref.edit();
-        Gson gson = new Gson();
-        String json = gson.toJson(user);
-        prefsEditor.putString(Constants.SIGNED_ACCOUNT_TAG, json);
-        prefsEditor.apply();
     }
 
     @Override
@@ -181,7 +173,7 @@ public class HomeFragment extends Fragment implements
 
             }
         });
-        
+
         BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(bottomListView);
 
         Rect baseRect = new Rect();
@@ -288,7 +280,6 @@ public class HomeFragment extends Fragment implements
         KeyguardManager uKeyguardManager;
         EditText uPin1EditText;
 
-
         UserItem currentAccount = Utils.getCurrentUser(mContext);
         String userPassword = currentAccount.getPassword();
 
@@ -388,6 +379,7 @@ public class HomeFragment extends Fragment implements
                     executePostJson("https://test966996.000webhostapp.com/api/post_history.php", "evento="+user.getName()+" turned "+item.getName()+" "+ (newState? "on." : "off."));
                 }
 
+                registerForContextMenu(listView);
 
             });
         } else {
@@ -414,6 +406,67 @@ public class HomeFragment extends Fragment implements
             Snackbar.make(getView(), "Unable to connect to the server.", Snackbar.LENGTH_SHORT).show();
         }
     }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        getActivity().getMenuInflater().inflate(R.menu.menu_list_home, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        AreaItem area = (AreaItem)listView.getAdapter().getItem(info.position);
+        switch(item.getItemId()) {
+            case R.id.edit:
+                showEditAreaDialog(area);
+                return true;
+            case R.id.delete:
+                showDeleteAreaConfirmation(area);
+                return true;
+            default:
+                return super.onContextItemSelected(item);
+        }
+    }
+
+    private void showEditAreaDialog(AreaItem area) {
+        FragmentManager fm = ((Activity)mContext).getFragmentManager();
+        EditAreaDialog dialog = EditAreaDialog.newInstance(area);
+        dialog.show(fm, "dialog_edit_area");
+    }
+
+    private boolean showAddNewAreaDialog() {
+        FragmentManager fm = ((Activity)mContext).getFragmentManager();
+        EditAreaDialog dialog = new EditAreaDialog();
+        dialog.show(fm, "add_area_dialog");
+        return true;
+    }
+
+    private void showDeleteAreaConfirmation(AreaItem area) {
+        new AlertDialog.Builder(mContext)
+                .setIcon(R.drawable.ic_delete_forever_red)
+                .setTitle(mContext.getString(R.string.delete_area_confirmation_title))
+                .setMessage(mContext.getString(R.string.delete_area_confirmation, area.getName()))
+                .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> removeArea(area))
+                .setNegativeButton(android.R.string.no, null)
+                .show();
+    }
+
+    private void removeArea(AreaItem area) {
+        PostJsonData postJsonData = new PostJsonData((MainActivity) mContext,
+                "https://test966996.000webhostapp.com/api/delete_areas.php", Constants.Status.DELETE_AREA);
+        postJsonData.execute("id=" + area.getId());
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_home, menu);
+        MenuItem addItem = menu.findItem(R.id.menu_new_area);
+        addItem.setOnMenuItemClickListener((item) -> showAddNewAreaDialog());
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+
 }
 
 
