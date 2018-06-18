@@ -17,7 +17,6 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginTop="8dp"
-        app:errorTextAppearance="@style/SignupErrorAppearance"
         app:hintTextAppearance="@style/TextAppearance.App.TextInputLayout"
         android:padding="10dp">
 

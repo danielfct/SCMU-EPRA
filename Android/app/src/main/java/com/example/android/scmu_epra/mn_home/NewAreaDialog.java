@@ -46,10 +46,9 @@ public class NewAreaDialog extends DialogFragment {
     }
 
     private void saveData() {
-//        PostJsonData postJsonData = new PostJsonData((MainActivity) getActivity(),
-//                "https://test966996.000webhostapp.com/api/post_user.php", Constants.Status.EDIT_USER_PERMISSIONS_DIALOG);
-//        postJsonData.execute("privilegios=" + TextUtils.join(",", mUser.getPermissions()),
-//                "email=" + mUser.getEmail());
+        PostJsonData postJsonData = new PostJsonData((MainActivity) getActivity(),
+                "https://test966996.000webhostapp.com/api/post_areas.php", Constants.Status.NEW_AREA);
+        postJsonData.execute("nome=" + mInputAreaName.getText().toString(), "alarmeLigado=" + (mSwitch.isChecked() ? "1" : "0"));
     }
 
     @Override
@@ -66,7 +65,7 @@ public class NewAreaDialog extends DialogFragment {
 
         b.setView(v);
 
-        b.setTitle("Devices");
+        b.setTitle("New area");
         b.setPositiveButton("Save", null);
         b.setNegativeButton("Cancel", (dialog, whichButton) -> dialog.dismiss());
 
@@ -81,9 +80,7 @@ public class NewAreaDialog extends DialogFragment {
                     mAreaLayout.setError("Area's name is required.");
                 }
                 else {
-                    PostJsonData postJsonData = new PostJsonData((MainActivity) getActivity(),
-                                "https://test966996.000webhostapp.com/api/post_areas.php", Constants.Status.UPDATE_AREA);
-                    postJsonData.execute("nome=" + name, "alarmeLigado=" + (mSwitch.isChecked() ? "1" : "0"));
+                    saveData();
                     dialog.dismiss();
                 }
             });
