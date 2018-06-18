@@ -177,9 +177,9 @@
     <string name="menu_delete">Remove device</string>
     <string name="delete_device_confirmation_title">Delete device</string>
     <string name="delete_device_confirmation">Do you really want to delete %1$s\?</string>
-    <string name="device_updated">Device updated</string>
+    <string name="device_updated">Device updated successfully!</string>
     <string name="failed_to_update_device">Failed to update device</string>
-    <string name="device_deleted">Device deleted successfully</string>
+    <string name="device_deleted">Device deleted successfully!</string>
     <string name="failed_to_delete_device">Failed to delete device</string>
     <string name="menu_edit_user">Edit permissions</string>
     <string name="menu_delete_user">Remove account</string>
