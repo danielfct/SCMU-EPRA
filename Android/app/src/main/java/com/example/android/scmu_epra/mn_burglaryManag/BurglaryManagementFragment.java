@@ -32,6 +32,7 @@ import android.widget.TextView;
 import com.example.android.scmu_epra.BottomSheetListView;
 import com.example.android.scmu_epra.Constants;
 import com.example.android.scmu_epra.R;
+import com.example.android.scmu_epra.Utils;
 import com.example.android.scmu_epra.connection.DownloadStatus;
 import com.example.android.scmu_epra.connection.GetBurglaryHistoryJsonData;
 import com.example.android.scmu_epra.connection.GetHistoryJsonData;
@@ -40,6 +41,7 @@ import com.example.android.scmu_epra.connection.PostJsonData;
 import com.example.android.scmu_epra.mn_devices.DevicesFragment;
 import com.example.android.scmu_epra.mn_history.AlarmHistoryFragment;
 import com.example.android.scmu_epra.mn_home.HomeFragment;
+import com.example.android.scmu_epra.mn_users.UserItem;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -48,6 +50,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import okhttp3.internal.Util;
 
 public class BurglaryManagementFragment extends Fragment
         implements GetBurglaryHistoryJsonData.OnDataAvailable, GetJsonData.OnDataAvailable, PostJsonData.OnStatusAvailable {
@@ -92,6 +95,9 @@ public class BurglaryManagementFragment extends Fragment
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+
+        UserItem user = Utils.getCurrentUser(mContext);
+        executePostJson("https://test966996.000webhostapp.com/api/post_history.php", Constants.Status.BURGLARY_MANAGEMENT_FRAGMENT,"evento=An intrusion was detected!");
     }
 
     @Override
@@ -128,6 +134,8 @@ public class BurglaryManagementFragment extends Fragment
             FragmentTransaction ft = getFragmentManager().beginTransaction();
             ft.replace(R.id.screen_area, f);
             ft.commit();
+            UserItem userItem = Utils.getCurrentUser(mContext);
+            executePostJson("https://test966996.000webhostapp.com/api/post_history.php", Constants.Status.BURGLARY_MANAGEMENT_FRAGMENT,"evento="+userItem.getName()+" ignored the intrusion alarm.");
         });
         simulateButton.setOnClickListener(v -> {
             navigationView.getMenu().getItem(2).setChecked(true);
@@ -136,11 +144,15 @@ public class BurglaryManagementFragment extends Fragment
             FragmentTransaction ft = getFragmentManager().beginTransaction();
             ft.replace(R.id.screen_area, f);
             ft.commit();
+            UserItem userItem = Utils.getCurrentUser(mContext);
+            executePostJson("https://test966996.000webhostapp.com/api/post_history.php", Constants.Status.BURGLARY_MANAGEMENT_FRAGMENT,"evento="+userItem.getName()+" simulated home activity.");
         });
         turnOffAlarmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                executePostJson("https://test966996.000webhostapp.com/api/post_alarminfo.php", "estadoAtual=0");
+                UserItem userItem = Utils.getCurrentUser(mContext);
+                executePostJson("https://test966996.000webhostapp.com/api/post_alarminfo.php", Constants.Status.BURG_ALARM_OFF,"estadoAtual=0");
+                executePostJson("https://test966996.000webhostapp.com/api/post_history.php", Constants.Status.BURGLARY_MANAGEMENT_FRAGMENT,"evento="+userItem.getName()+" turned off the alarm.");
             }
         });
         notifyPoliceButton.setOnClickListener(new View.OnClickListener() {
@@ -161,6 +173,8 @@ public class BurglaryManagementFragment extends Fragment
 
                 Log.d(TAG, "onClick: PERMISSION GRANTED!!");
                 startActivity(callIntent);
+                UserItem user = Utils.getCurrentUser(mContext);
+                executePostJson("https://test966996.000webhostapp.com/api/post_history.php", Constants.Status.BURGLARY_MANAGEMENT_FRAGMENT,"evento="+user.getName()+" called the Police!");
             }
         });
 
@@ -226,16 +240,16 @@ public class BurglaryManagementFragment extends Fragment
         }
     }
 
-    private final void executePostJson(String url, String... params) {
-        PostJsonData postJsonData = new PostJsonData(this, url, Constants.Status.BURGLARY_MANAGEMENT_FRAGMENT);
+    private final void executePostJson(String url, int id, String... params) {
+        PostJsonData postJsonData = new PostJsonData(this, url, id);
         postJsonData.execute(params);
     }
 
     @Override
     public void onStatusAvailable(Boolean status, Integer statusId) {
-        if (status) {
+        if (status && statusId == Constants.Status.BURG_ALARM_OFF) {
             Snackbar.make(getView(), "Alarm turned off.", Snackbar.LENGTH_SHORT).show();
-        } else {
+        } else if (!status) {
             Snackbar.make(getView(), "Unable to connect to the server.", Snackbar.LENGTH_SHORT).show();
         }
     }
@@ -283,28 +297,5 @@ public class BurglaryManagementFragment extends Fragment
             navigationView = n;
         }
     }
-
-
-    // Unnecessary - for search in the toolbar
-//    @Override
-//    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-//        inflater.inflate(R.menu.menu_search, menu);
-//        MenuItem item = menu.findItem(R.id.menu_Search);
-//        SearchView searchView = (SearchView)item.getActionView();
-//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-//            @Override
-//            public boolean onQueryTextSubmit(String s) {
-//                return false;
-//            }
-//
-//            @Override
-//            public boolean onQueryTextChange(String s) {
-//                mListAdapter.getFilter().filter(s);
-//                return false;
-//            }
-//        });
-//
-//        super.onCreateOptionsMenu(menu, inflater);
-//    }
 
 }

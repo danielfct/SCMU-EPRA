@@ -50,6 +50,7 @@ import com.example.android.scmu_epra.BottomSheetListView;
 import com.example.android.scmu_epra.Constants;
 import com.example.android.scmu_epra.MainActivity;
 import com.example.android.scmu_epra.R;
+import com.example.android.scmu_epra.Utils;
 import com.example.android.scmu_epra.connection.DownloadStatus;
 import com.example.android.scmu_epra.connection.GetAreasJsonData;
 import com.example.android.scmu_epra.connection.GetJsonData;
@@ -297,29 +298,17 @@ public class HomeFragment extends Fragment implements GetJsonData.OnDataAvailabl
 
 
     private void processUnlockDialog(AlertDialog dialog) {
-        TextView uHeadingLabel;
-        ImageView uFingerprintImage;
         TextView uParagraphLabel;
         FingerprintManager uFingerprintManager;
         KeyguardManager uKeyguardManager;
         EditText uPin1EditText;
-        EditText uPin2EditText;
-        EditText uPin3EditText;
 
 
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
-        Gson gson = new Gson();
-        String json = sharedPref.getString(Constants.SIGNED_ACCOUNT_TAG, "");
-        UserItem currentAccount = gson.fromJson(json, UserItem.class);
+        UserItem currentAccount = Utils.getCurrentUser(mContext);
         String userPassword = currentAccount.getPassword();
 
-
-        uFingerprintImage = unlockView.findViewById(R.id.fingerprintImage);
         uParagraphLabel = unlockView.findViewById(R.id.paragraphLabel);
         uPin1EditText = unlockView.findViewById(R.id.pin1);
-//        uPin2EditText = unlockView.findViewById(R.id.pin2);
-//        uPin3EditText = unlockView.findViewById(R.id.pin3);
-
 
         if (uPin1EditText != null) {
             uPin1EditText.addTextChangedListener(new TextWatcher() {
@@ -343,51 +332,6 @@ public class HomeFragment extends Fragment implements GetJsonData.OnDataAvailabl
                 public void afterTextChanged(Editable s) {
                 }
             });
-
-//            uPin2EditText.addTextChangedListener(new TextWatcher() {
-//                @Override
-//                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-//                }
-//
-//                @Override
-//                public void onTextChanged(CharSequence s, int start, int before, int count) {
-//                    String pin1Text = uPin1EditText.getText().toString();
-//                    String pin2Text = uPin2EditText.getText().toString();
-//                    String pin3Text = uPin3EditText.getText().toString();
-//
-//                    if (pin1Text.length() > 0 && pin2Text.length() > 0 && pin3Text.length() > 0) {
-//                        // TODO: checkPin(pin1Text+pin2Text+pin3Text)
-//                    } else if (pin2Text.length() > 0) {
-//                        uPin3EditText.requestFocus();
-//                    }
-//                }
-//
-//                @Override
-//                public void afterTextChanged(Editable s) {
-//                }
-//            });
-//
-//            uPin3EditText.addTextChangedListener(new TextWatcher() {
-//                @Override
-//                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-//                }
-//
-//                @Override
-//                public void onTextChanged(CharSequence s, int start, int before, int count) {
-//                    String pin1Text = uPin1EditText.getText().toString();
-//                    String pin2Text = uPin2EditText.getText().toString();
-//                    String pin3Text = uPin3EditText.getText().toString();
-//
-//                    if (pin1Text.length() > 0 && pin2Text.length() > 0 && pin3Text.length() > 0) {
-//                        // TODO: checkPin(pin1Text+pin2Text+pin3Text)
-//                    }
-//                }
-//
-//                @Override
-//                public void afterTextChanged(Editable s) {
-//                }
-//            });
-
         }
 
 
@@ -429,8 +373,10 @@ public class HomeFragment extends Fragment implements GetJsonData.OnDataAvailabl
             toggleOnOff.setChecked(true);
             activeInfo.setText("Alarm is now active.");
         }
+
+        UserItem user = Utils.getCurrentUser(mContext);
         executePostJson("https://test966996.000webhostapp.com/api/post_alarminfo.php", "estadoAtual="+(toggleOnOff.isChecked() ? "1" : "0"));
-        executePostJson("https://test966996.000webhostapp.com/api/post_history.php", "evento="+(toggleOnOff.isChecked() ? "The alarm was turned on." : "The alarmed was turned off."));
+        executePostJson("https://test966996.000webhostapp.com/api/post_history.php", "evento="+user.getName()+(toggleOnOff.isChecked() ? " turned the alarm on." : " turned the alarm off."));
     }
 
     @Override
@@ -440,10 +386,7 @@ public class HomeFragment extends Fragment implements GetJsonData.OnDataAvailabl
             HomeListAdapter listAdapter = new HomeListAdapter(mContext, 0, data);
             listView.setAdapter(listAdapter);
             listView.setOnItemClickListener((adapterView, view, position, id) -> {
-                SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
-                Gson gson = new Gson();
-                String json = sharedPref.getString(Constants.SIGNED_ACCOUNT_TAG, "");
-                UserItem currentAccount = gson.fromJson(json, UserItem.class);
+                UserItem currentAccount = Utils.getCurrentUser(mContext);
 
                 AreaItem item = data.get(position);
                 boolean b = (currentAccount != null && currentAccount.getPermissions().contains(item.getId()));

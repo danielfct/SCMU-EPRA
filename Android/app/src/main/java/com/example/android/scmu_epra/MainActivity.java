@@ -17,18 +17,24 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.scmu_epra.auth.LoginActivity;
 import com.example.android.scmu_epra.connection.PostJsonData;
+import com.example.android.scmu_epra.mn_users.UserItem;
 import com.example.android.scmu_epra.mn_users.UsersFragment;
 import com.example.android.scmu_epra.mn_burglaryManag.BurglaryManagementFragment;
 import com.example.android.scmu_epra.mn_devices.DevicesFragment;
 import com.example.android.scmu_epra.mn_history.AlarmHistoryFragment;
 import com.example.android.scmu_epra.mn_home.HomeFragment;
+import com.google.gson.Gson;
+
+import org.w3c.dom.Text;
 
 import java.util.Map;
 
@@ -65,6 +71,17 @@ public class MainActivity extends AppCompatActivity
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+        Gson gson = new Gson();
+        String json = sharedPref.getString(Constants.SIGNED_ACCOUNT_TAG, "");
+        UserItem currentAccount = gson.fromJson(json, UserItem.class);
+
+        View header = navigationView.getHeaderView(0);
+        TextView tName = header.findViewById(R.id.user_name_drawer);
+        TextView tEmail = header.findViewById(R.id.user_email_drawer);
+        tName.setText(currentAccount.getName());
+        tEmail.setText(currentAccount.getEmail());
 
         String id = getIntent().getStringExtra("id");
 
@@ -220,5 +237,6 @@ public class MainActivity extends AppCompatActivity
         }
 
     }
+
 
 }
