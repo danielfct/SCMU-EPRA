@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.SearchView;
@@ -43,7 +44,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class DevicesFragment extends Fragment
-        implements GetDevicesJsonData.OnDataAvailable, PostJsonData.OnStatusAvailable {
+        implements GetDevicesJsonData.OnDataAvailable {
 
     public static final String TAG = "DevicesFragment";
 
@@ -102,18 +103,11 @@ public class DevicesFragment extends Fragment
     @Override
     public void onDataAvailable(List<DeviceItem> data, DownloadStatus status) {
         Log.d(TAG, "onDataAvailable: starts");
-        if(status == DownloadStatus.OK && data != null && data.size() > 0) {
+        if (status == DownloadStatus.OK && data != null && data.size() > 0) {
             mListAdapter = new DevicesListAdapter(mContext, 0, data);
             listView.setAdapter(mListAdapter);
-            listView.setOnItemClickListener((adapterView, view, position, id) -> {
-                    sw = view.findViewById(R.id.device_switch);
-                    DeviceItem item = data.get(position);
-                    boolean newState = !sw.isChecked();
-                    executePostJson("https://test966996.000webhostapp.com/api/update_devices.php",
-                            "nome=" + item.getName(),
-                            "ligado=" + (newState ? "1" : "0"));
-                    sw.setChecked(newState);
-                });
+            listView.setOnItemClickListener((adapterView, view, position, id) ->
+                    sw.setChecked(!sw.isChecked()));
         } else {
             // download or processing failed
             Log.e(TAG, "onDataAvailable failed with status " + status);
@@ -124,16 +118,13 @@ public class DevicesFragment extends Fragment
         Log.d(TAG, "onDataAvailable: ends");
     }
 
-    private final void executePostJson(String url, String... params) {
-        PostJsonData postJsonData = new PostJsonData(this, url, Constants.Status.DEVICES_FRAGMENT);
-        postJsonData.execute(params);
-    }
+
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_search, menu);
         MenuItem item = menu.findItem(R.id.menu_Search);
-        SearchView searchView = (SearchView)item.getActionView();
+        SearchView searchView = (SearchView) item.getActionView();
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
@@ -163,12 +154,5 @@ public class DevicesFragment extends Fragment
     }
 
 
-    @Override
-    public void onStatusAvailable(Boolean status, Integer statusId) {
-        if (status) {
-            Snackbar.make(getView(), "Device status changed.", Snackbar.LENGTH_SHORT).show();
-        } else {
-            Snackbar.make(getView(), "Unable to connect to the server.", Snackbar.LENGTH_SHORT).show();
-        }
-    }
+
 }

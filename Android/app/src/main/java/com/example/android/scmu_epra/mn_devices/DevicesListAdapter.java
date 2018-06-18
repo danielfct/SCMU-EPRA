@@ -3,6 +3,7 @@ package com.example.android.scmu_epra.mn_devices;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,15 +13,19 @@ import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
+import com.example.android.scmu_epra.Constants;
 import com.example.android.scmu_epra.R;
+import com.example.android.scmu_epra.connection.PostJsonData;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class DevicesListAdapter extends ArrayAdapter<DeviceItem> implements Filterable {
+public class DevicesListAdapter extends ArrayAdapter<DeviceItem>
+        implements Filterable, PostJsonData.OnStatusAvailable {
 
     private Context context;
     private List<DeviceItem> listDevices;
@@ -80,8 +85,17 @@ public class DevicesListAdapter extends ArrayAdapter<DeviceItem> implements Filt
 
         Switch aSwitch = v.findViewById(R.id.device_switch);
         aSwitch.setChecked(item.isOn());
-
+        aSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            executePostJson("https://test966996.000webhostapp.com/api/update_devices.php",
+                    "nome=" + item.getName(),
+                    "ligado=" + (isChecked ? "1" : "0"));
+        });
         return v;
+    }
+
+    private final void executePostJson(String url, String... params) {
+        PostJsonData postJsonData = new PostJsonData(this, url, Constants.Status.DEVICES_FRAGMENT);
+        postJsonData.execute(params);
     }
 
 
@@ -129,4 +143,16 @@ public class DevicesListAdapter extends ArrayAdapter<DeviceItem> implements Filt
         }
 
     }
+
+    @Override
+    public void onStatusAvailable(Boolean status, Integer statusId) {
+        if (status) {
+            Toast.makeText(context, "Device status changed.", Toast.LENGTH_SHORT).show();
+            //Snackbar.make(getview(), "Device status changed.", Snackbar.LENGTH_SHORT).show();
+        } else {
+            //Snackbar.make(getView(), "Unable to connect to the server.", Snackbar.LENGTH_SHORT).show();
+            Toast.makeText(context, "Unable to connect to the server.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
 }
