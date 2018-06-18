@@ -33,9 +33,10 @@ public class DevicesListAdapter extends ArrayAdapter<DeviceItem>
     private TextDrawable.IBuilder builder;
     private ColorGenerator generator;
     private NameFilter nameFilter;
+    private View devicesView;
 
 
-    public DevicesListAdapter(Context context, int resource, List<DeviceItem> items) {
+    public DevicesListAdapter(Context context, int resource, List<DeviceItem> items, View v) {
         super(context, 0, items);
         this.context = context;
         this.listDevices = items;
@@ -46,6 +47,7 @@ public class DevicesListAdapter extends ArrayAdapter<DeviceItem>
                 .round();
         this.generator = ColorGenerator.MATERIAL;
         this.listOriginal = items;
+        this.devicesView = v;
     }
 
     @Override
@@ -147,11 +149,9 @@ public class DevicesListAdapter extends ArrayAdapter<DeviceItem>
     @Override
     public void onStatusAvailable(Boolean status, Integer statusId) {
         if (status) {
-            Toast.makeText(context, "Device status changed.", Toast.LENGTH_SHORT).show();
-            //Snackbar.make(getview(), "Device status changed.", Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(devicesView, "Device status changed.", Snackbar.LENGTH_SHORT).show();
         } else {
-            //Snackbar.make(getView(), "Unable to connect to the server.", Snackbar.LENGTH_SHORT).show();
-            Toast.makeText(context, "Unable to connect to the server.", Toast.LENGTH_SHORT).show();
+            Snackbar.make(devicesView, "Unable to connect to the server.", Snackbar.LENGTH_SHORT).show();
         }
     }
 
