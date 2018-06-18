@@ -91,7 +91,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        
+
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
         Gson gson = new Gson();
         String json = sharedPref.getString(Constants.SIGNED_ACCOUNT_TAG, "");

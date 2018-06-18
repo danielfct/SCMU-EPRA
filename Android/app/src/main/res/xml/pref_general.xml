@@ -34,7 +34,8 @@
         android:key="list_period"
         android:negativeButtonText="@null"
         android:positiveButtonText="@null"
-        android:title="@string/list_period_title" />
+        android:title="@string/list_period_title"
+        android:dependency="switch_period"/>
 
 
 
