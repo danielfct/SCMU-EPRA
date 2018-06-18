@@ -1,5 +1,12 @@
 package com.example.android.scmu_epra;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+
+import com.example.android.scmu_epra.mn_users.UserItem;
+import com.google.gson.Gson;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -51,6 +58,13 @@ public class Utils {
         }
 
         return result;
+    }
+
+    public static UserItem getCurrentUser(Context context) {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
+        Gson gson = new Gson();
+        String json = sharedPref.getString(Constants.SIGNED_ACCOUNT_TAG, "");
+        return gson.fromJson(json, UserItem.class);
     }
 
 

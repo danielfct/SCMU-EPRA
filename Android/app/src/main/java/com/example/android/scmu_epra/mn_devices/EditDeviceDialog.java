@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.hardware.Camera;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.TextInputEditText;
@@ -77,6 +78,10 @@ public class EditDeviceDialog extends DialogFragment implements GetAreasJsonData
 
         getAreas();
 
+        String[] items = new String[]{"Sensor", "Actuator", "Simulator"};
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item, items);
+        deviceType.setAdapter(adapter);
+
         Bundle args = getArguments();
         String stringDevice = null;
         if (args != null) {
@@ -100,9 +105,8 @@ public class EditDeviceDialog extends DialogFragment implements GetAreasJsonData
         }
         final boolean isNewDevice = stringDevice == null;
 
-        String[] items = new String[]{"Sensor", "Actuator", "Simulator"};
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item, items);
-        deviceType.setAdapter(adapter);
+        deviceArea.setAdapter(new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item,
+                new String[]{"Loading..."}));
 
         b.setView(v);
 
@@ -118,8 +122,9 @@ public class EditDeviceDialog extends DialogFragment implements GetAreasJsonData
                         String name = inputDeviceName.getText().toString();
                         if (TextUtils.isEmpty(name)) {
                             deviceNameLayout.setError("Name is required.");
+
                         }
-                        else {
+                        else if (deviceArea.getSelectedItem() instanceof AreaItem) {
                             PostJsonData postJsonData;
                             if (isNewDevice) {
                                 postJsonData = new PostJsonData((MainActivity) getActivity(),
@@ -145,7 +150,6 @@ public class EditDeviceDialog extends DialogFragment implements GetAreasJsonData
         GetAreasJsonData getAreasJsonData = new GetAreasJsonData(this, "https://test966996.000webhostapp.com/api/get_areas.php");
         getAreasJsonData.execute();
     }
-
 
     @Override
     public void onDataAvailable(List<AreaItem> data, DownloadStatus status) {

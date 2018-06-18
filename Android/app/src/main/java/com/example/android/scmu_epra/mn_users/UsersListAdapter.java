@@ -8,12 +8,15 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.preference.PreferenceManager;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatImageButton;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -23,6 +26,8 @@ import com.example.android.scmu_epra.Constants;
 import com.example.android.scmu_epra.MainActivity;
 import com.example.android.scmu_epra.R;
 import com.example.android.scmu_epra.connection.PostJsonData;
+import com.example.android.scmu_epra.mn_devices.DeviceItem;
+import com.example.android.scmu_epra.mn_devices.DevicesListAdapter;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -32,23 +37,42 @@ import butterknife.OnClick;
 
 import static android.content.Context.MODE_PRIVATE;
 
-public class UsersListAdapter extends ArrayAdapter<UserItem> {
+public class UsersListAdapter extends ArrayAdapter<UserItem> implements Filterable {
 
     private Context context;
-    private List<UserItem> list;
+    private List<UserItem> listUsers;
+    private List<UserItem> listOriginal;
     private TextDrawable.IBuilder builder;
     private ColorGenerator generator;
+    private NameFilter nameFilter;
 
     public UsersListAdapter(Context context, int resource, List<UserItem> items) {
         super(context, 0, items);
         this.context = context;
-        this.list = items;
+        this.listUsers = items;
         this.builder = TextDrawable.builder()
                 .beginConfig()
                 .withBorder(4)
                 .endConfig()
                 .round();
         this.generator = ColorGenerator.MATERIAL;
+        this.listOriginal = items;
+    }
+
+    @Override
+    public int getCount() {
+        return listUsers.size();
+    }
+
+    @Nullable
+    @Override
+    public UserItem getItem(int position) {
+        return listUsers.get(position);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
     }
 
     @Override
@@ -58,7 +82,7 @@ public class UsersListAdapter extends ArrayAdapter<UserItem> {
             v = LayoutInflater.from(this.context).inflate(R.layout.frag_users_list_item, parent, false);
         }
 
-        UserItem user = this.list.get(position);
+        UserItem user = this.listUsers.get(position);
         String name = user.getName();
 
         ImageView imageView = v.findViewById(R.id.image);
@@ -69,51 +93,56 @@ public class UsersListAdapter extends ArrayAdapter<UserItem> {
         TextView nameView = v.findViewById(R.id.name);
         nameView.setText(name);
 
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
-        Gson gson = new Gson();
-        String json = sharedPref.getString(Constants.SIGNED_ACCOUNT_TAG, "");
-        UserItem currentAccount = gson.fromJson(json, UserItem.class);
-
-        boolean isAdmin = currentAccount != null && currentAccount.isAdmin();
-
-        AppCompatImageButton editPermissionsButton = v.findViewById(R.id.edit_permissions_button);
-        editPermissionsButton.setOnClickListener((view) -> showEditPermissionsDialog(user));
-        if (!isAdmin) {
-            editPermissionsButton.setEnabled(false);
-            editPermissionsButton.setColorFilter(ContextCompat.getColor(context, R.color.gray_very_light), android.graphics.PorterDuff.Mode.SRC_IN);
-        }
-
-        AppCompatImageButton deleteUserAccountButton = v.findViewById(R.id.delete_user_account_button);
-        deleteUserAccountButton.setOnClickListener((view) -> showDeleteUserConfirmation(user));
-        if (!isAdmin) {
-            deleteUserAccountButton.setEnabled(false);
-            deleteUserAccountButton.setColorFilter(ContextCompat.getColor(context, R.color.gray_very_light), android.graphics.PorterDuff.Mode.SRC_IN);
-        }
-
-
         return v;
     }
 
-    private void showEditPermissionsDialog(UserItem user) {
-        FragmentManager fm = ((Activity)context).getFragmentManager();
-        EditUserPermissionsDialog dialog = EditUserPermissionsDialog.newInstance(user);
-        dialog.show(fm, "fragment_edit_permissions");
+    @Override
+    public Filter getFilter() {
+        if (nameFilter == null) {
+            nameFilter = new NameFilter();
+        }
+        return nameFilter;
     }
 
-    private void showDeleteUserConfirmation(UserItem user) {
-        new AlertDialog.Builder(context)
-                .setIcon(R.drawable.ic_delete_forever_red)
-                .setTitle(context.getString(R.string.delete_user_confirmation_title))
-                .setMessage(context.getString(R.string.delete_user_confirmation, user.getName()))
-                .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> removeUser(user))
-                .setNegativeButton(android.R.string.no, null)
-                .show();
-    }
+    private class NameFilter extends Filter {
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            FilterResults results = new FilterResults();
 
-    private void removeUser(UserItem user) {
-        PostJsonData postJsonData = new PostJsonData((MainActivity) context,
-                "https://test966996.000webhostapp.com/api/delete_contacts.php", Constants.Status.DELETE_USER);
-        postJsonData.execute("email=" + user.getEmail());
+            if (constraint != null && constraint.length() > 0) {
+                ArrayList<UserItem> filterList = new ArrayList<>();
+                for (int i = 0; i < listOriginal.size(); i++) {
+                    UserItem original = listOriginal.get(i);
+
+                    if ((original.getName().toUpperCase())
+                            .contains(constraint.toString().toUpperCase())) {
+                        UserItem item = new UserItem(
+                                original.getName(),
+                                original.getMobileNr(),
+                                original.getEmail(),
+                                original.getPassword(),
+                                original.isAdmin(),
+                                original.getPermissions());
+                        filterList.add(item);
+                    }
+                }
+                results.count = filterList.size();
+                results.values = filterList;
+            } else {
+                results.count = listOriginal.size();
+                results.values = listOriginal;
+            }
+            return results;
+
+        }
+
+        @Override
+        protected void publishResults(CharSequence constraint,
+                                      FilterResults results) {
+            listUsers = (List<UserItem>) results.values;
+            notifyDataSetChanged();
+        }
+
     }
 
 }

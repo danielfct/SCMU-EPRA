@@ -119,7 +119,7 @@ public class HomeFragment extends Fragment implements GetJsonData.OnDataAvailabl
         ArrayList<Integer> permissions = new ArrayList<>();
         permissions.add(1); permissions.add(7); permissions.add(8); permissions.add(9);
         UserItem user = new UserItem("Daniel", "912345677", "daniel@gmail.com",
-                "daniel", false, permissions);
+                "daniel", true, permissions);
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
         SharedPreferences.Editor prefsEditor = sharedPref.edit();
         Gson gson = new Gson();

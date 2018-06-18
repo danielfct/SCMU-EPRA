@@ -98,10 +98,10 @@ public class DevicesFragment extends Fragment
         if (status == DownloadStatus.OK && data != null && data.size() > 0) {
             mListAdapter = new DevicesListAdapter(mContext, 0, data, getView());
             listView.setAdapter(mListAdapter);
-//            listView.setOnItemClickListener((adapterView, view, position, id) -> {
-//                sw = view.findViewById(R.id.device_switch);
-//                sw.setChecked(!sw.isChecked());
-//            });
+            listView.setOnItemClickListener((adapterView, view, position, id) -> {
+                sw = view.findViewById(R.id.device_switch);
+                sw.setChecked(!sw.isChecked());
+            });
             registerForContextMenu(listView);
         } else {
             // download or processing failed
@@ -112,7 +112,6 @@ public class DevicesFragment extends Fragment
         }
         Log.d(TAG, "onDataAvailable: ends");
     }
-
 
 
     @Override
@@ -167,9 +166,8 @@ public class DevicesFragment extends Fragment
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
-        getActivity().getMenuInflater().inflate(R.menu.menu_list, menu);
+        getActivity().getMenuInflater().inflate(R.menu.menu_list_devices, menu);
     }
-
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
