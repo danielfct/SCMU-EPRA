@@ -433,6 +433,7 @@ public class HomeFragment extends Fragment implements GetJsonData.OnDataAvailabl
             activeInfo.setText("Alarm is now active.");
         }
         executePostJson("https://test966996.000webhostapp.com/api/post_alarminfo.php", "estadoAtual="+(toggleOnOff.isChecked() ? "1" : "0"));
+        executePostJson("https://test966996.000webhostapp.com/api/post_history.php", "evento="+(toggleOnOff.isChecked() ? "The alarm was turned on." : "The alarmed was turned off."));
     }
 
     @Override

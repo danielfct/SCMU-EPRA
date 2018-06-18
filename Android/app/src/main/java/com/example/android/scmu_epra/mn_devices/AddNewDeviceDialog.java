@@ -34,7 +34,6 @@ public class AddNewDeviceDialog extends DialogFragment {
     TextInputLayout deviceNameLayout;
     TextInputEditText inputDeviceName;
     Spinner deviceType;
-    Spinner deviceArea;
     SwitchCompat deviceStatus;
 
     public AddNewDeviceDialog() {
@@ -51,16 +50,11 @@ public class AddNewDeviceDialog extends DialogFragment {
         deviceNameLayout = v.findViewById(R.id.device_name_layout);
         inputDeviceName= v.findViewById(R.id.input_device_name);
         deviceType = v.findViewById(R.id.device_type);
-        deviceArea = v.findViewById(R.id.device_area);
         deviceStatus = v.findViewById(R.id.device_status);
 
         String[] items = new String[]{"Sensor", "Actuator", "Simulator"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item, items);
         deviceType.setAdapter(adapter);
-
-//        String[] areas = AISHFhilALDFHASLDFh
-//        ArrayAdapter<String> adapter2 = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item, items);
-//        deviceType.setAdapter(adapter2);
 
         b.setView(v);
 
