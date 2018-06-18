@@ -38,6 +38,9 @@ public interface Constants {
         int DELETE_DEVICE = 7;
         int UPDATE_DEVICE = 8;
         int BURG_ALARM_OFF = 9;
+        int UPDATE_HISTORY = 10;
+        int UPDATE_ALARM_STATUS = 11;
+        int UPDATE_AREA = 12;
     }
 
     interface Bundle {

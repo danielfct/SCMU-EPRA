@@ -152,7 +152,7 @@ public class DevicesListAdapter extends ArrayAdapter<DeviceItem>
     @Override
     public void onStatusAvailable(Boolean status, Integer statusId) {
         if (status) {
-            Snackbar.make(devicesView, "Device status changed.", Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(devicesView, "Device status updated successfully!", Snackbar.LENGTH_SHORT).show();
         } else {
             Snackbar.make(devicesView, "Unable to connect to the server.", Snackbar.LENGTH_SHORT).show();
         }

@@ -248,7 +248,7 @@ public class BurglaryManagementFragment extends Fragment
     @Override
     public void onStatusAvailable(Boolean status, Integer statusId) {
         if (status && statusId == Constants.Status.BURG_ALARM_OFF) {
-            Snackbar.make(getView(), "Alarm turned off.", Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(getView(), "Alarm turned off successfully!", Snackbar.LENGTH_SHORT).show();
         } else if (!status) {
             Snackbar.make(getView(), "Unable to connect to the server.", Snackbar.LENGTH_SHORT).show();
         }
