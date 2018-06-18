@@ -361,6 +361,7 @@ public class HomeFragment extends Fragment implements
         if (status == DownloadStatus.OK && data != null && data.size() > 0) {
             listAdapter = new HomeListAdapter(mContext, 0, data);
             listView.setAdapter(listAdapter);
+            registerForContextMenu(listView);
             listView.setOnItemClickListener((adapterView, view, position, id) -> {
                 UserItem currentAccount = Utils.getCurrentUser(mContext);
 
@@ -378,9 +379,6 @@ public class HomeFragment extends Fragment implements
                     UserItem user = Utils.getCurrentUser(mContext);
                     executePostJson(Constants.Status.UPDATE_HISTORY,"https://test966996.000webhostapp.com/api/post_history.php", "evento="+user.getName()+" turned "+item.getName()+" "+ (newState? "on." : "off."));
                 }
-
-                registerForContextMenu(listView);
-
             });
         } else {
             // download or processing failed
