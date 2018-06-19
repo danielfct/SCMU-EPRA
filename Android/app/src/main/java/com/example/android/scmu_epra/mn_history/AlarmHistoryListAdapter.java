@@ -78,7 +78,7 @@ public class AlarmHistoryListAdapter extends ArrayAdapter<Row> implements Filter
         ImageView imageView = v.findViewById(R.id.image);
         Drawable d;
         if (evento.contains("intrusion was detected")){
-            d = ContextCompat.getDrawable(context, R.drawable.ic_error_outline);
+            d = ContextCompat.getDrawable(context, R.drawable.ic_security_black);
         }
         else if (evento.contains("turned the alarm")) {
             d = ContextCompat.getDrawable(context, R.drawable.ic_menu_home);
