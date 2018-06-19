@@ -92,18 +92,18 @@ public class DevicesListAdapter extends ArrayAdapter<DeviceItem>
         Switch aSwitch = v.findViewById(R.id.device_switch);
         aSwitch.setChecked(item.isOn());
         aSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            executePostJson("https://test966996.000webhostapp.com/api/update_devices.php",
+            executePostJson(Constants.Status.UPDATE_DEVICE, "https://test966996.000webhostapp.com/api/update_devices.php",
                     "nome=" + item.getName(),
                     "ligado=" + (isChecked ? "1" : "0"));
 
             UserItem user = Utils.getCurrentUser(context);
-            executePostJson("https://test966996.000webhostapp.com/api/post_history.php", "evento="+user.getName()+" turned "+item.getName()+" "+ (isChecked? "on." : "off."));
+            executePostJson(Constants.Status.UPDATE_HISTORY,"https://test966996.000webhostapp.com/api/post_history.php", "evento="+user.getName()+" turned "+item.getName()+" "+ (isChecked? "on." : "off."));
         });
         return v;
     }
 
-    private final void executePostJson(String url, String... params) {
-        PostJsonData postJsonData = new PostJsonData(this, url, Constants.Status.DEVICES_FRAGMENT);
+    private final void executePostJson(int id, String url, String... params) {
+        PostJsonData postJsonData = new PostJsonData(this, url, id);
         postJsonData.execute(params);
     }
 
@@ -157,7 +157,8 @@ public class DevicesListAdapter extends ArrayAdapter<DeviceItem>
     @Override
     public void onStatusAvailable(Boolean status, Integer statusId) {
         if (status) {
-            Snackbar.make(devicesView, "Device status updated successfully!", Snackbar.LENGTH_SHORT).show();
+            if (statusId != Constants.Status.UPDATE_HISTORY)
+                Snackbar.make(devicesView, "Device status updated successfully!", Snackbar.LENGTH_SHORT).show();
         } else {
             Snackbar.make(devicesView, "Unable to connect to the server.", Snackbar.LENGTH_SHORT).show();
         }

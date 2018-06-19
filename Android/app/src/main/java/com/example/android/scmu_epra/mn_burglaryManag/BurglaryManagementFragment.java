@@ -31,6 +31,7 @@ import android.widget.TextView;
 
 import com.example.android.scmu_epra.BottomSheetListView;
 import com.example.android.scmu_epra.Constants;
+import com.example.android.scmu_epra.MainActivity;
 import com.example.android.scmu_epra.R;
 import com.example.android.scmu_epra.Utils;
 import com.example.android.scmu_epra.connection.DownloadStatus;
@@ -112,6 +113,9 @@ public class BurglaryManagementFragment extends Fragment
 
         View view = inflater.inflate(R.layout.frag_burglary_manag, container, false);
         ButterKnife.bind(this, view);
+
+        navigationView = MainActivity.navigationView;
+
         return view;
     }
 
@@ -128,7 +132,8 @@ public class BurglaryManagementFragment extends Fragment
         mHandler.postDelayed(mRunnable, Constants.DATA_UPDATE_FREQUENCY);
 
         ignoreButton.setOnClickListener(v -> {
-            navigationView.getMenu().getItem(0).setChecked(true);
+            if (navigationView != null)
+                navigationView.getMenu().getItem(0).setChecked(true);
             HomeFragment f = new HomeFragment();
             f.setNavigationView(navigationView);
             FragmentTransaction ft = getFragmentManager().beginTransaction();
@@ -138,7 +143,8 @@ public class BurglaryManagementFragment extends Fragment
             executePostJson("https://test966996.000webhostapp.com/api/post_history.php", Constants.Status.BURGLARY_MANAGEMENT_FRAGMENT,"evento="+userItem.getName()+" ignored the intrusion alarm.");
         });
         simulateButton.setOnClickListener(v -> {
-            navigationView.getMenu().getItem(2).setChecked(true);
+            if (navigationView != null)
+                navigationView.getMenu().getItem(2).setChecked(true);
             DevicesFragment f = new DevicesFragment();
             f.setNavigationView(navigationView);
             FragmentTransaction ft = getFragmentManager().beginTransaction();
